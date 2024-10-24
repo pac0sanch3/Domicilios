@@ -10,6 +10,8 @@ servidor.use(bodyParser.json())
 servidor.use(bodyParser.urlencoded({ extended: true }))
 servidor.use(Express.static("./public"))
 
+servidor.use("/usuario", RutaUsuario);
+
 servidor.get("/", (req, res) => {
     res.status(200).json({ mensaje: "Bienvenidos a RunWay" })
 })
