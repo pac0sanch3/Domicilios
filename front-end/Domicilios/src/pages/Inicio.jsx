@@ -1,11 +1,11 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Card, CardHeader, CardBody, CardFooter, Input, Button, Image } from "@nextui-org/react";
 import { IconoOjoAbierto } from './IconoOjoAbierto';
 import { IconoOjoCerrado } from './IconoOjoCerrado';
 import axios from 'axios';
 
- const Inicio = () => {
+const Inicio = () => {
   const navigate = useNavigate();
   const [isVisible, setIsVisible] = useState(false);
   const [formData, setFormData] = useState({
@@ -44,15 +44,15 @@ import axios from 'axios';
   };
 
   return (
-    <div className="min-h-screen w-full flex items-center justify-center bg-gradient-to-br from-gray-900 to-gray-800">
-      <Card className="w-full max-w-md bg-white/10 backdrop-blur-md">
+    <div className="min-h-screen w-full flex items-center justify-center bg-gradient-to-br from-gray-200 to-gray-300">
+      <Card className="w-full max-w-md bg-gray-900 backdrop-blur-md rounded-xl shadow-lg">
         <CardHeader className="flex flex-col gap-2 items-center justify-center pt-8">
           <Image
-            src="/logo.png"
+            src="/logotrabajo.jpeg"
             alt="Logo"
-            className="w-24 h-24 rounded-full bg-white/20 p-2"
+            className="w-24 h-24 rounded-full bg-gray-800 p-2 border border-gray-700"
           />
-          <h1 className="text-2xl font-bold text-white">Bienvenido</h1>
+          <h1 className="text-3xl font-bold text-white">Bienvenido</h1>
         </CardHeader>
         
         <CardBody className="px-8 py-6">
@@ -64,11 +64,11 @@ import axios from 'axios';
               name="correo"
               value={formData.correo}
               onChange={handleInputChange}
-              className="max-w-full"
+              className="max-w-full rounded-md"
               classNames={{
-                label: "text-white/90",
-                input: "text-white",
-                inputWrapper: "bg-white/10",
+                label: "text-gray-300 text-lg",
+                input: "text-gray-900 text-lg placeholder:text-gray-500",
+                inputWrapper: "bg-gray-100 border border-gray-200 rounded-md",
               }}
             />
             
@@ -81,18 +81,18 @@ import axios from 'axios';
               endContent={
                 <button className="focus:outline-none" type="button" onClick={toggleVisibility}>
                   {isVisible ? (
-                    <IconoOjoCerrado className="text-white/90" />
+                    <IconoOjoCerrado className="text-gray-300" />
                   ) : (
-                    <IconoOjoAbierto className="text-white/90" />
+                    <IconoOjoAbierto className="text-gray-300" />
                   )}
                 </button>
               }
               type={isVisible ? "text" : "password"}
-              className="max-w-full"
+              className="max-w-full rounded-md"
               classNames={{
-                label: "text-white/90",
-                input: "text-white",
-                inputWrapper: "bg-white/10",
+                label: "text-gray-300 text-lg",
+                input: "text-gray-900 text-lg placeholder:text-gray-500",
+                inputWrapper: "bg-gray-100 border border-gray-200 rounded-md",
               }}
             />
 
@@ -103,7 +103,7 @@ import axios from 'axios';
             <Button
               type="submit"
               color="primary"
-              className="w-full bg-white text-black hover:bg-gray-200 transition-colors"
+              className="w-full bg-gradient-to-r from-purple-600 to-blue-600 text-white font-semibold rounded-lg shadow-md hover:from-purple-700 hover:to-blue-700 transition-all duration-300 ease-in-out py-2"
               isLoading={isLoading}
             >
               Iniciar Sesión
@@ -112,9 +112,9 @@ import axios from 'axios';
         </CardBody>
 
         <CardFooter className="flex justify-center pb-8">
-          <p className="text-white/60 text-sm">
+          <p className="text-gray-500 text-sm">
             ¿No tienes una cuenta?{" "}
-            <a href="/registro" className="text-white hover:underline">
+            <a href="/registro" className="text-gray-300 hover:underline">
               Regístrate aquí
             </a>
           </p>
