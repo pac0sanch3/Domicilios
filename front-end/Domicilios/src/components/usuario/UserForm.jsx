@@ -1,14 +1,17 @@
 import React, { useState } from 'react';
+import { Alert } from './Alert';
 
-export const UserForm = ({ user, onSubmit, onClose }) => {
+export const UserForm = ({ user, onClose, onSubmit }) => {
   const [formData, setFormData] = useState({
     nombre: user?.nombre || '',
     correo: user?.correo || '',
-    tipo_usuario: user?.tipo_usuario || '',
+    tipo_usuario: user?.tipo_usuario || 'particular',
     telefono: user?.telefono || '',
     contrasena: '',
     estado: user?.estado || 'activo'
   });
+
+  const [alert, setAlert] = useState({ show: false, message: '', type: '' });
 
   const handleChange = (e) => {
     setFormData({
@@ -17,9 +20,18 @@ export const UserForm = ({ user, onSubmit, onClose }) => {
     });
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    onSubmit(formData);
+    try {
+      await onSubmit(formData);
+      onClose();
+    } catch (error) {
+      setAlert({
+        show: true,
+        message: error.response?.data?.mensaje || 'Error al guardar el usuario',
+        type: 'error'
+      });
+    }
   };
 
   return (
@@ -28,79 +40,77 @@ export const UserForm = ({ user, onSubmit, onClose }) => {
         <h2 className="text-2xl font-bold mb-4">
           {user ? 'Editar Usuario' : 'Crear Usuario'}
         </h2>
-        
-        <form onSubmit={handleSubmit}>
-          <div className="space-y-4">
-            <div>
-              <label className="block text-sm font-medium mb-1">Nombre</label>
-              <input
-                type="text"
-                name="nombre"
-                value={formData.nombre}
-                onChange={handleChange}
-                className="w-full p-2 border rounded-lg"
-                required
-              />
-            </div>
 
-            <div>
-              <label className="block text-sm font-medium mb-1">Email</label>
-              <input
-                type="email"
-                name="correo"
-                value={formData.correo}
-                onChange={handleChange}
-                className="w-full p-2 border rounded-lg"
-                required
-              />
-            </div>
+        {alert.show && <Alert {...alert} />}
 
-            <div>
-              <label className="block text-sm font-medium mb-1">Teléfono</label>
-              <input
-                type="tel"
-                name="telefono"
-                value={formData.telefono}
-                onChange={handleChange}
-                pattern="[0-9]{10}"
-                className="w-full p-2 border rounded-lg"
-                required
-              />
-            </div>
-
-            <div>
-              <label className="block text-sm font-medium mb-1">Tipo de Usuario</label>
-              <select
-                name="tipo_usuario"
-                value={formData.tipo_usuario}
-                onChange={handleChange}
-                className="w-full p-2 border rounded-lg"
-                required
-              >
-                <option value="">Seleccione tipo de usuario</option>
-                <option value="administrador">Administrador</option>
-                <option value="negocio">Negocio</option>
-                <option value="particular">Particular</option>
-                <option value="domiciliario">Domiciliario</option>
-              </select>
-            </div>
-
-            {!user && (
-              <div>
-                <label className="block text-sm font-medium mb-1">Contraseña</label>
-                <input
-                  type="password"
-                  name="contrasena"
-                  value={formData.contrasena}
-                  onChange={handleChange}
-                  className="w-full p-2 border rounded-lg"
-                  required
-                />
-              </div>
-            )}
+        <form onSubmit={handleSubmit} className="space-y-4">
+          <div>
+            <label className="block text-sm font-medium mb-1">Nombre</label>
+            <input
+              type="text"
+              name="nombre"
+              value={formData.nombre}
+              onChange={handleChange}
+              className="w-full p-2 border rounded-lg"
+              required
+            />
           </div>
 
-          <div className="flex justify-end mt-6 space-x-2">
+          <div>
+            <label className="block text-sm font-medium mb-1">Correo</label>
+            <input
+              type="email"
+              name="correo"
+              value={formData.correo}
+              onChange={handleChange}
+              className="w-full p-2 border rounded-lg"
+              required
+            />
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium mb-1">Tipo de Usuario</label>
+            <select
+              name="tipo_usuario"
+              value={formData.tipo_usuario}
+              onChange={handleChange}
+              className="w-full p-2 border rounded-lg"
+              required
+            >
+              <option value="particular">Particular</option>
+              <option value="negocio">Negocio</option>
+              <option value="domiciliario">Domiciliario</option>
+              <option value="administrador">Administrador</option>
+            </select>
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium mb-1">Teléfono</label>
+            <input
+              type="tel"
+              name="telefono"
+              value={formData.telefono}
+              onChange={handleChange}
+              className="w-full p-2 border rounded-lg"
+              required
+            />
+          </div>
+
+          {!user && (
+            <div>
+              <label className="block text-sm font-medium mb-1">Contraseña</label>
+              <input
+                type="password"
+                name="contrasena"
+                value={formData.contrasena}
+                onChange={handleChange}
+                className="w-full p-2 border rounded-lg"
+                required={!user}
+              />
+            </div>
+          )}
+
+          <div className="flex justify-end space-x-2 pt-4">
             <button
               type="button"
               onClick={onClose}
