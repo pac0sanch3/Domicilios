@@ -4,7 +4,7 @@ export const SolicitudesList = ({ roles, onEdit, onDelete, onToggleActive }) => 
   return (
     <div className="space-y-4">
       {roles.map(role => (
-        <div key={role.id_reporte} className="flex justify-between items-center p-4 border rounded-lg hover:bg-gray-50">
+        <div key={role.id_reporte} className="flex justify-between items-center p-4 border rounded-lg bg-white">
           <div className="flex flex-col">
             <span className="font-medium">ID Cliente: {role.id_cliente}</span>
             <span className="text-sm text-gray-500">ID Domiciliario: {role.id_domiciliario}</span>
@@ -22,16 +22,6 @@ export const SolicitudesList = ({ roles, onEdit, onDelete, onToggleActive }) => 
               Editar
             </button>
             
-            <button
-              onClick={() => onToggleActive(role.id_reporte, role.estado)}
-              className={`px-3 py-1 rounded-lg ${
-                role.estado === 'activo'
-                  ? 'text-yellow-600 hover:bg-yellow-50'
-                  : 'text-green-600 hover:bg-green-50'
-              }`}
-            >
-              {role.estado === 'activo' ? 'Inactivar' : 'Activar'}
-            </button>
             
             <button
               onClick={() => onDelete(role.id_reporte)}

@@ -6,7 +6,9 @@ import { Alert } from './Alert';
 import { Button } from '@nextui-org/react';
 import RolesManagement from './RolesManagement';
 import SolicitudesManagement from './SolicitudesManagement';
-import ActividadesManagement from './ActividadesManagement'
+import ActividadesManagement from './ActividadesManagement';
+import Graficas from "../molecules/graficas/Graficas";
+
 
 
 const UserManagement = () => {
@@ -121,6 +123,14 @@ const UserManagement = () => {
         >
           actividades
         </Button>
+        <Button 
+          onClick={() => setCurrentView('Graficas')} 
+          color={currentView === 'Graficas' ? 'primary' : 'default'}
+          bordered={currentView !== 'Graficas'}
+          auto
+        >
+          Graficas
+        </Button>
       </div>
 
       {/* Renderizar el apartado correspondiente */}
@@ -166,6 +176,11 @@ const UserManagement = () => {
       {currentView === 'roles' && <RolesManagement />}
       {currentView === 'solicitudes' && <SolicitudesManagement />}
       {currentView === 'actividades' && <ActividadesManagement />}
+      {currentView === 'Graficas' && (
+        <div className="w-[460px]">
+          <Graficas />
+        </div>
+      )}
 
 
       {modalOpen && (
