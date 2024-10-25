@@ -1,15 +1,18 @@
 import React from 'react';
 
-const UserList = ({ users, onEdit, onDelete, onToggleActive }) => {
+export const UserList = ({ users, onEdit, onDelete, onToggleActive }) => {
   return (
     <div className="space-y-4">
       {users.map(user => (
-        <div key={user.id} className="flex justify-between items-center p-4 border rounded-lg hover:bg-gray-50">
+        <div key={user.id_usuario} className="flex justify-between items-center p-4 border rounded-lg hover:bg-gray-50">
           <div className="flex flex-col">
-            <span className="font-medium">{user.name}</span>
-            <span className="text-sm text-gray-500">{user.email}</span>
+            <span className="font-medium">{user.nombre}</span>
+            <span className="text-sm text-gray-500">{user.correo}</span>
+            <span className="text-sm text-gray-500 capitalize">
+              {user.tipo_usuario}
+            </span>
             <span className="text-sm text-gray-500">
-              {user.type ? user.type.charAt(0).toUpperCase() + user.type.slice(1) : 'Tipo no disponible'}
+              Tel: {user.telefono}
             </span>
           </div>
           
@@ -22,18 +25,18 @@ const UserList = ({ users, onEdit, onDelete, onToggleActive }) => {
             </button>
             
             <button
-              onClick={() => onToggleActive(user.id, user.active)}
+              onClick={() => onToggleActive(user.id_usuario, user.estado)}
               className={`px-3 py-1 rounded-lg ${
-                user.active 
+                user.estado === 'activo'
                   ? 'text-yellow-600 hover:bg-yellow-50'
                   : 'text-green-600 hover:bg-green-50'
               }`}
             >
-              {user.active ? 'Inactivar' : 'Activar'}
+              {user.estado === 'activo' ? 'Inactivar' : 'Activar'}
             </button>
             
             <button
-              onClick={() => onDelete(user.id)}
+              onClick={() => onDelete(user.id_usuario)}
               className="px-3 py-1 text-red-600 hover:bg-red-50 rounded-lg"
             >
               Eliminar
@@ -50,5 +53,3 @@ const UserList = ({ users, onEdit, onDelete, onToggleActive }) => {
     </div>
   );
 };
-
-export default UserList;

@@ -1,6 +1,27 @@
-import React from 'react';
+import React, { useState } from 'react';
 
-const UserForm = ({ user, onSubmit, onClose }) => {
+export const UserForm = ({ user, onSubmit, onClose }) => {
+  const [formData, setFormData] = useState({
+    nombre: user?.nombre || '',
+    correo: user?.correo || '',
+    tipo_usuario: user?.tipo_usuario || '',
+    telefono: user?.telefono || '',
+    contrasena: '',
+    estado: user?.estado || 'activo'
+  });
+
+  const handleChange = (e) => {
+    setFormData({
+      ...formData,
+      [e.target.name]: e.target.value
+    });
+  };
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    onSubmit(formData);
+  };
+
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
       <div className="bg-white p-6 rounded-lg shadow-lg w-full max-w-md">
@@ -8,25 +29,15 @@ const UserForm = ({ user, onSubmit, onClose }) => {
           {user ? 'Editar Usuario' : 'Crear Usuario'}
         </h2>
         
-        <form onSubmit={(e) => {
-          e.preventDefault();
-          const formData = new FormData(e.target);
-          const userData = {
-            name: formData.get('name'),
-            email: formData.get('email'),
-            type: formData.get('type'),
-            password: formData.get('password'),
-            active: true
-          };
-          onSubmit(userData);
-        }}>
+        <form onSubmit={handleSubmit}>
           <div className="space-y-4">
             <div>
               <label className="block text-sm font-medium mb-1">Nombre</label>
               <input
                 type="text"
-                name="name"
-                defaultValue={user?.name || ''}
+                name="nombre"
+                value={formData.nombre}
+                onChange={handleChange}
                 className="w-full p-2 border rounded-lg"
                 required
               />
@@ -36,8 +47,22 @@ const UserForm = ({ user, onSubmit, onClose }) => {
               <label className="block text-sm font-medium mb-1">Email</label>
               <input
                 type="email"
-                name="email"
-                defaultValue={user?.email || ''}
+                name="correo"
+                value={formData.correo}
+                onChange={handleChange}
+                className="w-full p-2 border rounded-lg"
+                required
+              />
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium mb-1">Teléfono</label>
+              <input
+                type="tel"
+                name="telefono"
+                value={formData.telefono}
+                onChange={handleChange}
+                pattern="[0-9]{10}"
                 className="w-full p-2 border rounded-lg"
                 required
               />
@@ -46,8 +71,9 @@ const UserForm = ({ user, onSubmit, onClose }) => {
             <div>
               <label className="block text-sm font-medium mb-1">Tipo de Usuario</label>
               <select
-                name="type"
-                defaultValue={user?.type || ''}
+                name="tipo_usuario"
+                value={formData.tipo_usuario}
+                onChange={handleChange}
                 className="w-full p-2 border rounded-lg"
                 required
               >
@@ -64,7 +90,9 @@ const UserForm = ({ user, onSubmit, onClose }) => {
                 <label className="block text-sm font-medium mb-1">Contraseña</label>
                 <input
                   type="password"
-                  name="password"
+                  name="contrasena"
+                  value={formData.contrasena}
+                  onChange={handleChange}
                   className="w-full p-2 border rounded-lg"
                   required
                 />
@@ -92,5 +120,3 @@ const UserForm = ({ user, onSubmit, onClose }) => {
     </div>
   );
 };
-
-export default UserForm;
