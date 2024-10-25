@@ -1,21 +1,16 @@
 import { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { Card, CardHeader, CardBody, CardFooter, Input, Button, Image } from "@nextui-org/react";
-import { IconoOjoAbierto } from './usuario/IconoOjoAbierto';
-import { IconoOjoCerrado } from './usuario/IconoOjoCerrado';
 import axios from 'axios';
 
 const Inicio = () => {
   const navigate = useNavigate();
-  const [isVisible, setIsVisible] = useState(false);
   const [formData, setFormData] = useState({
     correo: '',
     contrasena: ''
   });
   const [error, setError] = useState('');
   const [isLoading, setIsLoading] = useState(false);
-
-  const toggleVisibility = () => setIsVisible(!isVisible);
 
   const handleInputChange = (e) => {
     setFormData({
@@ -122,22 +117,9 @@ const Inicio = () => {
                 <Input
                   placeholder="Ingresa tu contraseña"
                   name="contrasena"
+                  type="password"
                   value={formData.contrasena}
                   onChange={handleInputChange}
-                  endContent={
-                    <button 
-                      className="focus:outline-none hover:opacity-70 transition-opacity" 
-                      type="button" 
-                      onClick={toggleVisibility}
-                    >
-                      {isVisible ? (
-                        <IconoOjoCerrado className="text-gray-500" />
-                      ) : (
-                        <IconoOjoAbierto className="text-gray-500" />
-                      )}
-                    </button>
-                  }
-                  type={isVisible ? "text" : "password"}
                   classNames={{
                     input: "text-gray-900 text-base placeholder:text-gray-500",
                     inputWrapper: [
