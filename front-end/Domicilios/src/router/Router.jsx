@@ -2,7 +2,8 @@ import { Suspense } from "react";
 import { Routes, Route } from "react-router-dom";
 
 // páginas
-import { Inicio, Home } from "../pages/index";
+import { Inicio } from "../pages/Inicio";
+import {  Home } from "../pages/auth/Home";
 
 export const AppRouter = () => {
   return (
