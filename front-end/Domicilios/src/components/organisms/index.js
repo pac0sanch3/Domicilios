@@ -1,0 +1,4 @@
+
+export {Artboard} from "./Paginacentrar";
+
+
