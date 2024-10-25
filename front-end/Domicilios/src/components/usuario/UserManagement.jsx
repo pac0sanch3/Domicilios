@@ -3,6 +3,10 @@ import { userService } from '../../service/api/userService';
 import { UserForm } from './UserForm';
 import { UserList } from './UserList';
 import { Alert } from './Alert';
+import { Button } from '@nextui-org/react';
+import RolesManagement from './RolesManagement';
+import SolicitudesManagement from './SolicitudesManagement';
+
 
 const UserManagement = () => {
   const [users, setUsers] = useState([]);
@@ -10,6 +14,7 @@ const UserManagement = () => {
   const [modalOpen, setModalOpen] = useState(false);
   const [userTypeFilter, setUserTypeFilter] = useState('');
   const [alert, setAlert] = useState({ show: false, message: '', type: '' });
+  const [currentView, setCurrentView] = useState('usuarios'); // Controlador de vistas
 
   useEffect(() => {
     loadUsers();
@@ -81,40 +86,77 @@ const UserManagement = () => {
       
       <Alert {...alert} />
 
-      <div className="mb-4">
-        <label className="block text-sm font-medium mb-2">Filtrar por tipo de usuario</label>
-        <select
-          className="w-full p-2 border rounded-lg"
-          value={userTypeFilter}
-          onChange={(e) => setUserTypeFilter(e.target.value)}
+      {/* Barra de navegación de apartados */}
+      <div className="flex space-x-4 mb-6">
+        <Button 
+          onClick={() => setCurrentView('usuarios')} 
+          color={currentView === 'usuarios' ? 'primary' : 'default'}
+          bordered={currentView !== 'usuarios'}
+          auto
         >
-          <option value="">Todos</option>
-          <option value="administrador">Administrador</option>
-          <option value="negocio">Negocio</option>
-          <option value="particular">Particular</option>
-          <option value="domiciliario">Domiciliario</option>
-        </select>
+          Usuarios
+        </Button>
+        <Button 
+          onClick={() => setCurrentView('roles')} 
+          color={currentView === 'roles' ? 'primary' : 'default'}
+          bordered={currentView !== 'roles'}
+          auto
+        >
+          Incidentes
+        </Button>
+        <Button 
+          onClick={() => setCurrentView('solicitudes')} 
+          color={currentView === 'solicitudes' ? 'primary' : 'default'}
+          bordered={currentView !== 'solicitudes'}
+          auto
+        >
+          Solicitudes
+        </Button>
       </div>
 
-      <UserList 
-        users={filteredUsers}
-        onEdit={user => {
-          setSelectedUser(user);
-          setModalOpen(true);
-        }}
-        onDelete={handleDeleteUser}
-        onToggleActive={handleToggleActive}
-      />
+      {/* Renderizar el apartado correspondiente */}
+      {currentView === 'usuarios' && (
+        <>
+          <div className="mb-4">
+            <label className="block text-sm font-medium mb-2">Filtrar por tipo de usuario</label>
+            <select
+              className="w-full p-2 border rounded-lg"
+              value={userTypeFilter}
+              onChange={(e) => setUserTypeFilter(e.target.value)}
+            >
+              <option value="">Todos</option>
+              <option value="administrador">Administrador</option>
+              <option value="negocio">Negocio</option>
+              <option value="particular">Particular</option>
+              <option value="domiciliario">Domiciliario</option>
+            </select>
+          </div>
 
-      <button 
-        className="mt-6 w-full bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700"
-        onClick={() => {
-          setSelectedUser(null);
-          setModalOpen(true);
-        }}
-      >
-        Crear Nuevo Usuario
-      </button>
+          <UserList 
+            users={filteredUsers}
+            onEdit={user => {
+              setSelectedUser(user);
+              setModalOpen(true);
+            }}
+            onDelete={handleDeleteUser}
+            onToggleActive={handleToggleActive}
+          />
+
+          <button 
+            className="mt-6 w-full bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700"
+            onClick={() => {
+              setSelectedUser(null);
+              setModalOpen(true);
+            }}
+          >
+            Crear Nuevo Usuario
+          </button>
+        </>
+      )}
+
+      {currentView === 'roles' && <RolesManagement />}
+      {currentView === 'solicitudes' && <SolicitudesManagement />}
+
 
       {modalOpen && (
         <UserForm
