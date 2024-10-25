@@ -1,17 +1,14 @@
-import { ProviderContext } from "./contexts/IndexContext.jsx";
-import { AppRouter } from "./index.js";
-import { useAxioshttpErrorStatus } from "./service/api/AxioshttpError.jsx";
+import { Routes, Route } from 'react-router-dom';
+import Inicio from './pages/Inicio';
+import Home from './pages/auth/Home';
 
-const App = () => {
-  useAxioshttpErrorStatus();
-
+function App() {
   return (
-    <>
-      <ProviderContext>
-        <AppRouter />
-      </ProviderContext>
-    </>
+    <Routes>
+      <Route path="/" element={<Inicio />} />
+      <Route path="/home" element={<Home />} />
+    </Routes>
   );
-};
+}
 
 export default App;

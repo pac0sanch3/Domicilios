@@ -1,4 +1,4 @@
-import { Alert } from "../../../index";
+import { Alert } from "../index";
 import { Textarea } from "@nextui-org/react";
 
 

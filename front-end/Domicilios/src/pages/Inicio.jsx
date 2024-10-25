@@ -1,103 +1,127 @@
-import { useLenguage, LayotuInicio, Toggles } from "./../components/atoms/buttons/Toggle";
-import { LazyLoadImage } from "react-lazy-load-image-component";
-import "react-lazy-load-image-component/src/effects/opacity.css";
-import "react-lazy-load-image-component/src/effects/blur.css";
+import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { Card, CardHeader, CardBody, CardFooter, Input, Button, Image } from "@nextui-org/react";
+import { IconoOjoAbierto } from './IconoOjoAbierto';
+import { IconoOjoCerrado } from './IconoOjoCerrado';
+import axios from 'axios';
 
-//componentes
-import { useState } from "react";
+ const Inicio = () => {
+  const navigate = useNavigate();
+  const [isVisible, setIsVisible] = useState(false);
+  const [formData, setFormData] = useState({
+    correo: '',
+    contrasena: ''
+  });
+  const [error, setError] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
 
-export const Inicio = () => {
-  const { onChangeTransalate } = useLenguage();
+  const toggleVisibility = () => setIsVisible(!isVisible);
 
-  const [isSelected, setIsSelected] = useState(false);
+  const handleInputChange = (e) => {
+    setFormData({
+      ...formData,
+      [e.target.name]: e.target.value
+    });
+    setError('');
+  };
 
-  const handleSelectIdioma = (idioma) => {
-    setIsSelected(idioma);
-    onChangeTransalate(isSelected ? "es" : "en");
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setIsLoading(true);
+    setError('');
+
+    try {
+      const response = await axios.post('http://localhost:3000/usuario/login', formData);
+      if (response.data.token) {
+        localStorage.setItem('token', response.data.token);
+        navigate('/home');
+      }
+    } catch (error) {
+      setError(error.response?.data?.mensaje || 'Error al iniciar sesión');
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
-    <>
-      <Toggles onClick={handleSelectIdioma} isSelected={isSelected} />
+    <div className="min-h-screen w-full flex items-center justify-center bg-gradient-to-br from-gray-900 to-gray-800">
+      <Card className="w-full max-w-md bg-white/10 backdrop-blur-md">
+        <CardHeader className="flex flex-col gap-2 items-center justify-center pt-8">
+          <Image
+            src="/logo.png"
+            alt="Logo"
+            className="w-24 h-24 rounded-full bg-white/20 p-2"
+          />
+          <h1 className="text-2xl font-bold text-white">Bienvenido</h1>
+        </CardHeader>
+        
+        <CardBody className="px-8 py-6">
+          <form onSubmit={handleSubmit} className="flex flex-col gap-4">
+            <Input
+              label="Correo Electrónico"
+              placeholder="Ingresa tu correo"
+              type="email"
+              name="correo"
+              value={formData.correo}
+              onChange={handleInputChange}
+              className="max-w-full"
+              classNames={{
+                label: "text-white/90",
+                input: "text-white",
+                inputWrapper: "bg-white/10",
+              }}
+            />
+            
+            <Input
+              label="Contraseña"
+              placeholder="Ingresa tu contraseña"
+              name="contrasena"
+              value={formData.contrasena}
+              onChange={handleInputChange}
+              endContent={
+                <button className="focus:outline-none" type="button" onClick={toggleVisibility}>
+                  {isVisible ? (
+                    <IconoOjoCerrado className="text-white/90" />
+                  ) : (
+                    <IconoOjoAbierto className="text-white/90" />
+                  )}
+                </button>
+              }
+              type={isVisible ? "text" : "password"}
+              className="max-w-full"
+              classNames={{
+                label: "text-white/90",
+                input: "text-white",
+                inputWrapper: "bg-white/10",
+              }}
+            />
 
-      <LayotuInicio>
-        <div className="relative overflow-hidden h-screen bg-gray-50">
-          <div className="pb-80 pt-16 sm:pb-40 sm:pt-24 lg:pb-48 lg:pt-40">
-            <div className=" mx-auto max-w-7xl  px-4 sm:static sm:px-6 lg:px-8">
-              <div className="sm:max-w-lg ">
-                <h1 className="text-4xl font-bold tracking-tight text-custom-green sm:text-6xl">
-                  {("description_welcome")}
-                </h1>
-                <p className="mt-4 text-xl text-custom-blue">{("welcome")}</p>
-              </div>
-              <div>
-                <div className="mt-10">
-                  {/*  <!-- Decorative image grid --> */}
-                  <div
-                    aria-hidden="true"
-                    className="pointer-events-none lg:absolute lg:inset-y-0 lg:mx-auto lg:w-full lg:max-w-7xl"
-                  >
-                    <div className="absolute transform sm:left-1/2 sm:top-0 sm:translate-x-8 lg:left-1/2 lg:top-1/2 lg:-translate-y-1/2 lg:translate-x-8">
-                      <div className="flex items-center space-x-6 lg:space-x-8 ">
-                        <div className="grid flex-shrink-0 grid-cols-1 gap-y-6 lg:gap-y-8 ">
-                          <div className="h-64 w-44 overflow-hidden  rounded-lg sm:opacity-0 lg:opacity-100 bg-black">
-                            <LazyLoadImage
-                              src="cafe.jpeg"
-                              className="h-full w-full object-cover z-20 object-center"
-                              effect="blur"
-                            />
-                          </div>
-                          <div className="h-64 w-44 overflow-hidden rounded-lg ">
-                            <LazyLoadImage
-                              src="escuela.jpg"
-                              className="h-full w-full object-cover object-center"
-                            />
-                          </div>
-                        </div>
-                        <div className="grid flex-shrink-0 grid-cols-1 gap-y-6 lg:gap-y-8">
-                          <div className="h-64 w-44 overflow-hidden rounded-lg ">
-                            <LazyLoadImage
-                              src="ambienteE.jpeg"
-                              className="h-full w-full object-cover object-center"
-                            />
-                          </div>
-                          <div className="h-64 w-44 overflow-hidden rounded-lg bg-black">
-                            <LazyLoadImage
-                              src="panorama.jpeg"
-                              className="h-full w-full object-cover object-center"
-                            />
-                          </div>
-                          <div className="h-64 w-44 overflow-hidden rounded-lg bg-black">
-                            <LazyLoadImage
-                              src="maquinas.jpeg"
-                              className="h-full w-full object-cover object-center"
-                            />
-                          </div>
-                        </div>
-                        <div className="grid flex-shrink-0 grid-cols-1 gap-y-6 lg:gap-y-8">
-                          <div className="h-64 w-44 overflow-hidden rounded-lg bg-black">
-                            <LazyLoadImage
-                              src="escuela2.jpeg"
-                              className="h-full w-full object-cover object-center"
-                            />
-                          </div>
-                          <div className="h-64 w-44 overflow-hidden rounded-lg">
-                            <LazyLoadImage
-                              src="maquina.jpeg"
-                              className="h-full w-full object-cover object-center"
-                              effect="blur"
-                            />
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </LayotuInicio>
-    </>
+            {error && (
+              <div className="text-red-500 text-sm text-center">{error}</div>
+            )}
+
+            <Button
+              type="submit"
+              color="primary"
+              className="w-full bg-white text-black hover:bg-gray-200 transition-colors"
+              isLoading={isLoading}
+            >
+              Iniciar Sesión
+            </Button>
+          </form>
+        </CardBody>
+
+        <CardFooter className="flex justify-center pb-8">
+          <p className="text-white/60 text-sm">
+            ¿No tienes una cuenta?{" "}
+            <a href="/registro" className="text-white hover:underline">
+              Regístrate aquí
+            </a>
+          </p>
+        </CardFooter>
+      </Card>
+    </div>
   );
 };
+
+export default Inicio;
