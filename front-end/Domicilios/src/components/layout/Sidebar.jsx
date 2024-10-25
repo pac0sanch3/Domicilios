@@ -43,34 +43,34 @@ const Sidebar = ({ selectedOption, setSelectedOption }) => {
           isSelected={selectedOption === 'delivery'}
           onClick={() => setSelectedOption('delivery')}
         />
-        <MenuButton
+        {/* <MenuButton
           icon={<ShoppingBag />}
           text="Solicitar Compra"
           isSelected={selectedOption === 'purchase'}
           onClick={() => setSelectedOption('purchase')}
-        />
-        <MenuButton
+        /> */}
+        {/* <MenuButton
           icon={<CreditCard />}
           text="Pagar Facturas"
           isSelected={selectedOption === 'bills'}
           onClick={() => setSelectedOption('bills')}
-        />
-        <MenuButton
+        /> */}
+        {/* <MenuButton
           icon={<AlertTriangle />}
           text="Novedad Urgente"
           isSelected={selectedOption === 'urgent'}
           onClick={() => setSelectedOption('urgent')}
-        />
+        /> */}
       </nav>
       
       {/* Sección de configuraciones de usuario */}
       <div className="absolute bottom-4 w-52 space-y-2">
-        <MenuButton
+        {/* <MenuButton
           icon={<Bell />}
           text={`Notificaciones (${notifications})`}
           isSelected={selectedOption === 'notifications'}
           onClick={() => setSelectedOption('notifications')}
-        />
+        /> */}
         <MenuButton
           icon={<User />} 
           text="Configuraciones de Usuario" 
