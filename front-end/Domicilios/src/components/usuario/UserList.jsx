@@ -1,6 +1,16 @@
 import React from 'react';
 
 export const UserList = ({ users, onEdit, onDelete, onToggleActive }) => {
+  const handleToggleActive = (userId, currentStatus) => {
+    const message = currentStatus === 'activo' 
+      ? '¿Estás seguro que quieres desactivar este usuario? No podrá iniciar sesión.'
+      : '¿Estás seguro que quieres activar este usuario?';
+      
+    if (window.confirm(message)) {
+      onToggleActive(userId, currentStatus);
+    }
+  };
+
   return (
     <div className="space-y-4">
       {users.map(user => (
@@ -9,10 +19,13 @@ export const UserList = ({ users, onEdit, onDelete, onToggleActive }) => {
             <span className="font-medium">{user.nombre}</span>
             <span className="text-sm text-gray-500">{user.correo}</span>
             <span className="text-sm text-gray-500 capitalize">
-              {user.tipo_usuario}
+              Rol: {user.tipo_usuario}
             </span>
             <span className="text-sm text-gray-500">
               Tel: {user.telefono}
+            </span>
+            <span className={`text-sm font-medium ${user.estado === 'activo' ? 'text-green-600' : 'text-red-600'}`}>
+              Estado: {user.estado}
             </span>
           </div>
           
@@ -25,14 +38,14 @@ export const UserList = ({ users, onEdit, onDelete, onToggleActive }) => {
             </button>
             
             <button
-              onClick={() => onToggleActive(user.id_usuario, user.estado)}
+              onClick={() => handleToggleActive(user.id_usuario, user.estado)}
               className={`px-3 py-1 rounded-lg ${
                 user.estado === 'activo'
-                  ? 'text-yellow-600 hover:bg-yellow-50'
+                  ? 'text-red-600 hover:bg-red-50'
                   : 'text-green-600 hover:bg-green-50'
               }`}
             >
-              {user.estado === 'activo' ? 'Inactivar' : 'Activar'}
+              {user.estado === 'activo' ? 'Desactivar' : 'Activar'}
             </button>
             
             <button

@@ -32,12 +32,38 @@ const Inicio = () => {
 
     try {
       const response = await axios.post('http://localhost:3000/usuario/login', formData);
+      
+      // Verificar el estado del usuario
+      if (response.data.usuario.estado === 'inactivo') {
+        setError('Tu cuenta está desactivada. Por favor, contacta al administrador.');
+        return;
+      }
+      
       if (response.data.token) {
+        // Guardar token
         localStorage.setItem('token', response.data.token);
+        
+        // Guardar datos del usuario
+        localStorage.setItem('userId', response.data.usuario.id.toString());
+        localStorage.setItem('userType', response.data.usuario.tipo_usuario);
+        localStorage.setItem('userName', response.data.usuario.nombre);
+        localStorage.setItem('userEmail', response.data.usuario.correo);
+        
+        // También guardamos todos los datos del usuario en un solo objeto
+        localStorage.setItem('userData', JSON.stringify(response.data.usuario));
+
+        console.log(localStorage.getItem('userData'));
+        
         navigate('/home');
       }
     } catch (error) {
-      setError(error.response?.data?.mensaje || 'Error al iniciar sesión');
+      if (error.response?.data?.mensaje) {
+        setError(error.response.data.mensaje);
+      } else if (error.response?.status === 401) {
+        setError('Credenciales inválidas');
+      } else {
+        setError('Error al iniciar sesión. Por favor, intenta nuevamente.');
+      }
     } finally {
       setIsLoading(false);
     }
