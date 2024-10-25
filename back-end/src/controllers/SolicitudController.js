@@ -4,7 +4,7 @@ export const registrarSolicitud = async (req, res) =>{
 
     try{
         const{fk_cliente, direccionRecogida, direccionEntrega, instruccionesAdcc } = req.body
-    
+
 
         let sqlDomiciliarios = ` 
             SELECT DISTINCT d.* 
@@ -21,28 +21,28 @@ export const registrarSolicitud = async (req, res) =>{
 
 
         //hacer validacion en caso de que no existan domiciliarios disponibles. 
-        /* Se debe mostrar mensaje en caso de que no se encuentran domiciliarios disponibles, intentar mas tarde */
-        
-        let pocicionAleatoria = Math.floor(Math.random() * domiciliariosDis.length)
 
-        const domiciliario = domiciliariosDis[pocicionAleatoria]
+        if (domiciliariosDis.length >0){
+            let pocicionAleatoria = Math.floor(Math.random() * domiciliariosDis.length)
 
+            const domiciliario = domiciliariosDis[pocicionAleatoria]
 
-        const idDomiciliarioSelec= domiciliario.id_domiciliario
-
-
-        /* Registramos la solicitud */
-        let sql = `insert into solicitudes (id_cliente, id_domiciliario, direccion_recogida, direccion_entrega, instruccionesAdc) 
-        values(1, ${idDomiciliarioSelec}, '${direccionRecogida}', '${direccionEntrega}',  '${instruccionesAdcc}')`
-        
-        const [response] = await conexion.query(sql)
-
-        /* Consultamos el domiciliario que se registro */
-
-
-        return res.status(200).json({response})
-
-
+            const idDomiciliarioSelec= domiciliario.id_domiciliario
+    
+            
+    
+            /* Registramos la solicitud */
+            let sql = `insert into solicitudes (id_cliente, id_domiciliario, direccion_recogida, direccion_entrega, instruccionesAdc) 
+            values(${fk_cliente}, ${idDomiciliarioSelec}, '${direccionRecogida}', '${direccionEntrega}',  '${instruccionesAdcc}')`
+            
+            const [response] = await conexion.query(sql)
+    
+    
+            return res.status(200).json({response})
+        }
+        else{
+            return res.status(404).json({"mensaje":"No se encuentran domiciliarios disponibles en este momento, intentar mas tarde"})
+        }
     }catch(error){
         return res.status(500).json({"mensaje":"Error en el servidor",error})
     }
