@@ -1,34 +1,32 @@
 import { useForm } from 'react-hook-form';
 import { MapPin } from 'lucide-react';
-import axios from 'axios'
-import { useNavigate } from 'react-router-dom'
+import axios from 'axios';
 
 const DeliveryForm = () => {
-  const { register, handleSubmit, formState: { errors } } = useForm();
-  const navigate = useNavigate();
+  const { register, handleSubmit, formState: { errors }, reset } = useForm();
 
   const onSubmit = async (data) => {
+    try {
 
+      console.log(localStorage.getItem('userId'))
 
-    /* traer informacion del usuario que se almacena en el localhost */
-    try{
+      data["fk_cliente"]=localStorage.getItem('userId')
+
+      await axios.post('http://localhost:3000/solicitudes/registrar', data);
       
-      await axios.post('http://localhost:3000/solicitudes/registrar', data)
-      
-      alert("Se registro correctamente")
-      navigate('/home')
+      alert("Se registró correctamente")
+      reset()
 
-    }catch(error){  
+    } catch (error) {  
       console.error(error)
     }
-    
-
   }
 
   return (
     <div className="bg-white/80 p-6 rounded-lg shadow-lg">
       <h2 className="text-2xl font-bold mb-6">Solicitar Domicilio</h2>
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+        
         <div className="space-y-2">
           <label className="block text-sm font-medium">Dirección de Recogida</label>
           <div className="flex items-center space-x-2">
@@ -72,7 +70,7 @@ const DeliveryForm = () => {
         </button>
       </form>
     </div>
-  )
+  );
 }
 
-export default DeliveryForm
+export default DeliveryForm;
