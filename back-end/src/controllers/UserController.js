@@ -325,6 +325,82 @@ export const login = async (req, res) => {
     }
 };
 
+/* graficas */
+export const obtenerTiempoPromedioEntrega = async (req, res) => {
+    try {
+        const [result] = await conexion.query(`
+            SELECT AVG(TIMESTAMPDIFF(MINUTE, fecha_creacion, fecha_actualizacion)) AS promedio_entrega
+            FROM solicitudes
+            WHERE estado = 'entregado'
+        `);
+        return res.status(200).json(result[0]);
+    } catch (error) {
+        console.error(error);
+        return res.status(500).json({
+            mensaje: "Error al obtener el tiempo promedio de entrega",
+            error: error.message
+        });
+    }
+};
+
+
+export const obtenerCantidadPedidos = async (req, res) => {
+    try {
+        const [result] = await conexion.query(`
+            SELECT COUNT(*) AS total_pedidos
+            FROM solicitudes
+        `);
+        return res.status(200).json(result[0]);
+    } catch (error) {
+        console.error(error);
+        return res.status(500).json({
+            mensaje: "Error al obtener la cantidad de pedidos",
+            error: error.message
+        });
+    }
+};
+
+export const obtenerEstadisticasIncidencias = async (req, res) => {
+    try {
+        const [result] = await conexion.query(`
+            SELECT tipo_incidencia, COUNT(*) AS total_incidencias, 
+                   AVG(TIMESTAMPDIFF(HOUR, fecha_reporte, fecha_actualizacion)) AS promedio_resolucion_horas
+            FROM reporte_incidencias
+            WHERE estado = 'resuelto'
+            GROUP BY tipo_incidencia
+        `);
+        return res.status(200).json(result);
+    } catch (error) {
+        console.error(error);
+        return res.status(500).json({
+            mensaje: "Error al obtener estadísticas de incidencias",
+            error: error.message
+        });
+    }
+};
+
+export const obtenerRendimientoDomiciliarios = async (req, res) => {
+    try {
+        const [result] = await conexion.query(`
+            SELECT d.id_domiciliario, u.nombre, COUNT(s.id_solicitud) AS total_entregas,
+                   AVG(TIMESTAMPDIFF(MINUTE, s.fecha_creacion, s.fecha_actualizacion)) AS promedio_entrega
+            FROM domiciliarios d
+            INNER JOIN usuarios u ON d.id_usuario = u.id_usuario
+            LEFT JOIN solicitudes s ON s.id_domiciliario = d.id_domiciliario
+            WHERE s.estado = 'entregado'
+            GROUP BY d.id_domiciliario, u.nombre
+        `);
+        return res.status(200).json(result);
+    } catch (error) {
+        console.error(error);
+        return res.status(500).json({
+            mensaje: "Error al obtener rendimiento de domiciliarios",
+            error: error.message
+        });
+    }
+};
+
+
 
 // Recuperar contraseña
 /* export const recuperarContrasena = async (req, res) => {
