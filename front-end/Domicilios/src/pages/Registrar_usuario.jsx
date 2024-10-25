@@ -1,15 +1,18 @@
 import { useState } from 'react';
-import { useNavigate, Link } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { Card, CardHeader, CardBody, CardFooter, Input, Button, Image } from "@nextui-org/react";
 import { IconoOjoAbierto } from './usuario/IconoOjoAbierto';
 import { IconoOjoCerrado } from './usuario/IconoOjoCerrado';
 import axios from 'axios';
 
-const Inicio = () => {
+const Registro = () => {
   const navigate = useNavigate();
   const [isVisible, setIsVisible] = useState(false);
   const [formData, setFormData] = useState({
+    nombre: '',
+    tipo_usuario: 'particular',
     correo: '',
+    telefono: '',
     contrasena: ''
   });
   const [error, setError] = useState('');
@@ -31,13 +34,12 @@ const Inicio = () => {
     setError('');
 
     try {
-      const response = await axios.post('http://localhost:3000/usuario/login', formData);
-      if (response.data.token) {
-        localStorage.setItem('token', response.data.token);
-        navigate('/home');
+      const response = await axios.post('http://localhost:3000/usuario/registrar', formData);
+      if (response.status === 201) {
+        navigate('/');
       }
     } catch (error) {
-      setError(error.response?.data?.mensaje || 'Error al iniciar sesión');
+      setError(error.response?.data?.mensaje || 'Error al registrar usuario');
     } finally {
       setIsLoading(false);
     }
@@ -54,12 +56,41 @@ const Inicio = () => {
               className="w-full h-full object-cover"
             />
           </div>
-          <h1 className="text-2xl font-bold text-white">Bienvenido</h1>
+          <h1 className="text-2xl font-bold text-white">Registro de Usuario</h1>
         </CardHeader>
         
         <CardBody className="px-6 py-4">
           <form onSubmit={handleSubmit} className="flex flex-col gap-4">
             <div className="space-y-4">
+              <div className="space-y-2">
+                <label className="block text-gray-300 text-base font-medium">
+                  Nombre Completo
+                </label>
+                <Input
+                  placeholder="Ingresa tu nombre"
+                  type="text"
+                  name="nombre"
+                  value={formData.nombre}
+                  onChange={handleInputChange}
+                  classNames={{
+                    input: "text-gray-900 text-base placeholder:text-gray-500",
+                    inputWrapper: [
+                      "bg-gray-100",
+                      "border-2",
+                      "border-gray-200",
+                      "rounded-lg",
+                      "hover:border-gray-300",
+                      "focus-within:border-blue-500",
+                      "transition-colors",
+                      "duration-200",
+                      "py-1",
+                      "px-3",
+                      "min-h-[2.5rem]"
+                    ].join(" "),
+                  }}
+                />
+              </div>
+
               <div className="space-y-2">
                 <label className="block text-gray-300 text-base font-medium">
                   Correo Electrónico
@@ -69,6 +100,35 @@ const Inicio = () => {
                   type="email"
                   name="correo"
                   value={formData.correo}
+                  onChange={handleInputChange}
+                  classNames={{
+                    input: "text-gray-900 text-base placeholder:text-gray-500",
+                    inputWrapper: [
+                      "bg-gray-100",
+                      "border-2",
+                      "border-gray-200",
+                      "rounded-lg",
+                      "hover:border-gray-300",
+                      "focus-within:border-blue-500",
+                      "transition-colors",
+                      "duration-200",
+                      "py-1",
+                      "px-3",
+                      "min-h-[2.5rem]"
+                    ].join(" "),
+                  }}
+                />
+              </div>
+
+              <div className="space-y-2">
+                <label className="block text-gray-300 text-base font-medium">
+                  Teléfono
+                </label>
+                <Input
+                  placeholder="Ingresa tu teléfono"
+                  type="tel"
+                  name="telefono"
+                  value={formData.telefono}
                   onChange={handleInputChange}
                   classNames={{
                     input: "text-gray-900 text-base placeholder:text-gray-500",
@@ -144,20 +204,20 @@ const Inicio = () => {
               className="w-full bg-gradient-to-r from-purple-600 to-blue-600 text-white font-medium text-base rounded-lg shadow-md hover:from-purple-700 hover:to-blue-700 transition-all duration-300 ease-in-out py-2 min-h-[2.5rem]"
               isLoading={isLoading}
             >
-              Iniciar Sesión
+              Registrarse
             </Button>
           </form>
         </CardBody>
 
         <CardFooter className="flex justify-center pb-6 pt-2">
           <p className="text-gray-400 text-sm">
-            ¿No tienes una cuenta?{" "}
-            <Link 
-              to="/registro" 
+            ¿Ya tienes una cuenta?{" "}
+            <a 
+              href="/" 
               className="text-blue-400 hover:text-blue-300 hover:underline transition-colors duration-200 font-medium"
             >
-              Regístrate aquí
-            </Link>
+              Inicia sesión aquí
+            </a>
           </p>
         </CardFooter>
       </Card>
@@ -165,4 +225,4 @@ const Inicio = () => {
   );
 };
 
-export default Inicio;
+export default Registro;
