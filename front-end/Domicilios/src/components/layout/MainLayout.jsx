@@ -4,6 +4,7 @@ import DeliveryForm from '../forms/DeliveryForm';
 import PurchaseForm from '../forms/PurchaseForm';
 import UrgentForm from '../forms/UrgentForm';
 import WelcomeScreen from '../screens/WelcomeScreen';
+import UserManagement from '../usuario/UserManagement'
 
 const MainLayout = () => {
   const [selectedOption, setSelectedOption] = useState('home');
@@ -20,6 +21,7 @@ const MainLayout = () => {
         {selectedOption === 'purchase' && <PurchaseForm />}
         {selectedOption === 'urgent' && <UrgentForm />}
         {selectedOption === 'home' && <WelcomeScreen />}
+        {selectedOption === 'user-settings' && <UserManagement />}
       </main>
     </div>
   );
