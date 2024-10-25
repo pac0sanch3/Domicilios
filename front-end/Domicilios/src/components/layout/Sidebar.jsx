@@ -5,7 +5,7 @@ import {
   CreditCard, 
   AlertTriangle, 
   Bell, 
-  Settings,
+  User, 
   Truck 
 } from 'lucide-react';
 import MenuButton from './MenuButton';
@@ -18,7 +18,7 @@ const Sidebar = ({ selectedOption, setSelectedOption }) => {
     <aside className="w-64 bg-black/90 text-white h-screen fixed left-0 p-4">
       {/* Contenedor del logo */}
       <div className="mb-8 flex justify-center">
-        <div className="h-29 flex items-center justify-center"> {/* Ajusta la altura aquí */}
+        <div className="h-24 flex items-center justify-center"> {/* Ajusta la altura aquí */}
           <Image
             src="/logotrabajo.jpeg"
             alt="Logo"
@@ -61,7 +61,7 @@ const Sidebar = ({ selectedOption, setSelectedOption }) => {
         />
       </nav>
       
-      {/* Sección de configuraciones y notificaciones */}
+      {/* Sección de configuraciones de usuario */}
       <div className="absolute bottom-4 w-52 space-y-2">
         <MenuButton
           icon={<Bell />}
@@ -70,10 +70,10 @@ const Sidebar = ({ selectedOption, setSelectedOption }) => {
           onClick={() => setSelectedOption('notifications')}
         />
         <MenuButton
-          icon={<Settings />}
-          text="Configuración"
-          isSelected={selectedOption === 'settings'}
-          onClick={() => setSelectedOption('settings')}
+          icon={<User />} 
+          text="Configuraciones de Usuario" 
+          isSelected={selectedOption === 'user-settings'}
+          onClick={() => setSelectedOption('user-settings')}
         />
       </div>
     </aside>
