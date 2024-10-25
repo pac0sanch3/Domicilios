@@ -1,7 +1,8 @@
-import { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { userService } from '../../service/api/userService';
-import UserForm from './UserForm';
-import UserList from './UserList';
+import { UserForm } from './UserForm';
+import { UserList } from './UserList';
+import { Alert } from './Alert';
 
 const UserManagement = () => {
   const [users, setUsers] = useState([]);
@@ -26,7 +27,7 @@ const UserManagement = () => {
   const handleCreateOrUpdateUser = async (userData) => {
     try {
       if (selectedUser) {
-        await userService.updateUser(selectedUser.id, userData);
+        await userService.updateUser(selectedUser.id_usuario, userData);
         showAlert('Usuario actualizado exitosamente', 'success');
       } else {
         await userService.createUser(userData);
@@ -36,7 +37,7 @@ const UserManagement = () => {
       setModalOpen(false);
       setSelectedUser(null);
     } catch (error) {
-      showAlert('Error al procesar la operación', 'error');
+      showAlert(error.response?.data?.mensaje || 'Error al procesar la operación', 'error');
     }
   };
 
@@ -54,8 +55,10 @@ const UserManagement = () => {
 
   const handleToggleActive = async (userId, currentStatus) => {
     try {
-      await userService.updateUser(userId, { active: !currentStatus });
-      showAlert(`Usuario ${currentStatus ? 'desactivado' : 'activado'} exitosamente`, 'success');
+      await userService.updateUser(userId, { 
+        estado: currentStatus === 'activo' ? 'inactivo' : 'activo' 
+      });
+      showAlert(`Usuario ${currentStatus === 'activo' ? 'desactivado' : 'activado'} exitosamente`, 'success');
       loadUsers();
     } catch (error) {
       showAlert('Error al cambiar estado del usuario', 'error');
@@ -69,25 +72,14 @@ const UserManagement = () => {
 
   const filteredUsers = users.filter(user => {
     if (!userTypeFilter) return true;
-    return user.type === userTypeFilter;
+    return user.tipo_usuario === userTypeFilter;
   });
 
   return (
     <div className="bg-white/80 p-6 rounded-lg shadow-lg">
       <h2 className="text-2xl font-bold mb-6">Gestión de Usuarios</h2>
       
-      {alert.show && (
-        <div 
-          className={`mb-4 px-4 py-3 rounded-lg transition-all duration-300 ${
-            alert.type === 'error' 
-              ? 'bg-red-100 text-red-800 border border-red-200' 
-              : 'bg-green-100 text-green-800 border border-green-200'
-          }`}
-          role="alert"
-        >
-          {alert.message}
-        </div>
-      )}
+      <Alert {...alert} />
 
       <div className="mb-4">
         <label className="block text-sm font-medium mb-2">Filtrar por tipo de usuario</label>

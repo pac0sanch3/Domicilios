@@ -5,7 +5,7 @@ import {
   obtenerUsuarioPorId,
   actualizarUsuario,
   eliminarUsuario,
-
+  listarUsuarios
 } from "../controllers/UserController.js";
 
 // validar token que llega por la cabecera de la solicitud
@@ -17,6 +17,7 @@ const RutaUsuario = Router();
 RutaUsuario.post("/registrar", registrarUsuario);
 RutaUsuario.post('/login', login);
 RutaUsuario.get("/user/:id", obtenerUsuarioPorId);
+RutaUsuario.get("/user/", listarUsuarios);
 RutaUsuario.put("/actualizar/:id", actualizarUsuario);
 RutaUsuario.delete("/eliminar/:id", verificar, isAdmin, eliminarUsuario);
 

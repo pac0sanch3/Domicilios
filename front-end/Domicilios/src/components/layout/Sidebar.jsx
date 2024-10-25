@@ -10,25 +10,27 @@ import {
 } from 'lucide-react';
 import MenuButton from './MenuButton';
 import { Image } from "@nextui-org/react";
+import { useNavigate } from 'react-router-dom';
 
 const Sidebar = ({ selectedOption, setSelectedOption }) => {
   const [notifications] = React.useState(3);
+  const navigate = useNavigate();
 
   return (
     <aside className="w-64 bg-black/90 text-white h-screen fixed left-0 p-4">
-      {/* Contenedor del logo */}
       <div className="mb-8 flex justify-center">
-        <div className="h-24 flex items-center justify-center"> {/* Ajusta la altura aquí */}
+        <div className="h-24 flex items-center justify-center">
           <Image
             src="/logotrabajo.jpeg"
             alt="Logo"
-            className="w-full h-full object-cover"
+            className="w-full h-full object-cover cursor-pointer"
+            onClick={() => navigate('/')} // Redirige a la ruta de inicio
           />
         </div>
       </div>
       
       {/* Menú de navegación */}
-      <nav className="space-y-2 mb-16"> {/* Agrega un margen inferior aquí para espaciar el menú */}
+      <nav className="space-y-2 mb-16">
         <MenuButton
           icon={<Home />}
           text="Inicio"
