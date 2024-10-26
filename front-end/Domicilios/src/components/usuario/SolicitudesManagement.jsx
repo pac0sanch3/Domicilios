@@ -32,7 +32,7 @@ const SolicitudesManagement = () => {
         await SolicitudesService.updateRole(selectedRole.id_solicitud, roleData);
         showAlert('Rol actualizado exitosamente', 'success');
       } else {
-        await SolicitudesService.createRole(roleData);
+        await SolicitudesService.createIncidencias(roleData);
         showAlert('Rol creado exitosamente', 'success');
       }
       loadRoles();
@@ -95,11 +95,12 @@ const SolicitudesManagement = () => {
           setSelectedRole(null);
           setModalOpen(true);
         }} 
-        color="primary" 
-        auto
+        className="w-full bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700"
+
       >
         Crear Nueva Solicitud
       </Button>
+      
 
       <SolicitudesList 
         roles={filteredRoles} // Usar roles filtrados

@@ -7,21 +7,20 @@ export const IncidenciasService = {
   getIncidencias: () => {
     return axios.get(`${API_URL}/listar`);
 
-    
   },
 
   // Crear un nuevo usuario
-  createUser: (userData) => {
-    return axios.post(`${API_URL}/registrar`, userData);
+  createIncidencias: (IncidenciasData) => {
+    return axios.post(`${API_URL}/registrar`, IncidenciasData);
   },
 
   // Actualizar un usuario existente
-  updateUser: (id, userData) => {
-    return axios.put(`${API_URL}/actualizar/${id}`, userData);
+  updateIncidencias: (id, IncidenciasData) => {
+    return axios.put(`${API_URL}/actualizar/${id}`, IncidenciasData);
   },
 
   // Eliminar un usuario
-  deleteUser: (id) => {
+  deleteIncidencias: (id) => {
     return axios.delete(`${API_URL}/eliminar/${id}`);
   }
 

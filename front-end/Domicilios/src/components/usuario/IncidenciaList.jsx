@@ -5,7 +5,7 @@ export const IncidenciaList = ({ incidencias , onEdit, onDelete, onToggleActive 
   return (
     <div className="space-y-4">
       {listaIncidencias.map(incidencia => (
-        <div key={incidencia.id_reporte} className="flex justify-between items-center p-4 border rounded-lg hover:bg-gray-50">
+        <div key={incidencia.id_reporte} className="flex justify-between items-center p-4 border rounded-lg bg-white">
           <div className="flex flex-col">
             <span className="font-medium">{incidencia.tipo_incidencia}</span>
             <span className="text-sm text-gray-500">Descripción: {incidencia.descripcion}</span>
@@ -21,17 +21,6 @@ export const IncidenciaList = ({ incidencias , onEdit, onDelete, onToggleActive 
               className="px-3 py-1 text-blue-600 hover:bg-blue-50 rounded-lg"
             >
               Editar
-            </button>
-            
-            <button
-              onClick={() => onToggleActive(incidencia.id_reporte, incidencia.estado)}
-              className={`px-3 py-1 rounded-lg ${
-                incidencia.estado === 'activo'
-                  ? 'text-yellow-600 hover:bg-yellow-50'
-                  : 'text-green-600 hover:bg-green-50'
-              }`}
-            >
-              {incidencia.estado === 'activo' ? 'Inactivar' : 'Activar'}
             </button>
             
             <button
