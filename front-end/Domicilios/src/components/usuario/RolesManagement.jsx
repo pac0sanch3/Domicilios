@@ -25,13 +25,13 @@ const RolesManagement = () => {
     }
   };
 
-  const handleCreateOrUpdateIncidencia = async (incidenciaData) => {
+  const handleCreateOrUpdateIncidencia = async (IncidenciasData) => {
     try {
       if (selectedIncidencia) {
-        await IncidenciasService.updateIncidencia(selectedIncidencia.id_reporte, incidenciaData);
+        await IncidenciasService.updateIncidencias(selectedIncidencia.id_reporte, IncidenciasData);
         alert("Incidencia actualizada exitosamente");
       } else {
-        await IncidenciasService.createIncidencia(incidenciaData);
+        await IncidenciasService.createIncidencias(IncidenciasData);
         alert("Incidencia registrada exitosamente");
       }
       loadIncidencias();
@@ -45,7 +45,7 @@ const RolesManagement = () => {
   const handleDeleteIncidencia = async (id_reporte) => {
     if (window.confirm("¿Está seguro de eliminar esta incidencia?")) {
       try {
-        await IncidenciasService.deleteIncidencia(id_reporte);
+        await IncidenciasService.deleteIncidencias(id_reporte);
         alert("Incidencia eliminada exitosamente");
         loadIncidencias();
       } catch (error) {
@@ -70,8 +70,7 @@ const RolesManagement = () => {
 
       {/* Botón para crear nueva incidencia */}
       <Button
-        color="primary"
-        auto
+        className="mt-6 w-full bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700"
         onClick={() => {
           setSelectedIncidencia(null);
           setModalOpen(true);
