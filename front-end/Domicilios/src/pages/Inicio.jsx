@@ -1,21 +1,16 @@
 import { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { Card, CardHeader, CardBody, CardFooter, Input, Button, Image } from "@nextui-org/react";
-import { IconoOjoAbierto } from './usuario/IconoOjoAbierto';
-import { IconoOjoCerrado } from './usuario/IconoOjoCerrado';
 import axios from 'axios';
 
 const Inicio = () => {
   const navigate = useNavigate();
-  const [isVisible, setIsVisible] = useState(false);
   const [formData, setFormData] = useState({
     correo: '',
     contrasena: ''
   });
   const [error, setError] = useState('');
   const [isLoading, setIsLoading] = useState(false);
-
-  const toggleVisibility = () => setIsVisible(!isVisible);
 
   const handleInputChange = (e) => {
     setFormData({
@@ -32,12 +27,38 @@ const Inicio = () => {
 
     try {
       const response = await axios.post('http://localhost:3000/usuario/login', formData);
+      
+      // Verificar el estado del usuario
+      if (response.data.usuario.estado === 'inactivo') {
+        setError('Tu cuenta está desactivada. Por favor, contacta al administrador.');
+        return;
+      }
+      
       if (response.data.token) {
+        // Guardar token
         localStorage.setItem('token', response.data.token);
+        
+        // Guardar datos del usuario
+        localStorage.setItem('userId', response.data.usuario.id.toString());
+        localStorage.setItem('userType', response.data.usuario.tipo_usuario);
+        localStorage.setItem('userName', response.data.usuario.nombre);
+        localStorage.setItem('userEmail', response.data.usuario.correo);
+        
+        // También guardamos todos los datos del usuario en un solo objeto
+        localStorage.setItem('userData', JSON.stringify(response.data.usuario));
+
+        console.log(localStorage.getItem('userData'));
+        
         navigate('/home');
       }
     } catch (error) {
-      setError(error.response?.data?.mensaje || 'Error al iniciar sesión');
+      if (error.response?.data?.mensaje) {
+        setError(error.response.data.mensaje);
+      } else if (error.response?.status === 401) {
+        setError('Credenciales inválidas');
+      } else {
+        setError('Error al iniciar sesión. Por favor, intenta nuevamente.');
+      }
     } finally {
       setIsLoading(false);
     }
@@ -96,22 +117,9 @@ const Inicio = () => {
                 <Input
                   placeholder="Ingresa tu contraseña"
                   name="contrasena"
+                  type="password"
                   value={formData.contrasena}
                   onChange={handleInputChange}
-                  endContent={
-                    <button 
-                      className="focus:outline-none hover:opacity-70 transition-opacity" 
-                      type="button" 
-                      onClick={toggleVisibility}
-                    >
-                      {isVisible ? (
-                        <IconoOjoCerrado className="text-gray-500" />
-                      ) : (
-                        <IconoOjoAbierto className="text-gray-500" />
-                      )}
-                    </button>
-                  }
-                  type={isVisible ? "text" : "password"}
                   classNames={{
                     input: "text-gray-900 text-base placeholder:text-gray-500",
                     inputWrapper: [

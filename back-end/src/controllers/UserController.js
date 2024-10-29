@@ -366,9 +366,17 @@ export const obtenerEstadisticasIncidencias = async (req, res) => {
             SELECT tipo_incidencia, COUNT(*) AS total_incidencias, 
                    AVG(TIMESTAMPDIFF(HOUR, fecha_reporte, fecha_actualizacion)) AS promedio_resolucion_horas
             FROM reporte_incidencias
-            WHERE estado = 'resuelto'
             GROUP BY tipo_incidencia
         `);
+        
+        console.log(result); 
+        
+        if (result.length === 0) {
+            return res.status(404).json({
+                mensaje: "No se encontraron estadísticas de incidencias",
+            });
+        }
+
         return res.status(200).json(result);
     } catch (error) {
         console.error(error);
@@ -378,6 +386,7 @@ export const obtenerEstadisticasIncidencias = async (req, res) => {
         });
     }
 };
+
 
 export const obtenerRendimientoDomiciliarios = async (req, res) => {
     try {

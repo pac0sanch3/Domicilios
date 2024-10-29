@@ -14,9 +14,9 @@ export const UserList = ({ users, onEdit, onDelete, onToggleActive }) => {
   return (
     <div className="space-y-4">
       {users.map(user => (
-        <div key={user.id_usuario} className="flex justify-between items-center p-4 border rounded-lg hover:bg-gray-50">
+        <div key={user.id_usuario} className="flex justify-between items-center p-4 border-2 border-blue-200 rounded-lg hover:bg-blue-50">
           <div className="flex flex-col">
-            <span className="font-medium">{user.nombre}</span>
+            <span className="font-medium text-gray-800">{user.nombre}</span>
             <span className="text-sm text-gray-500">{user.correo}</span>
             <span className="text-sm text-gray-500 capitalize">
               Rol: {user.tipo_usuario}
@@ -24,7 +24,7 @@ export const UserList = ({ users, onEdit, onDelete, onToggleActive }) => {
             <span className="text-sm text-gray-500">
               Tel: {user.telefono}
             </span>
-            <span className={`text-sm font-medium ${user.estado === 'activo' ? 'text-green-600' : 'text-red-600'}`}>
+            <span className={`text-sm font-medium ${user.estado === 'activo' ? 'text-blue-600' : 'text-red-600'}`}>
               Estado: {user.estado}
             </span>
           </div>
@@ -32,7 +32,7 @@ export const UserList = ({ users, onEdit, onDelete, onToggleActive }) => {
           <div className="flex items-center space-x-2">
             <button
               onClick={() => onEdit(user)}
-              className="px-3 py-1 text-blue-600 hover:bg-blue-50 rounded-lg"
+              className="px-3 py-1 text-blue-600 hover:bg-blue-100 rounded-lg"
             >
               Editar
             </button>
@@ -41,8 +41,8 @@ export const UserList = ({ users, onEdit, onDelete, onToggleActive }) => {
               onClick={() => handleToggleActive(user.id_usuario, user.estado)}
               className={`px-3 py-1 rounded-lg ${
                 user.estado === 'activo'
-                  ? 'text-red-600 hover:bg-red-50'
-                  : 'text-green-600 hover:bg-green-50'
+                  ? 'text-red-600 hover:bg-red-100'
+                  : 'text-green-600 hover:bg-green-100'
               }`}
             >
               {user.estado === 'activo' ? 'Desactivar' : 'Activar'}
@@ -50,7 +50,7 @@ export const UserList = ({ users, onEdit, onDelete, onToggleActive }) => {
             
             <button
               onClick={() => onDelete(user.id_usuario)}
-              className="px-3 py-1 text-red-600 hover:bg-red-50 rounded-lg"
+              className="px-3 py-1 text-red-600 hover:bg-red-100 rounded-lg"
             >
               Eliminar
             </button>
@@ -64,5 +64,6 @@ export const UserList = ({ users, onEdit, onDelete, onToggleActive }) => {
         </div>
       )}
     </div>
+
   );
 };

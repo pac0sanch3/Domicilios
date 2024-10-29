@@ -6,6 +6,7 @@ import RutaInsidencias from "./src/routes/InsidenciasController.js";
 import RutaDomiciliario from "./src/routes/domiciliariosRouter.js";
 import RutaNovedad from "./src/routes/novedadesRouter.js";
 import RutaSolicitud from "./src/routes/SolicitudRouter.js"
+import RutaActividad from './src/routes/actividadesRoutes.js'
 
 const servidor = Express()
 const port = 3000
@@ -20,6 +21,7 @@ servidor.use("/insidencias",RutaInsidencias);
 servidor.use("/novedad", RutaNovedad);
 servidor.use("/domiciliario", RutaDomiciliario);
 servidor.use("/solicitudes", RutaSolicitud);
+servidor.use("/actividades", RutaActividad);
 
 servidor.get("/", (req, res) => {
     res.status(200).json({ mensaje: "Bienvenidos a RunWay" })
