@@ -5,6 +5,8 @@ import PanelDeControl from "./pages/PaneldeControl";
 import Registro from "./pages/Registrar_usuario";
 import ProtectedRoute from "./components/ProtectedRoute"; // Importa el componente de protección de rutas
 
+import UserProfile from './components/usuario/usuario_administrar';
+
 function App() {
   return (
     <Routes>
@@ -33,6 +35,8 @@ function App() {
 
       {/* Ruta de registro pública */}
       <Route path="/registro" element={<Registro />} />
+
+      <Route path="/profile" element={<UserProfile />} />
     </Routes>
   );
 }
