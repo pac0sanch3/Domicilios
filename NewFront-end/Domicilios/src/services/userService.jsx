@@ -26,5 +26,15 @@ export const userService = {
   // Eliminar un usuario
   deleteUser: (id) => {
     return axios.delete(`${API_URL}/eliminar/${id}`);
+  },
+
+  // Recuperar contraseña
+  recoverPassword: (email) => {
+    return axios.post(`${API_URL}/recuperar-password`, { correo: email });
+  },
+
+  // Cambiar contraseña
+  cambiarContrasena: (id_usuario, passwordData) => {
+    return axios.post(`${API_URL}/cambiar-contrasena`, { id_usuario, ...passwordData });
   }
 };

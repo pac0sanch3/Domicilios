@@ -6,6 +6,7 @@ import Registro from "./pages/Registrar_usuario";
 import ProtectedRoute from "./components/ProtectedRoute"; // Importa el componente de protección de rutas
 
 import UserProfile from './components/usuario/usuario_administrar';
+import RecuperarPassword from './components/usuario/recuperar_contra';
 
 function App() {
   return (
@@ -37,6 +38,7 @@ function App() {
       <Route path="/registro" element={<Registro />} />
 
       <Route path="/profile" element={<UserProfile />} />
+      <Route path="/recuperar-password" element={<RecuperarPassword />} />
     </Routes>
   );
 }
