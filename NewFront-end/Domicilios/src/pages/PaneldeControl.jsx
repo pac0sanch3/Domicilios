@@ -1,13 +1,11 @@
 import Layout from "../components/template/Layout";
+import UserManagement from '../components/usuario/UserManagement';
+
 const PanelDeControl = () => {
-
-
   return (
-        <>
-        <Layout/>
-        <h1>Hola</h1>
-        </>
-
+    <Layout>
+      <UserManagement/>
+    </Layout>
   );
 };
 
