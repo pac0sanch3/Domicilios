@@ -1,14 +1,38 @@
-import { Routes, Route } from 'react-router-dom';
-import Inicio from './pages/Inicio';
-import  Registro from "./pages/Registrar_usuario";
-import './index.css';
-
+import { Routes, Route } from "react-router-dom";
+import Inicio from "./pages/Inicio"; // Componente de inicio de sesión
+import Home from "./pages/Home"; // Componente de la página de inicio
+import PanelDeControl from "./pages/PaneldeControl";
+import Registro from "./pages/Registrar_usuario";
+import ProtectedRoute from "./components/ProtectedRoute"; // Importa el componente de protección de rutas
 
 function App() {
   return (
     <Routes>
-      <Route path="/" element={<Inicio/>} />
-      <Route path="/registro" element={<Registro/>} />
+      {/* Ruta pública: Inicio de sesión */}
+      <Route path="/" element={<Inicio />} />
+
+      {/* Rutas protegidas */}
+      <Route
+        path="/home"
+        element={
+          <ProtectedRoute>
+            <Home />
+          </ProtectedRoute>
+        }
+      />
+
+      {/* Otras rutas protegidas */}
+      <Route
+        path="/Paneldecontrol"
+        element={
+          <ProtectedRoute>
+            <PanelDeControl />
+          </ProtectedRoute>
+        }
+      />
+
+      {/* Ruta de registro pública */}
+      <Route path="/registro" element={<Registro />} />
     </Routes>
   );
 }
