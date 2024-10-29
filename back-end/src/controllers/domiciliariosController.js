@@ -76,3 +76,28 @@ export const eliminarDomiciliario = async (req, res) => {
       res.status(500).json({ error: 'Error al eliminar el domiciliario', details: err });
     }
   };
+
+  export const actualizarDisponibilidad = async (req, res) => {
+    try {
+        const { id_domiciliario } = req.params;
+        const { disponibilidad } = req.body;
+
+        const sql = `UPDATE domiciliarios SET 
+                        disponibilidad = ?, 
+                        fecha_actualizacion = CURRENT_TIMESTAMP
+                     WHERE id_domiciliario = ?`;
+
+        const [results] = await conexion.query(sql, [
+            disponibilidad, 
+            id_domiciliario
+        ]);
+
+        if (results.affectedRows === 0) {
+            return res.status(404).json({ message: 'Domiciliario no encontrado' });
+        }
+
+        res.status(200).json({ message: 'Disponibilidad del domiciliario actualizada exitosamente' });
+    } catch (err) {
+        res.status(500).json({ error: 'Error al actualizar la disponibilidad del domiciliario', details: err });
+    }
+};
