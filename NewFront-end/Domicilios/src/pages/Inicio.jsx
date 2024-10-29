@@ -77,7 +77,7 @@ const Inicio = () => {
         </div>
         <h1 className="text-2xl font-bold text-gray-800">Bienvenido</h1>
       </CardHeader>
-
+      
       <CardBody className="px-6 py-4">
         <form onSubmit={handleSubmit} className="flex flex-col gap-4">
           <div className="space-y-4">
@@ -109,7 +109,7 @@ const Inicio = () => {
                 }}
               />
             </div>
-
+              
             <div className="space-y-2">
               <label className="block text-gray-600 text-base font-medium">
                 Contraseña
@@ -138,14 +138,23 @@ const Inicio = () => {
                 }}
               />
             </div>
+            {/* Mover el enlace de "¿Olvidaste tu contraseña?" aquí */}
+            <div className="text-center mt-2">
+              <Link 
+                to="/recuperar-password" 
+                className="text-sm text-blue-500 hover:text-blue-400 hover:underline transition-colors duration-200"
+              >
+                ¿Olvidaste tu contraseña?
+              </Link>
+            </div>
           </div>
-
+              
           {error && (
             <div className="text-red-500 text-sm text-center bg-red-100/10 rounded-lg p-2 animate-pulse">
               {error}
             </div>
           )}
-
+    
           <Button
             type="submit"
             color="primary"
@@ -157,18 +166,20 @@ const Inicio = () => {
         </form>
       </CardBody>
 
-      <CardFooter className="flex justify-center pb-6 pt-2">
-        <p className="text-gray-500 text-sm">
-          ¿No tienes una cuenta?{" "}
-          <Link 
-            to="/registro" 
-            className="text-blue-500 hover:text-blue-400 hover:underline transition-colors duration-200 font-medium"
-          >
-            Regístrate aquí
-          </Link>
-        </p>
-      </CardFooter>
-    </Card>
+  <CardFooter className="flex justify-center pb-6 pt-2">
+    <p className="text-gray-500 text-sm">
+      ¿No tienes una cuenta?{" "}
+      <Link 
+        to="/registro" 
+        className="text-blue-500 hover:text-blue-400 hover:underline transition-colors duration-200 font-medium"
+      >
+        Regístrate aquí
+      </Link>
+    </p>
+  </CardFooter>
+</Card>
+
+    
   </div>
   );
 };
