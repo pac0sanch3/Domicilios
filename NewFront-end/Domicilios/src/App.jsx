@@ -10,6 +10,8 @@ import ProtectedAdminRoute from "./components/proteccion/ProtectedAdminRoute";
 import UserProfile from './components/usuario/usuario_administrar';
 import RecuperarPassword from './components/usuario/recuperar_contra';
 
+import RegistroNegocio from './pages/Registrar_negocio';
+
 function App() {
   return (
     <Routes>
@@ -43,6 +45,7 @@ function App() {
 
       <Route path="/profile" element={<UserProfile />} />
       <Route path="/recuperar-password" element={<RecuperarPassword />} />
+      <Route path="/negocio" element={<RegistroNegocio />} />
     </Routes>
   );
 }

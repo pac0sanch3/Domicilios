@@ -329,11 +329,11 @@ export const login = async (req, res) => {
 export const obtenerTiempoPromedioEntrega = async (req, res) => {
     try {
         const [result] = await conexion.query(`
-            SELECT AVG(TIMESTAMPDIFF(MINUTE, fecha_creacion, fecha_actualizacion)) AS promedio_entrega
+            SELECT IFNULL(AVG(TIMESTAMPDIFF(MINUTE, fecha_creacion, fecha_actualizacion)), 0) AS promedio_entrega
             FROM solicitudes
-            WHERE estado = 'entregado'
+            WHERE estado = 'completado'
         `);
-        return res.status(200).json(result[0]);
+        return res.status(200).json({ promedio_entrega: result[0].promedio_entrega });
     } catch (error) {
         console.error(error);
         return res.status(500).json({
@@ -359,6 +359,7 @@ export const obtenerCantidadPedidos = async (req, res) => {
         });
     }
 };
+
 
 export const obtenerEstadisticasIncidencias = async (req, res) => {
     try {
@@ -391,12 +392,13 @@ export const obtenerEstadisticasIncidencias = async (req, res) => {
 export const obtenerRendimientoDomiciliarios = async (req, res) => {
     try {
         const [result] = await conexion.query(`
-            SELECT d.id_domiciliario, u.nombre, COUNT(s.id_solicitud) AS total_entregas,
-                   AVG(TIMESTAMPDIFF(MINUTE, s.fecha_creacion, s.fecha_actualizacion)) AS promedio_entrega
+            SELECT d.id_domiciliario, u.nombre, 
+                   IFNULL(COUNT(s.id_solicitud), 0) AS total_entregas,
+                   IFNULL(AVG(TIMESTAMPDIFF(MINUTE, s.fecha_creacion, s.fecha_actualizacion)), 0) AS promedio_entrega
             FROM domiciliarios d
             INNER JOIN usuarios u ON d.id_usuario = u.id_usuario
             LEFT JOIN solicitudes s ON s.id_domiciliario = d.id_domiciliario
-            WHERE s.estado = 'entregado'
+            WHERE s.estado = 'completado'
             GROUP BY d.id_domiciliario, u.nombre
         `);
         return res.status(200).json(result);

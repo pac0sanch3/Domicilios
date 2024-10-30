@@ -1,25 +1,40 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Card, CardHeader, CardBody, CardFooter, Input, Button, Image } from "@nextui-org/react";
 import axios from 'axios';
+import { userService } from '../services/userService'; 
 
-const Registro = () => {
+const RegistroNegocio = () => {
   const navigate = useNavigate();
+  const [users, setUsers] = useState([]);
   const [formData, setFormData] = useState({
-    nombre: '',
-    tipo_usuario: '',
-    correo: '',
-    telefono: '',
-    contrasena: ''
+    id_usuario: '', 
+    nombre_negocio: '',
+    direccion: '',
+    imagen_banner: null, 
   });
   const [error, setError] = useState('');
   const [isLoading, setIsLoading] = useState(false);
 
+  useEffect(() => {
+    loadUsers();
+  }, []);
+
+  const loadUsers = async () => {
+    try {
+      const response = await userService.getUsers(); // Carga la lista de usuarios
+      setUsers(response.data);
+    } catch (error) {
+      console.error('Error al cargar usuarios:', error);
+    }
+  };
+
   const handleInputChange = (e) => {
-    setFormData({
-      ...formData,
-      [e.target.name]: e.target.value
-    });
+    const { name, value, files } = e.target;
+    setFormData(prevState => ({
+      ...prevState,
+      [name]: files ? files[0] : value // Si es un archivo, guarda el archivo; si no, guarda el valor
+    }));
     setError('');
   };
 
@@ -28,23 +43,25 @@ const Registro = () => {
     setIsLoading(true);
     setError('');
 
-    try {
-      // Si el tipo de usuario es negocio, registrar antes de redirigir
-      if (formData.tipo_usuario === 'negocio') {
-        const response = await axios.post('http://localhost:3000/usuario/registrar', { ...formData, tipo_usuario: 'negocio' });
-        if (response.status === 201) {
-          navigate('/negocio');
-        }
-        return; // Asegúrate de salir de la función después de redirigir
-      }
+    const formDataToSend = new FormData();
+    formDataToSend.append('id_usuario', formData.id_usuario);
+    formDataToSend.append('nombre_negocio', formData.nombre_negocio);
+    formDataToSend.append('direccion', formData.direccion);
+    if (formData.imagen_banner) {
+      formDataToSend.append('imagen_banner', formData.imagen_banner);
+    }
 
-      // Para otros tipos de usuario, se registra normalmente
-      const response = await axios.post('http://localhost:3000/usuario/registrar', formData);
+    try {
+      const response = await axios.post('http://localhost:3000/negocio/registrar-negocio', formDataToSend, {
+        headers: {
+          'Content-Type': 'multipart/form-data', // Necesario para subir archivos
+        },
+      });
       if (response.status === 201) {
-        navigate('/');
+        navigate('/'); // Redirigir a la página principal o donde sea apropiado
       }
     } catch (error) {
-      setError(error.response?.data?.mensaje || 'Error al registrar usuario');
+      setError(error.response?.data?.error || 'Error al registrar negocio');
     } finally {
       setIsLoading(false);
     }
@@ -61,67 +78,41 @@ const Registro = () => {
               className="w-full h-full object-cover"
             />
           </div>
-          <h1 className="text-2xl font-bold text-gray-800">Registro de Usuario</h1>
+          <h1 className="text-2xl font-bold text-gray-800">Registro de Negocio</h1>
         </CardHeader>
-        
+
         <CardBody className="px-6 py-4">
           <form onSubmit={handleSubmit} className="flex flex-col gap-4">
             <div className="space-y-4">
-              <div className="space-y-2">
+              <div>
                 <label className="block text-gray-600 text-base font-medium">
-                  Nombre Completo
-                </label>
-                <Input
-                  placeholder="Ingresa tu nombre"
-                  type="text"
-                  name="nombre"
-                  value={formData.nombre}
-                  onChange={handleInputChange}
-                  classNames={{
-                    input: "text-gray-900 text-base placeholder:text-gray-400",
-                    inputWrapper: [
-                      "bg-white",
-                      "border-2",
-                      "border-blue-200",
-                      "rounded-lg",
-                      "hover:border-blue-300",
-                      "focus-within:border-blue-500",
-                      "transition-colors",
-                      "duration-200",
-                      "py-1",
-                      "px-3",
-                      "min-h-[2.5rem]"
-                    ].join(" "),
-                  }}
-                />
-              </div>
-
-              {/* Selección de tipo de usuario */}
-              <div className="space-y-2">
-                <label className="block text-gray-600 text-base font-medium">
-                  Tipo de Usuario
+                  Usuario
                 </label>
                 <select
-                  name="tipo_usuario"
-                  value={formData.tipo_usuario}
+                  name="id_usuario"
+                  value={formData.id_usuario}
                   onChange={handleInputChange}
-                  className="bg-white border-2 border-blue-200 rounded-lg hover:border-blue-300 focus:border-blue-500 transition-colors duration-200 py-1 px-3 min-h-[2.5rem] text-gray-900"
+                  className="w-full p-2 border-2 border-blue-200 rounded-lg hover:border-blue-300 focus-within:border-blue-500 transition-colors duration-200"
+                  required
                 >
-                  <option value="">Selecciona una opción</option>
-                  <option value="particular">Particular</option>
-                  <option value="negocio">Negocio</option>
+                  <option value="">Seleccione un usuario</option>
+                  {users.map(user => (
+                    <option key={user.id_usuario} value={user.id_usuario}>
+                      {user.nombre} ({user.id_usuario})
+                    </option>
+                  ))}
                 </select>
               </div>
 
               <div className="space-y-2">
                 <label className="block text-gray-600 text-base font-medium">
-                  Correo Electrónico
+                  Nombre del Negocio
                 </label>
                 <Input
-                  placeholder="Ingresa tu correo"
-                  type="email"
-                  name="correo"
-                  value={formData.correo}
+                  placeholder="Ingresa el nombre del negocio"
+                  type="text"
+                  name="nombre_negocio"
+                  value={formData.nombre_negocio}
                   onChange={handleInputChange}
                   classNames={{
                     input: "text-gray-900 text-base placeholder:text-gray-400",
@@ -144,13 +135,13 @@ const Registro = () => {
 
               <div className="space-y-2">
                 <label className="block text-gray-600 text-base font-medium">
-                  Teléfono
+                  Dirección
                 </label>
                 <Input
-                  placeholder="Ingresa tu teléfono"
-                  type="tel"
-                  name="telefono"
-                  value={formData.telefono}
+                  placeholder="Ingresa la dirección del negocio"
+                  type="text"
+                  name="direccion"
+                  value={formData.direccion}
                   onChange={handleInputChange}
                   classNames={{
                     input: "text-gray-900 text-base placeholder:text-gray-400",
@@ -170,17 +161,16 @@ const Registro = () => {
                   }}
                 />
               </div>
-              
+
               <div className="space-y-2">
                 <label className="block text-gray-600 text-base font-medium">
-                  Contraseña
+                  Imagen Banner
                 </label>
                 <Input
-                  placeholder="Ingresa tu contraseña"
-                  name="contrasena"
-                  value={formData.contrasena}
+                  type="file"
+                  name="imagen_banner"
+                  accept="image/*"
                   onChange={handleInputChange}
-                  type="password"
                   classNames={{
                     input: "text-gray-900 text-base placeholder:text-gray-400",
                     inputWrapper: [
@@ -213,14 +203,14 @@ const Registro = () => {
               className="w-full bg-gradient-to-r from-blue-500 to-blue-600 text-white font-medium text-base rounded-lg shadow-md hover:from-blue-600 hover:to-blue-700 transition-all duration-300 ease-in-out py-2 min-h-[2.5rem]"
               isLoading={isLoading}
             >
-              Registrarse
+              Registrar Negocio
             </Button>
           </form>
         </CardBody>
 
         <CardFooter className="flex justify-center pb-6 pt-2">
           <p className="text-gray-500 text-sm">
-            ¿Ya tienes una cuenta?{" "}
+            ¿Ya tienes un negocio registrado?{" "}
             <a 
               href="/" 
               className="text-blue-500 hover:text-blue-400 hover:underline transition-colors duration-200 font-medium"
@@ -234,4 +224,4 @@ const Registro = () => {
   );
 };
 
-export default Registro;
+export default RegistroNegocio;
