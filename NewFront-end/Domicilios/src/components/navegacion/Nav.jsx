@@ -1,6 +1,7 @@
 import { Link } from "react-router-dom";
 
 const Nav = () => {
+    const userType = localStorage.getItem('userType');
   return (
     <div className="flex">
       <div
@@ -16,18 +17,33 @@ const Nav = () => {
             Menú de Navegación
           </div>
           <ul className="p-4 space-y-2">
-            <li className="p-2 hover:bg-gray-700 cursor-pointer">
-              <Link to="/Home">Home</Link>
-            </li>
+            
+            <Link to="/Home">
+              <li className="p-2 hover:bg-gray-700 cursor-pointer">Home</li>
+            </Link>
+            
+            <Link to="/solicitud">
+              <li className="p-2 hover:bg-gray-700 cursor-pointer">Domicilio</li>
+            </Link>
+            
           </ul>
         </div>
 
         {/* Enlace de Panel de Control en la parte inferior */}
-        <div className="p-4">
-          <li className="p-2 hover:bg-gray-700 cursor-pointer">
-            <Link to="/PanelDeControl">Panel De Control</Link>
-          </li>
-        </div>
+        {userType === 'domiciliario' && (
+          <div className="p-4">
+            <li className="p-2 hover:bg-gray-700 cursor-pointer">
+              <Link to="/NotificacionesDom">Notificaciones</Link>
+            </li>
+          </div>
+        )}
+        {userType === 'administrador' && (
+          <div className="p-4">
+            <li className="p-2 hover:bg-gray-700 cursor-pointer">
+              <Link to="/PanelDeControl">Panel De Control</Link>
+            </li>
+          </div>
+        )}
       </div>
     </div>
   );

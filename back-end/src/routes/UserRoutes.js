@@ -6,6 +6,8 @@ import {
   actualizarUsuario,
   eliminarUsuario,
   listarUsuarios,
+  recuperarPassword,
+  cambiarContrasena,
 
     /* graficos */
     obtenerTiempoPromedioEntrega,
@@ -28,6 +30,10 @@ RutaUsuario.get("/user/:id", obtenerUsuarioPorId);
 RutaUsuario.get("/user/", listarUsuarios);
 RutaUsuario.put("/actualizar/:id", actualizarUsuario);
 RutaUsuario.delete("/eliminar/:id", verificar, isAdmin, eliminarUsuario);
+
+/* recuperar contraseña */
+RutaUsuario.post('/recuperar-password', recuperarPassword);
+RutaUsuario.post("/cambiar-contrasena", cambiarContrasena);
 
 /* graficos */
 RutaUsuario.get("/reportes/tiempo-promedio-entrega", obtenerTiempoPromedioEntrega);

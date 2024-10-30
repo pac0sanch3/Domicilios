@@ -3,16 +3,20 @@ import Inicio from "./pages/Inicio"; // Componente de inicio de sesión
 import Home from "./pages/Home"; // Componente de la página de inicio
 import PanelDeControl from "./pages/PaneldeControl";
 import Registro from "./pages/Registrar_usuario";
-import ProtectedRoute from "./components/ProtectedRoute"; // Importa el componente de protección de rutas
-
+import ProtectedRoute from "./components/proteccion/ProtectedRoute"; // Importa el componente de protección de rutas
+import ProtectedAdminRoute from "./components/proteccion/ProtectedAdminRoute";
+import { NotificacionesDom } from "./pages/NotificacionesDom";
 import UserProfile from './components/usuario/usuario_administrar';
+import RecuperarPassword from './components/usuario/recuperar_contra';
+
+import RegistroNegocio from './pages/Registrar_negocio';
 
 function App() {
   return (
     <Routes>
       {/* Ruta pública: Inicio de sesión */}
       <Route path="/" element={<Inicio />} />
-
+      <Route path="/NotificacionesDom" element={<NotificacionesDom />} />
       {/* Rutas protegidas */}
       <Route
         path="/home"
@@ -27,9 +31,11 @@ function App() {
       <Route
         path="/Paneldecontrol"
         element={
-          <ProtectedRoute>
-            <PanelDeControl />
-          </ProtectedRoute>
+          <ProtectedAdminRoute>
+            <ProtectedRoute>
+              <PanelDeControl />
+            </ProtectedRoute>
+          </ProtectedAdminRoute>
         }
       />
 
@@ -37,6 +43,8 @@ function App() {
       <Route path="/registro" element={<Registro />} />
 
       <Route path="/profile" element={<UserProfile />} />
+      <Route path="/recuperar-password" element={<RecuperarPassword />} />
+      <Route path="/negocio" element={<RegistroNegocio />} />
     </Routes>
   );
 }
