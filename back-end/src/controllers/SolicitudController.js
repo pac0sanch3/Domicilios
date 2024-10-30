@@ -36,9 +36,81 @@ export const registrarSolicitud = async (req, res) =>{
             values(${fk_cliente}, ${idDomiciliarioSelec}, '${direccionRecogida}', '${direccionEntrega}',  '${instruccionesAdcc}')`
             
             const [response] = await conexion.query(sql)
+
+
+            /* Una vez registrada la solicitud hacemos la consulta de la solicitud registrada para que nos traiga toda la informacion relacionada */
+
+            /* consultamos la informacion de la solicitud */
+            let soliInfo = `select * from solicitudes where id_solicitud = ${response.insertId}`
+            
+            /* tenemos la info de la solicitud */
+            const [dataSoli]  = await conexion.query(soliInfo)
+            
+            /* ahora vamos a encntrar la info del domiciliario */
+
+            //console.log(dataSoli[0].id_domiciliario)
+
+            let domiciInfo = `
+            SELECT 
+                d.id_domiciliario,
+                d.licencia_vehiculo,
+                d.disponibilidad,
+                u.nombre,
+                u.correo,
+                u.telefono
+            FROM usuarios u
+            INNER JOIN domiciliarios d ON u.id_usuario = d.id_usuario
+            WHERE d.id_domiciliario = ${dataSoli[0].id_domiciliario}
+            `
+
+            const [domicilInfo] = await conexion.query(domiciInfo)
+
+
+            /* consultamos ahora lla informacion del cliente */
+
+
+            let sqlCliente = `
+            SELECT 
+                u.id_usuario,
+                u.nombre,
+                u.tipo_usuario,
+                u.correo,
+                u.telefono,
+                u.estado,
+                u.fecha_creacion,
+                u.fecha_actualizacion,
+                n.id_negocio,
+                n.nombre_negocio,
+                n.imagen_banner,
+                n.direccion,
+                n.fecha_creacion AS negocio_fecha_creacion,
+                n.fecha_actualizacion AS negocio_fecha_actualizacion
+            FROM 
+                usuarios u
+            LEFT JOIN 
+                negocios n ON u.id_usuario = n.id_usuario
+            WHERE 
+                u.id_usuario = ${dataSoli[0].id_cliente}
+            `
+
+
+            const [infoCliente]  = await conexion.query(sqlCliente)
+             
+
+
+
+
+            const infoSolicitudCo = {
+                domicilInfo,
+                dataSoli,
+                infoCliente,
+
+            }
+
+            console.log(infoSolicitudCo)
     
     
-            return res.status(200).json({response})
+            return res.status(200).json({infoSolicitudCo})
         }
         else{
             return res.status(404).json({"mensaje":"No se encuentran domiciliarios disponibles en este momento, intentar mas tarde"})
@@ -70,23 +142,24 @@ export const actualizarSolicitud = async(req, res)=>{
 
 /* listar todas las solicitudes */
 
-export const listarSolicitudes = async (req, res) =>{
+export const listarSolicitudes = async (req, res) => {
+    try {
+        let sql = `
+            SELECT s.*, u.nombre as nombre_cliente
+            FROM solicitudes s
+            INNER JOIN usuarios u ON s.id_cliente = u.id_usuario
+        `;
 
-    try{
-        let sql = `select * from solicitudes`
+        const [response] = await conexion.query(sql);
 
-        const [response] = await conexion.query(sql)
+        console.log(response);
 
+        return res.status(200).json(response);
 
-        console.log(response)
-
-        return res.status(200).json(response)
-
-    }catch(error){
-        return res.status(500).json({"mensaje":"Error en el servidor",error})
+    } catch(error) {
+        return res.status(500).json({"mensaje": "Error en el servidor", error});
     }
-
-}
+};
 
 /* actualizar solo el estado */
 export const actEstadoSolicitud = async(req, res)=>{
@@ -98,7 +171,6 @@ export const actEstadoSolicitud = async(req, res)=>{
 
         let sql = `update solicitudes set  estado ='${estado}' where id_solicitud = ${idSolicitud}`
 
-        console.log(sql)
         const [response] = await conexion.query(sql)
     
         return res.status(200).json(response)

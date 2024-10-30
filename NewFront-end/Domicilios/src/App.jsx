@@ -7,6 +7,7 @@ import ProtectedRoute from "./components/proteccion/ProtectedRoute"; // Importa 
 import ProtectedAdminRoute from "./components/proteccion/ProtectedAdminRoute";
 
 
+import { NotificacionesDom } from "./pages/NotificacionesDom";
 import UserProfile from './components/usuario/usuario_administrar';
 import RecuperarPassword from './components/usuario/recuperar_contra';
 
@@ -17,7 +18,7 @@ function App() {
     <Routes>
       {/* Ruta pública: Inicio de sesión */}
       <Route path="/" element={<Inicio />} />
-
+      <Route path="/NotificacionesDom" element={<NotificacionesDom />} />
       {/* Rutas protegidas */}
       <Route
         path="/home"
