@@ -108,3 +108,28 @@ export const actEstadoSolicitud = async(req, res)=>{
         return res.status(500).json({"mensaje":"Error en el servidor",error})
     }
 }
+
+
+
+export const reasignarSoli = async(req, res)=>{
+    
+    try{
+
+        const{idSolicitud, idDomiciliario} = req.body
+
+
+        let sql = `update solicitudes set  estado ='reprogramado', id_domiciliario=${idDomiciliario} where id_solicitud = ${idSolicitud}`
+
+        const [response] = await conexion.query(sql)
+
+        if (response.affectedRows>0){
+            return res.status(200).json({"mensaje":"Se reasigno correctamente el pedido"})
+        }else{
+            return res.status(404).json({"mensaje":"Error, no se reasigno correctamente el pedido"})
+        }
+        
+    }
+    catch(error){
+        return res.status(500).json({"mensaje":"Error en el servidor",error})
+    }
+}
