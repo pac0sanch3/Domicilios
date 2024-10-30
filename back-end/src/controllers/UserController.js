@@ -366,9 +366,17 @@ export const obtenerEstadisticasIncidencias = async (req, res) => {
             SELECT tipo_incidencia, COUNT(*) AS total_incidencias, 
                    AVG(TIMESTAMPDIFF(HOUR, fecha_reporte, fecha_actualizacion)) AS promedio_resolucion_horas
             FROM reporte_incidencias
-            WHERE estado = 'resuelto'
             GROUP BY tipo_incidencia
         `);
+        
+        console.log(result); 
+        
+        if (result.length === 0) {
+            return res.status(404).json({
+                mensaje: "No se encontraron estadísticas de incidencias",
+            });
+        }
+
         return res.status(200).json(result);
     } catch (error) {
         console.error(error);
@@ -378,6 +386,7 @@ export const obtenerEstadisticasIncidencias = async (req, res) => {
         });
     }
 };
+
 
 export const obtenerRendimientoDomiciliarios = async (req, res) => {
     try {
@@ -403,62 +412,117 @@ export const obtenerRendimientoDomiciliarios = async (req, res) => {
 
 
 // Recuperar contraseña
-/* export const recuperarContrasena = async (req, res) => {
+import crypto from 'crypto';
+
+// Función para generar una contraseña temporal aleatoria
+const generarContrasenaTemporal = () => {
+    // Genera una contraseña de 8 caracteres
+    return crypto.randomBytes(4).toString('hex');
+};
+
+// Controlador para recuperar contraseña
+export const recuperarPassword = async (req, res) => {
     try {
         const { correo } = req.body;
 
+        // Validar que se proporcionó un correo
         if (!correo) {
             return res.status(400).json({
                 mensaje: "El correo es obligatorio"
             });
         }
 
-        // Buscar usuario por correo
-        const [usuario] = await conexion.query(
-            "SELECT * FROM usuarios WHERE correo = ?",
-            [correo]
-        );
+        // Validar formato de email
+        const validateEmail = (email) => {
+            const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            return re.test(email);
+        };
 
-        if (usuario.length === 0) {
-            return res.status(404).json({
-                mensaje: "No se encontró usuario con este correo"
+        if (!validateEmail(correo)) {
+            return res.status(400).json({
+                mensaje: "Formato de correo electrónico inválido"
             });
         }
 
-        // Generar contraseña temporal
-        const contrasenaTemporal = Math.random().toString(36).slice(-8);
-        const salt = await bcrypt.genSalt(10);
-        const hashPassword = await bcrypt.hash(contrasenaTemporal, salt);
-
-        // Actualizar contraseña en la base de datos
-        await conexion.query(
-            "UPDATE usuarios SET contrasena = ? WHERE id_usuario = ?",
-            [hashPassword, usuario[0].id_usuario]
+        // Buscar usuario por correo
+        const [usuarios] = await conexion.query(
+            "SELECT id_usuario, nombre, correo FROM usuarios WHERE correo = ? AND estado = 'activo'",
+            [correo]
         );
 
-        // Enviar correo con la contraseña temporal
-        await transporter.sendMail({
-            from: '"Sistema" <sistema@example.com>',
-            to: correo,
-            subject: "Recuperación de contraseña",
-            html: `
-                <h1>Recuperación de contraseña</h1>
-                <p>Hola ${usuario[0].nombre},</p>
-                <p>Tu nueva contraseña temporal es: <strong>${contrasenaTemporal}</strong></p>
-                <p>Por favor, cambia tu contraseña después de iniciar sesión.</p>
-            `
-        });
+        if (usuarios.length === 0) {
+            return res.status(404).json({
+                mensaje: "No existe un usuario activo con este correo electrónico"
+            });
+        }
+
+        const usuario = usuarios[0];
+        
+        // Generar nueva contraseña temporal
+        const nuevaContrasena = generarContrasenaTemporal();
+        
+        // Encriptar la nueva contraseña para almacenarla
+        const salt = await bcrypt.genSalt(10);
+        const hashContrasena = await bcrypt.hash(nuevaContrasena, salt);
+
+        // Actualizar la contraseña en la base de datos
+        await conexion.query(
+            "UPDATE usuarios SET contrasena = ? WHERE id_usuario = ?",
+            [hashContrasena, usuario.id_usuario]
+        );
 
         return res.status(200).json({
-            mensaje: "Se ha enviado una nueva contraseña a tu correo"
+            mensaje: `Usuario ${usuario.nombre}, tu nueva contraseña temporal es: ${nuevaContrasena}`,
+            nombre: usuario.nombre,
+            contrasenaTemporal: nuevaContrasena
         });
 
     } catch (error) {
         console.error(error);
         return res.status(500).json({
-            mensaje: "Error al recuperar contraseña",
+            mensaje: "Error al procesar la solicitud de recuperación de contraseña",
             error: error.message
         });
     }
-}; */
+};
+
+export const cambiarContrasena = async (req, res) => {
+    try {
+        const { id_usuario, contrasenaActual, nuevaContrasena } = req.body;
+
+        if (!id_usuario || !contrasenaActual || !nuevaContrasena) {
+            return res.status(400).json({ mensaje: "Todos los campos son obligatorios" });
+        }
+
+        // Verificar usuario y contraseña actual
+        const [usuarios] = await conexion.query(
+            "SELECT contrasena FROM usuarios WHERE id_usuario = ? AND estado = 'activo'",
+            [id_usuario]
+        );
+
+        if (usuarios.length === 0) {
+            return res.status(404).json({ mensaje: "Usuario no encontrado" });
+        }
+
+        const coincideContrasena = await bcrypt.compare(contrasenaActual, usuarios[0].contrasena);
+        if (!coincideContrasena) {
+            return res.status(400).json({ mensaje: "Contraseña actual incorrecta" });
+        }
+
+        // Encriptar y guardar nueva contraseña
+        const salt = await bcrypt.genSalt(10);
+        const hashNuevaContrasena = await bcrypt.hash(nuevaContrasena, salt);
+
+        await conexion.query(
+            "UPDATE usuarios SET contrasena = ? WHERE id_usuario = ?",
+            [hashNuevaContrasena, id_usuario]
+        );
+
+        return res.status(200).json({ mensaje: "Contraseña actualizada exitosamente" });
+
+    } catch (error) {
+        console.error("Error al cambiar la contraseña:", error);
+        return res.status(500).json({ mensaje: "Error al cambiar la contraseña" });
+    }
+};
 

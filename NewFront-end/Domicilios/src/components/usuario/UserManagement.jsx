@@ -1,13 +1,11 @@
 import React, { useState, useEffect } from 'react';
-import { userService } from '../../service/api/userService';
+import { userService } from '../../services/userService';
 import { UserForm } from './UserForm';
 import { UserList } from './UserList';
-import { Alert } from './Alert';
+import { Alert } from '../alert/Alert';
 import { Button } from '@nextui-org/react';
-import RolesManagement from './RolesManagement';
-import SolicitudesManagement from './SolicitudesManagement';
-import ActividadesManagement from './ActividadesManagement';
-import Graficas from "../molecules/graficas/Graficas";
+import ActividadesManagement from '../actividades/ActividadesManagement';
+import Graficas from "../graficas/Graficas";
 
 
 
@@ -84,11 +82,11 @@ const UserManagement = () => {
   });
 
   return (
-    <div className="bg-white/80 p-6 rounded-lg shadow-lg">
-      <h2 className="text-2xl font-bold mb-6">Gestión de Usuarios</h2>
+    <div className="bg-white/90 backdrop-blur-md p-6 rounded-lg shadow-2xl">
+      <h2 className="text-2xl font-bold text-gray-800 mb-6">Gestión de Usuarios</h2>
       
       <Alert {...alert} />
-
+      
       {/* Barra de navegación de apartados */}
       <div className="flex space-x-4 mb-6">
         <Button 
@@ -96,6 +94,7 @@ const UserManagement = () => {
           color={currentView === 'usuarios' ? 'primary' : 'default'}
           bordered={currentView !== 'usuarios'}
           auto
+          className={currentView === 'usuarios' ? "text-white bg-blue-600 hover:bg-blue-700" : "text-gray-800 bg-white border-blue-200 hover:border-blue-300"}
         >
           Usuarios
         </Button>
@@ -104,6 +103,7 @@ const UserManagement = () => {
           color={currentView === 'roles' ? 'primary' : 'default'}
           bordered={currentView !== 'roles'}
           auto
+          className={currentView === 'roles' ? "text-white bg-blue-600 hover:bg-blue-700" : "text-gray-800 bg-white border-blue-200 hover:border-blue-300"}
         >
           Incidentes
         </Button>
@@ -112,6 +112,7 @@ const UserManagement = () => {
           color={currentView === 'solicitudes' ? 'primary' : 'default'}
           bordered={currentView !== 'solicitudes'}
           auto
+          className={currentView === 'solicitudes' ? "text-white bg-blue-600 hover:bg-blue-700" : "text-gray-800 bg-white border-blue-200 hover:border-blue-300"}
         >
           Solicitudes
         </Button>
@@ -120,6 +121,7 @@ const UserManagement = () => {
           color={currentView === 'actividades' ? 'primary' : 'default'}
           bordered={currentView !== 'actividades'}
           auto
+          className={currentView === 'actividades' ? "text-white bg-blue-600 hover:bg-blue-700" : "text-gray-800 bg-white border-blue-200 hover:border-blue-300"}
         >
           actividades
         </Button>
@@ -128,18 +130,19 @@ const UserManagement = () => {
           color={currentView === 'Graficas' ? 'primary' : 'default'}
           bordered={currentView !== 'Graficas'}
           auto
+          className={currentView === 'Graficas' ? "text-white bg-blue-600 hover:bg-blue-700" : "text-gray-800 bg-white border-blue-200 hover:border-blue-300"}
         >
           Graficas
         </Button>
       </div>
-
+      
       {/* Renderizar el apartado correspondiente */}
       {currentView === 'usuarios' && (
         <>
           <div className="mb-4">
-            <label className="block text-sm font-medium mb-2">Filtrar por tipo de usuario</label>
+            <label className="block text-gray-600 text-base font-medium mb-2">Filtrar por tipo de usuario</label>
             <select
-              className="w-full p-2 border rounded-lg"
+              className="w-full p-2 border-2 border-blue-200 rounded-lg hover:border-blue-300 focus:border-blue-500 transition-colors duration-200 text-gray-800"
               value={userTypeFilter}
               onChange={(e) => setUserTypeFilter(e.target.value)}
             >
@@ -150,7 +153,7 @@ const UserManagement = () => {
               <option value="domiciliario">Domiciliario</option>
             </select>
           </div>
-
+      
           <UserList 
             users={filteredUsers}
             onEdit={user => {
@@ -160,9 +163,9 @@ const UserManagement = () => {
             onDelete={handleDeleteUser}
             onToggleActive={handleToggleActive}
           />
-
+    
           <button 
-            className="mt-6 w-full bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700"
+            className="mt-6 w-full bg-gradient-to-r from-blue-500 to-blue-600 text-white font-medium py-2 rounded-lg hover:from-blue-600 hover:to-blue-700 transition-all duration-300"
             onClick={() => {
               setSelectedUser(null);
               setModalOpen(true);
@@ -172,17 +175,14 @@ const UserManagement = () => {
           </button>
         </>
       )}
-
-      {currentView === 'roles' && <RolesManagement />}
-      {currentView === 'solicitudes' && <SolicitudesManagement />}
+    
       {currentView === 'actividades' && <ActividadesManagement />}
       {currentView === 'Graficas' && (
         <div className="w-[460px]">
           <Graficas />
         </div>
       )}
-
-
+    
       {modalOpen && (
         <UserForm
           user={selectedUser}
@@ -194,6 +194,7 @@ const UserManagement = () => {
         />
       )}
     </div>
+
   );
 };
 
