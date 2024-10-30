@@ -8,7 +8,7 @@ import ProtectedAdminRoute from "./components/proteccion/ProtectedAdminRoute";
 
 import UserProfile from './components/usuario/usuario_administrar';
 import RecuperarPassword from './components/usuario/recuperar_contra';
-
+import Solicitud from './pages/Solicitud'
 function App() {
   return (
     <Routes>
@@ -21,6 +21,15 @@ function App() {
         element={
           <ProtectedRoute>
             <Home />
+          </ProtectedRoute>
+        }
+      />
+      
+      <Route
+        path="/solicitud"
+        element={
+          <ProtectedRoute>
+            <Solicitud />
           </ProtectedRoute>
         }
       />
