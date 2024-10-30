@@ -178,7 +178,7 @@ const UserManagement = () => {
     
       {currentView === 'actividades' && <ActividadesManagement />}
       {currentView === 'Graficas' && (
-        <div className="w-[460px]">
+        <div className="w-full">
           <Graficas />
         </div>
       )}
