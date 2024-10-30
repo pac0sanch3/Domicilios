@@ -48,7 +48,6 @@ export const registrarSolicitud = async (req, res) =>{
             
             /* ahora vamos a encntrar la info del domiciliario */
 
-            //console.log(dataSoli[0].id_domiciliario)
 
             let domiciInfo = `
             SELECT 
@@ -105,11 +104,7 @@ export const registrarSolicitud = async (req, res) =>{
                 dataSoli,
                 infoCliente,
 
-            }
-
-            console.log(infoSolicitudCo)
-    
-    
+            }    
             return res.status(200).json({infoSolicitudCo})
         }
         else{
@@ -142,24 +137,23 @@ export const actualizarSolicitud = async(req, res)=>{
 
 /* listar todas las solicitudes */
 
-export const listarSolicitudes = async (req, res) => {
-    try {
-        let sql = `
-            SELECT s.*, u.nombre as nombre_cliente
-            FROM solicitudes s
-            INNER JOIN usuarios u ON s.id_cliente = u.id_usuario
-        `;
+export const listarSolicitudes = async (req, res) =>{
 
-        const [response] = await conexion.query(sql);
+    try{
+        let sql = `select * from solicitudes`
 
-        console.log(response);
+        const [response] = await conexion.query(sql)
 
-        return res.status(200).json(response);
 
-    } catch(error) {
-        return res.status(500).json({"mensaje": "Error en el servidor", error});
+        console.log(response)
+
+        return res.status(200).json(response)
+
+    }catch(error){
+        return res.status(500).json({"mensaje":"Error en el servidor",error})
     }
-};
+
+}
 
 /* actualizar solo el estado */
 export const actEstadoSolicitud = async(req, res)=>{
@@ -203,5 +197,66 @@ export const reasignarSoli = async(req, res)=>{
     }
     catch(error){
         return res.status(500).json({"mensaje":"Error en el servidor",error})
+    }
+}
+
+
+
+/* consulta que me liste los domicilios de ese un determinado domiciliario*/
+export const listSolicitudesDomi = async (req, res)=>{
+    try{
+
+        const {idDomiciliario} = req.params
+
+        let sql = `
+        SELECT
+            s.id_solicitud,
+            s.direccion_recogida,
+            s.direccion_entrega,
+            s.instruccionesAdc,
+            u.correo,
+            u.telefono,
+            u.nombre,
+            s.estado,
+            u.tipo_usuario
+        FROM solicitudes AS s
+        INNER JOIN usuarios AS u ON s.id_cliente = u.id_usuario
+        WHERE s.id_domiciliario = ${idDomiciliario}
+        AND s.estado = 'pendiente'
+        `
+
+        const [response] = await conexion.query(sql)
+        console.log(response)
+
+        return res.status(200).json({response})
+
+    }catch(error){
+        return res.status(500).json({"mensaje":"error en el servidor", error})
+    }
+}
+
+
+
+/* consultar a que domiciliario le pertenece un id */
+
+export const buscarDomi = async(req, res)=>{
+    try{
+
+        const {idUser} = req.params
+
+        let sql  = 
+        `SELECT
+        d.id_domiciliario
+        FROM usuarios AS u
+        INNER JOIN domiciliarios AS d ON u.id_usuario = d.id_usuario
+        WHERE u.id_usuario = ${idUser};
+        `
+
+        const [response] = await conexion.query(sql)
+
+        return res.status(200).json({response})
+        
+    }catch(error){
+        return res.status(500).json({"mensaje":"error en el servidor", error})
     }
 }
