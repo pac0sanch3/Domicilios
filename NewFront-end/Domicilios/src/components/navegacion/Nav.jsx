@@ -17,9 +17,15 @@ const Nav = () => {
             Menú de Navegación
           </div>
           <ul className="p-4 space-y-2">
-            <li className="p-2 hover:bg-gray-700 cursor-pointer">
-              <Link to="/Home">Home</Link>
-            </li>
+            
+            <Link to="/Home">
+              <li className="p-2 hover:bg-gray-700 cursor-pointer">Home</li>
+            </Link>
+            
+            <Link to="/solicitud">
+              <li className="p-2 hover:bg-gray-700 cursor-pointer">Domicilio</li>
+            </Link>
+            
           </ul>
         </div>
 
