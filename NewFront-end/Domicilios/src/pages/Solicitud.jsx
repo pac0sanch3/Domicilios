@@ -1,6 +1,8 @@
 import { useForm } from 'react-hook-form';
-//import { MapPin } from 'lucide-react';
+import Layout from "../components/template/Layout";
 import axios from 'axios'
+
+import Novedades from '../components/novedades/Novedades';
 
 const Solicitud = () =>{
 
@@ -24,6 +26,7 @@ const Solicitud = () =>{
   }
 
   return (
+    <Layout>
     <div className="bg-white/80 p-6 rounded-lg shadow-lg">
       <h2 className="text-2xl font-bold mb-6">Solicitar Domicilio</h2>
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
@@ -71,6 +74,12 @@ const Solicitud = () =>{
         </button>
       </form>
     </div>
+
+
+    <div className='bg-slate-400 w-full'>
+      <Novedades/>
+    </div>
+    </Layout>
   )
 
 }
