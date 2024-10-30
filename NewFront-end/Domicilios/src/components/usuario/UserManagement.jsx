@@ -6,6 +6,7 @@ import { Alert } from '../alert/Alert';
 import { Button } from '@nextui-org/react';
 import ActividadesManagement from '../actividades/ActividadesManagement';
 import Graficas from "../graficas/Graficas";
+import RolesManagement from './RolesManagement';
 
 
 
@@ -177,6 +178,7 @@ const UserManagement = () => {
       )}
     
       {currentView === 'actividades' && <ActividadesManagement />}
+      {currentView === 'roles' && <RolesManagement />}
       {currentView === 'Graficas' && (
         <div className="w-full">
           <Graficas />

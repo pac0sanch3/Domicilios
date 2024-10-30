@@ -13,8 +13,8 @@ const Nav = () => {
       >
         {/* Sección superior del menú */}
         <div>
-          <div className="p-6 text-lg font-semibold border-b border-gray-700">
-            Menú de Navegación
+          <div className="p-6 text-lg font-semibold ">
+           
           </div>
           <ul className="p-4 space-y-2">
             <li className="p-2 hover:bg-gray-700 cursor-pointer">
