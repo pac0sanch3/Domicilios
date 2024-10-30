@@ -30,6 +30,13 @@ const Nav = () => {
         </div>
 
         {/* Enlace de Panel de Control en la parte inferior */}
+        {userType === 'domiciliario' && (
+          <div className="p-4">
+            <li className="p-2 hover:bg-gray-700 cursor-pointer">
+              <Link to="/NotificacionesDom">Notificaciones</Link>
+            </li>
+          </div>
+        )}
         {userType === 'administrador' && (
           <div className="p-4">
             <li className="p-2 hover:bg-gray-700 cursor-pointer">

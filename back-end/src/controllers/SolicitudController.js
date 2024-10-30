@@ -142,23 +142,24 @@ export const actualizarSolicitud = async(req, res)=>{
 
 /* listar todas las solicitudes */
 
-export const listarSolicitudes = async (req, res) =>{
+export const listarSolicitudes = async (req, res) => {
+    try {
+        let sql = `
+            SELECT s.*, u.nombre as nombre_cliente
+            FROM solicitudes s
+            INNER JOIN usuarios u ON s.id_cliente = u.id_usuario
+        `;
 
-    try{
-        let sql = `select * from solicitudes`
+        const [response] = await conexion.query(sql);
 
-        const [response] = await conexion.query(sql)
+        console.log(response);
 
+        return res.status(200).json(response);
 
-        console.log(response)
-
-        return res.status(200).json(response)
-
-    }catch(error){
-        return res.status(500).json({"mensaje":"Error en el servidor",error})
+    } catch(error) {
+        return res.status(500).json({"mensaje": "Error en el servidor", error});
     }
-
-}
+};
 
 /* actualizar solo el estado */
 export const actEstadoSolicitud = async(req, res)=>{
