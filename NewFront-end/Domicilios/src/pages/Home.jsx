@@ -1,12 +1,11 @@
 import Layout from "../components/template/Layout";
+import Graficas from '../components/graficas/Graficas';
+
 const Home = () => {
-
-
   return (
-        <>
-        <Layout/>
-        </>
-
+    <Layout>
+      <Graficas/>
+    </Layout>
   );
 };
 
