@@ -25,9 +25,11 @@ export const NovedadesList = ({ novedades, onEdit }) => {
       {novedades.map(novedad => (
         <div key={novedad.id_novedad} className="flex justify-between items-center p-4 border rounded-lg bg-white">
           <div className="flex flex-col">
+            
             <span className="font-medium">
               Domiciliario: {domiciliarios[novedad.id_domiciliario] || novedad.id_domiciliario}
             </span>
+            <span className="text-sm text-gray-500">Ubicacion actual: {novedad.ubicacionActual}</span>
             <span className="text-sm text-gray-500">Solicitud: {novedad.id_solicitud}</span>
             <span className="text-sm text-gray-500">Descripción: {novedad.descripcion}</span>
             <span className="text-sm text-gray-500">Estado: {novedad.estado}</span>
@@ -40,6 +42,10 @@ export const NovedadesList = ({ novedades, onEdit }) => {
               className="px-3 py-1 text-blue-600 hover:bg-blue-50 rounded-lg"
             >
               Actualizar Estado
+            </button>
+
+            <button>
+              Reasignar pedido.
             </button>
           </div>
         </div>
