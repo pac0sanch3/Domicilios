@@ -8,6 +8,8 @@ import ActividadesManagement from '../actividades/ActividadesManagement';
 import Graficas from "../graficas/Graficas";
 import RolesManagement from './RolesManagement';
 import {NegocioManagement} from '../negocio/NegocioManagement.jsx';
+import SolicitudesManagement from '../solicitudes/SolicitudesManagement.jsx';
+import DomiciliariosManagement from '../domiciliario/DomiciliariosManagement.jsx';
 
 
 
@@ -128,6 +130,15 @@ const UserManagement = () => {
           Solicitudes
         </Button>
         <Button 
+          onClick={() => setCurrentView('Domicilio')} 
+          color={currentView === 'Domicilio' ? 'primary' : 'default'}
+          bordered={currentView !== 'Domicilio'}
+          auto
+          className={currentView === 'Domicilio' ? "text-white bg-blue-600 hover:bg-blue-700" : "text-gray-800 bg-white border-blue-200 hover:border-blue-300"}
+        >
+          Domicilio
+        </Button>
+        <Button 
           onClick={() => setCurrentView('actividades')} 
           color={currentView === 'actividades' ? 'primary' : 'default'}
           bordered={currentView !== 'actividades'}
@@ -188,6 +199,8 @@ const UserManagement = () => {
       )}
     
       {currentView === 'actividades' && <ActividadesManagement />}
+      {currentView === 'solicitudes' && <SolicitudesManagement />}
+      {currentView === 'Domicilio' && <DomiciliariosManagement />}
       {currentView === 'roles' && <RolesManagement />}
       {currentView === 'negocio' && <NegocioManagement />}
       {currentView === 'Graficas' && (
