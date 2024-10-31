@@ -31,9 +31,9 @@ const NotificacionesBell = () => {
                         <li key={solicitud.id_solicitud} className="flex items-start justify-between p-3 border-b border-gray-200">
                             <div>
                                 <p className="text-gray-800 font-semibold">
-                                    {`Solicitud ID: ${solicitud.id_solicitud}`}
+                                    {`Nueva solicitud: ${solicitud.id_solicitud}`}
                                 </p>
-                                <p className="text-gray-500 text-sm">{`Estado: ${solicitud.estado}`}</p>
+                                <p className="text-gray-500 text-sm">{`Dirección de entrega: ${solicitud.direccion_entrega}`}</p>
                                 <p className="text-gray-500 text-xs">{`Cliente: ${solicitud.nombre_cliente || 'No disponible'}`}</p>
                             </div>
                             <span className="bg-green-500 h-2 w-2 rounded-full mt-1"></span>
