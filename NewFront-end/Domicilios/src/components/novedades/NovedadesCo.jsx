@@ -14,6 +14,9 @@ const NovedadesCo = ()=> {
     try{
       data['id_domiciliario'] = idDomici
 
+
+      console.log(data)
+
       const response = await axios.post('http://localhost:3000/novedad/', data)
   
   
@@ -57,7 +60,7 @@ const NovedadesCo = ()=> {
   fetchSolicitudes()
 }, [])
 
-
+//ubicacionActual
 
   
 
@@ -82,6 +85,22 @@ const NovedadesCo = ()=> {
             <span className="text-sm text-red-500">{errors.descripcion.message}</span>
           )}
         </div>
+
+        {/* ubicacion del domiciliario */}
+
+        <div className="space-y-2">
+          <label className="block text-sm font-medium">Ubicacion actual:</label>
+          <input
+            {...register('ubicacionActual')}
+            className="w-full p-2 border rounded-lg"
+            rows="3"
+            placeholder="Ingrese su ubicacion"
+          />
+          {errors.ubicacionActual && (
+            <span className="text-sm text-red-500">{errors.ubicacionActual.message}</span>
+          )}
+        </div>
+
 
         {/* para seleccionar una solicitud */}
         <div className="space-y-2">
