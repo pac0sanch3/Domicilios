@@ -370,7 +370,7 @@ export const obtenerEstadisticasIncidencias = async (req, res) => {
             GROUP BY tipo_incidencia
         `);
         
-        console.log(result); 
+
         
         if (result.length === 0) {
             return res.status(404).json({

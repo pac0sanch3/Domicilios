@@ -124,7 +124,7 @@ export const actualizarSolicitud = async(req, res)=>{
 
         let sql = `update solicitudes set  id_cliente = ${fk_cliente}, id_domiciliario = ${fk_domiciliario}, direccion_recogida = '${direccionRecogida}', direccion_entrega = '${direccionEntrega}', estado ='${estado}', instruccionesAdc= '${instruccionesAdcc}' where id_solicitud = ${idSolicitud}`
 
-        console.log(sql)
+
         const [response] = await conexion.query(sql)
     
         return res.status(200).json(response)
@@ -145,7 +145,6 @@ export const listarSolicitudes = async (req, res) =>{
         const [response] = await conexion.query(sql)
 
 
-        console.log(response)
 
         return res.status(200).json(response)
 
@@ -226,7 +225,7 @@ export const listSolicitudesDomi = async (req, res)=>{
         `
 
         const [response] = await conexion.query(sql)
-        console.log(response)
+
 
         return res.status(200).json({response})
 

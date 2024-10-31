@@ -6,6 +6,7 @@ import { useSolicitudes } from '../../services/SolicitudesProvider';
 
 const Header = () => {
   const [showNotifications, setShowNotifications] = useState(false);
+  const userType = localStorage.getItem('userType');
   const { listarSolicitudes, solicitudes } = useSolicitudes();
   const [notificacionesPendientes, setNotificacionesPendientes] = useState(0);
 
@@ -41,7 +42,13 @@ const Header = () => {
             Domicilios
           </div>
         </div>
+
         <div className="relative flex items-center gap-6">
+<<<<<<< HEAD
+        {(userType === 'domiciliario') && (
+          <>
+                    <FaBell className="text-3xl cursor-pointer" onClick={toggleNotifications} />
+=======
           <button className="relative" onClick={toggleNotifications}>
             <FaBell className="text-3xl cursor-pointer" />
             {notificacionesPendientes > 0 && (
@@ -50,11 +57,16 @@ const Header = () => {
               </span>
             )}
           </button>
+>>>>>>> ed4416486442ab525f857f171f00bb2ee520ccc6
           {showNotifications && (
             <div className="absolute top-12 right-0 w-80 bg-white shadow-lg rounded-lg">
               <NotificacionesBell />
             </div>
           )}
+          </>
+
+        )}
+
           <LogoutButton />
         </div>
       </nav>

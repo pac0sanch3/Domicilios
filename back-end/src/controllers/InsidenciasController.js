@@ -5,7 +5,8 @@ export const registrarReporte = async (req, res) => {
     const fecha_reporte = new Date();
     const fecha_creacion = new Date();
 
-    
+    console.log('Datos recibidos:', { id_usuario, id_solicitud, tipo_incidencia, descripcion, estado });
+
     try {
       const query = `
         INSERT INTO reporte_incidencias 
@@ -15,8 +16,10 @@ export const registrarReporte = async (req, res) => {
       await conexion.query(query, [id_usuario, id_solicitud, tipo_incidencia, descripcion, estado, fecha_reporte, fecha_creacion]);
       res.status(201).json({ message: 'Reporte de incidencia registrado correctamente' });
     } catch (error) {
-      res.status(500).json({ error: 'Error al registrar el reporte de incidencia',error: error.message });
+      console.error('Error al registrar el reporte de incidencia:', error);
+      res.status(500).json({ message: 'Error al registrar el reporte de incidencia', error: error.message });
     }
+    
   };
   
 
