@@ -5,12 +5,15 @@ import PanelDeControl from "./pages/PaneldeControl";
 import Registro from "./pages/Registrar_usuario";
 import ProtectedRoute from "./components/proteccion/ProtectedRoute"; // Importa el componente de protección de rutas
 import ProtectedAdminRoute from "./components/proteccion/ProtectedAdminRoute";
+
+
 import { NotificacionesDom } from "./pages/NotificacionesDom";
 import UserProfile from './components/usuario/usuario_administrar';
 import RecuperarPassword from './components/usuario/recuperar_contra';
 
 import RegistroNegocio from './pages/Registrar_negocio';
-
+import Solicitud from './pages/Solicitud'
+import Novedades from "./pages/Novedades";
 function App() {
   return (
     <Routes>
@@ -23,6 +26,22 @@ function App() {
         element={
           <ProtectedRoute>
             <Home />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/solicitud"
+        element={
+          <ProtectedRoute>
+            <Solicitud />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/novedades"
+        element={
+          <ProtectedRoute>
+            <Novedades />
           </ProtectedRoute>
         }
       />

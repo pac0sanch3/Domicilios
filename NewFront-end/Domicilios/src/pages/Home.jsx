@@ -1,11 +1,26 @@
+import Graficas from '../components/graficas/Graficas'
+import HomeCliente from '../components/layout/HomeCliente'
 import Layout from "../components/template/Layout";
-import Graficas from '../components/graficas/Graficas';
 
 const Home = () => {
+
+  const userType = localStorage.getItem('userType');
+
   return (
-    <Layout>
-      <Graficas/>
-    </Layout>
+  <>
+
+    {userType === 'negocio' || userType === 'particular' ? 
+    <>
+    <HomeCliente/>
+    </> 
+    : 
+    <>
+      <Layout>
+        <Graficas/>
+      </Layout> 
+    </>}
+
+  </>
   );
 };
 

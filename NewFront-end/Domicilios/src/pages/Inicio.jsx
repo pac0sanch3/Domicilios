@@ -65,122 +65,123 @@ const Inicio = () => {
   };
 
   return (
-    <div className="min-h-screen w-full flex items-center justify-center bg-gradient-to-b from-blue-200 to-blue-600 p-4">
-    <Card className="w-full max-w-sm bg-white/90 backdrop-blur-md rounded-xl shadow-2xl">
-      <CardHeader className="flex flex-col gap-4 items-center justify-center pt-6 pb-4">
-        <div className="w-48 h-36 border-2 border-blue-300 rounded-lg overflow-hidden bg-blue-100 shadow-inner">
-          <Image
-            src="/logotrabajo.jpeg"
-            alt="Logo"
-            className="w-full h-full object-cover"
-          />
-        </div>
-        <h1 className="text-2xl font-bold text-gray-800">Bienvenido</h1>
-      </CardHeader>
-      
-      <CardBody className="px-6 py-4">
-        <form onSubmit={handleSubmit} className="flex flex-col gap-4">
-          <div className="space-y-4">
-            <div className="space-y-2">
-              <label className="block text-gray-600 text-base font-medium">
-                Correo Electrónico
-              </label>
-              <Input
-                placeholder="Ingresa tu correo"
-                type="email"
-                name="correo"
-                value={formData.correo}
-                onChange={handleInputChange}
-                classNames={{
-                  input: "text-gray-800 text-base placeholder:text-gray-400",
-                  inputWrapper: [
-                    "bg-white",
-                    "border-2",
-                    "border-blue-200",
-                    "rounded-lg",
-                    "hover:border-blue-300",
-                    "focus-within:border-blue-500",
-                    "transition-colors",
-                    "duration-200",
-                    "py-1",
-                    "px-3",
-                    "min-h-[2.5rem]"
-                  ].join(" "),
-                }}
-              />
-            </div>
-              
-            <div className="space-y-2">
-              <label className="block text-gray-600 text-base font-medium">
-                Contraseña
-              </label>
-              <Input
-                placeholder="Ingresa tu contraseña"
-                name="contrasena"
-                type="password"
-                value={formData.contrasena}
-                onChange={handleInputChange}
-                classNames={{
-                  input: "text-gray-800 text-base placeholder:text-gray-400",
-                  inputWrapper: [
-                    "bg-white",
-                    "border-2",
-                    "border-blue-200",
-                    "rounded-lg",
-                    "hover:border-blue-300",
-                    "focus-within:border-blue-500",
-                    "transition-colors",
-                    "duration-200",
-                    "py-1",
-                    "px-3",
-                    "min-h-[2.5rem]"
-                  ].join(" "),
-                }}
-              />
-            </div>
-            {/* Mover el enlace de "¿Olvidaste tu contraseña?" aquí */}
-            <div className="text-center mt-2">
-              <Link 
-                to="/recuperar-password" 
-                className="text-sm text-blue-500 hover:text-blue-400 hover:underline transition-colors duration-200"
-              >
-                ¿Olvidaste tu contraseña?
-              </Link>
-            </div>
+    <div className="min-h-screen w-full flex items-center justify-center py-8 px-4">
+      <Card className="w-full max-w-xs md:max-w-sm lg:max-w-md bg-white rounded-2xl shadow-lg my-2">
+        <CardHeader className="flex flex-col gap-6 items-center justify-center pt-10 pb-6">
+          <div className="w-32 h-32">
+            <Image
+              src="/nuevo_logo.jpeg"
+              alt="Logo"
+              className="w-full h-full object-cover"
+            />
           </div>
-              
-          {error && (
-            <div className="text-red-500 text-sm text-center bg-red-100/10 rounded-lg p-2 animate-pulse">
-              {error}
+          <h1 className="text-3xl font-bold text-blue-700">
+            Bienvenido
+          </h1>
+        </CardHeader>
+      
+        <CardBody className="px-6 py-4">
+          <form onSubmit={handleSubmit} className="flex flex-col gap-6">
+            <div className="space-y-5">
+              <div className="space-y-2">
+                <label className="block text-gray-700 text-lg font-semibold pl-1">
+                  Correo Electrónico
+                </label>
+                <Input
+                  placeholder="Ingresa tu correo"
+                  type="email"
+                  name="correo"
+                  value={formData.correo}
+                  onChange={handleInputChange}
+                  classNames={{
+                    input: "text-gray-800 text-lg placeholder:text-gray-400",
+                    inputWrapper: [
+                      "bg-white",
+                      "border-2",
+                      "border-blue-200",
+                      "rounded-lg",
+                      "hover:border-blue-400",
+                      "focus-within:border-blue-500",
+                      "transition-colors",
+                      "duration-200",
+                      "py-2",
+                      "px-4",
+                      "shadow-sm"
+                    ].join(" "),
+                  }}
+                />
+              </div>
+                
+              <div className="space-y-2">
+                <label className="block text-gray-700 text-lg font-semibold pl-1">
+                  Contraseña
+                </label>
+                <Input
+                  placeholder="Ingresa tu contraseña"
+                  name="contrasena"
+                  type="password"
+                  value={formData.contrasena}
+                  onChange={handleInputChange}
+                  classNames={{
+                    input: "text-gray-800 text-lg placeholder:text-gray-400",
+                    inputWrapper: [
+                      "bg-white",
+                      "border-2",
+                      "border-blue-200",
+                      "rounded-lg",
+                      "hover:border-blue-400",
+                      "focus-within:border-blue-500",
+                      "transition-colors",
+                      "duration-200",
+                      "py-2",
+                      "px-4",
+                      "shadow-sm"
+                    ].join(" "),
+                  }}
+                />
+              </div>
+                
+              <div className="text-center pt-2">
+                <Link
+                  to="/recuperar-password"
+                  className="text-base text-blue-600 hover:text-blue-500 transition-colors duration-200 inline-block"
+                >
+                  ¿Olvidaste tu contraseña?
+                </Link>
+              </div>
             </div>
-          )}
+                
+            {error && (
+              <div className="text-red-500 text-base text-center bg-red-50 rounded-lg p-3 border border-red-200">
+                {error}
+              </div>
+            )}
     
-          <Button
-            type="submit"
-            color="primary"
-            className="w-full bg-gradient-to-r from-blue-500 to-blue-600 text-white font-medium text-base rounded-lg shadow-md hover:from-blue-600 hover:to-blue-700 transition-all duration-300 ease-in-out py-2 min-h-[2.5rem]"
-            isLoading={isLoading}
-          >
-            Iniciar Sesión
-          </Button>
-        </form>
-      </CardBody>
+            <Button
+              type="submit"
+              color="primary"
+              className="w-full bg-blue-600 text-white font-semibold text-lg rounded-lg shadow hover:bg-blue-700 transition-colors duration-300 py-2.5 mt-4"
+              isLoading={isLoading}
+            >
+              {isLoading ? 'Iniciando sesión...' : 'Iniciar Sesión'}
+            </Button>
+          </form>
+        </CardBody>
+          
+        <CardFooter className="flex justify-center pb-8 pt-3">
+          <p className="text-gray-600 text-base">
+            ¿No tienes una cuenta?{" "}
+            <Link
+              to="/registro"
+              className="text-blue-600 hover:text-blue-500 transition-colors duration-200 font-semibold"
+            >
+              Regístrate aquí
+            </Link>
+          </p>
+        </CardFooter>
+      </Card>
+    </div>
 
-  <CardFooter className="flex justify-center pb-6 pt-2">
-    <p className="text-gray-500 text-sm">
-      ¿No tienes una cuenta?{" "}
-      <Link 
-        to="/registro" 
-        className="text-blue-500 hover:text-blue-400 hover:underline transition-colors duration-200 font-medium"
-      >
-        Regístrate aquí
-      </Link>
-    </p>
-  </CardFooter>
-</Card>
-
-    
-  </div>
   );
 };
 

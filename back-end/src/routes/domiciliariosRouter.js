@@ -4,10 +4,10 @@ import { verificar } from "../middleware/LoginMidleware.js";
 
 const RutaDomiciliario = Router();
 
-RutaDomiciliario.post("/", verificar, registrarDomiciliario);
-RutaDomiciliario.get("/", verificar, listarDomiciliarios);
-RutaDomiciliario.put("/:id", verificar, actualizarDomiciliario);
-RutaDomiciliario.delete("/:id", verificar, eliminarDomiciliario);
-RutaDomiciliario.put("/disponibilidad/:id", verificar, actualizarDisponibilidad);
+RutaDomiciliario.post("/",  registrarDomiciliario);
+RutaDomiciliario.get("/",  listarDomiciliarios);
+RutaDomiciliario.put("/:id",  actualizarDomiciliario);
+RutaDomiciliario.delete("/:id",  eliminarDomiciliario);
+RutaDomiciliario.put("/disponibilidad/:id",  actualizarDisponibilidad);
 
 export default RutaDomiciliario;

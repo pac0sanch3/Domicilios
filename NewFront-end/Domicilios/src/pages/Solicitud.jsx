@@ -2,7 +2,7 @@ import { useForm } from 'react-hook-form';
 import Layout from "../components/template/Layout";
 import axios from 'axios'
 
-import Novedades from '../components/novedades/Novedades';
+
 
 const Solicitud = () =>{
 
@@ -22,6 +22,7 @@ const Solicitud = () =>{
 
     } catch (error) {  
       console.error(error)
+      alert("lo sentimos, no se encuentran domiciliarios disponibles, intentar mas tarde")
     }
   }
 
@@ -76,9 +77,6 @@ const Solicitud = () =>{
     </div>
 
 
-    <div className='bg-slate-400 w-full'>
-      <Novedades/>
-    </div>
     </Layout>
   )
 

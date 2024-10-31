@@ -24,16 +24,61 @@ export const SolicitudesProvider = ({ children }) => {
         }
     };
 
+    const checkNetworkConnection = () => {
+        if (!navigator.onLine) {
+            setError({
+                mensaje: 'Sin conexión a internet',
+                status: 'OFFLINE'
+            });
+            return false;
+        }
+        return true;
+    };
     // Función para listar solicitudes
     const listarSolicitudes = async () => {
+        if (!checkNetworkConnection()) return [];
         try {
             setLoading(true);
             setError(null);
-
-            const response = await axios.get('http://localhost:3000/solicitudes/listar');
-            setSolicitudes(response.data); // Guardamos la lista de solicitudes en el estado
+    
+            const response = await axios.get('http://localhost:3000/solicitudes/listar', {
+                timeout: 10000,
+                withCredentials: false,
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Accept': 'application/json'
+                }
+            });
+            setSolicitudes(response.data);
+            return response.data;
         } catch (error) {
-            setError(error.response ? error.response.data : { mensaje: "Error en el servidor" });
+            console.error('Error detallado completo:', error);
+            
+            // Manejo de errores similar al anterior
+            const errorConfig = axios.isAxiosError(error) 
+                ? (error.response 
+                    ? { 
+                        mensaje: error.response.data.mensaje || 'Error en el servidor', 
+                        status: error.response.status 
+                    }
+                    : (error.request 
+                        ? { 
+                            mensaje: 'No se pudo conectar con el servidor', 
+                            status: 'NETWORK_ERROR' 
+                        }
+                        : { 
+                            mensaje: 'Error al configurar la solicitud', 
+                            status: 'CONFIG_ERROR' 
+                        }
+                    )
+                )
+                : { 
+                    mensaje: 'Error desconocido', 
+                    status: 'UNKNOWN_ERROR' 
+                };
+    
+            setError(errorConfig);
+            throw error;  // Re-lanzar para que los componentes puedan manejar el error
         } finally {
             setLoading(false);
         }

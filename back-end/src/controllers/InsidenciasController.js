@@ -4,7 +4,8 @@ export const registrarReporte = async (req, res) => {
     const { id_usuario, id_solicitud, tipo_incidencia, descripcion, estado } = req.body;
     const fecha_reporte = new Date();
     const fecha_creacion = new Date();
-  
+
+    
     try {
       const query = `
         INSERT INTO reporte_incidencias 
@@ -28,23 +29,47 @@ export const listarReportes = async (req, res) => {
       res.status(500).json({ error: 'Error al listar los reportes de incidencias' });
     }
   };
-export const editarReporte = async (req, res) => {
+  export const editarReporte = async (req, res) => {
     const { id_reporte } = req.params;
     const { tipo_incidencia, descripcion, estado } = req.body;
     const fecha_actualizacion = new Date();
   
     try {
-      const query = `
-        UPDATE reporte_incidencias 
-        SET tipo_incidencia = ?, descripcion = ?, estado = ?, fecha_actualizacion = ? 
-        WHERE id_reporte = ?
-      `;
-      await conexion.query(query, [tipo_incidencia, descripcion, estado, fecha_actualizacion, id_reporte]);
-      res.status(200).json({ message: 'Reporte de incidencia actualizado correctamente' });
+        const updates = [];
+        const values = [];
+
+        // Construimos la consulta solo con los campos que se proporcionan en req.body
+        if (tipo_incidencia) {
+            updates.push("tipo_incidencia = ?");
+            values.push(tipo_incidencia);
+        }
+        if (descripcion) {
+            updates.push("descripcion = ?");
+            values.push(descripcion);
+        }
+        if (estado) {
+            updates.push("estado = ?");
+            values.push(estado);
+        }
+        updates.push("fecha_actualizacion = ?");
+        values.push(fecha_actualizacion);
+        
+        values.push(id_reporte); // Agregamos id_reporte al final para WHERE
+
+        const query = `
+            UPDATE reporte_incidencias 
+            SET ${updates.join(", ")} 
+            WHERE id_reporte = ?
+        `;
+        await conexion.query(query, values);
+
+        res.status(200).json({ message: 'Reporte de incidencia actualizado correctamente' });
     } catch (error) {
-      res.status(500).json({ error: 'Error al actualizar el reporte de incidencia' });
+        console.error("Error al actualizar el reporte:", error);
+        res.status(500).json({ error: 'Error al actualizar el reporte de incidencia' });
     }
-  };
+};
+
 
   export const eliminarReporte = async (req, res) => {
     const { id_reporte } = req.params;
