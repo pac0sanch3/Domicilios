@@ -32,7 +32,7 @@ const RecuperarPassword = () => {
     };
   
     return (
-        <div className="min-h-screen w-full flex items-center justify-center bg-gradient-to-b from-blue-200 to-blue-600 p-4">
+        <div className="min-h-screen w-full flex items-center justify-center bg-gradient-to-b bg-slate-400 p-4">
             <Card className="w-full max-w-sm bg-white/90 backdrop-blur-md rounded-xl shadow-2xl">
                 <CardHeader className="flex flex-col gap-4 items-center justify-center pt-6 pb-4">
                     <h1 className="text-2xl font-bold text-gray-800">Recuperar Contraseña</h1>
