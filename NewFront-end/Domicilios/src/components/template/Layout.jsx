@@ -2,12 +2,15 @@ import Header from "../layout/Header.jsx";
 import { Suspense } from "react";
 import Nav from "../navegacion/Nav.jsx";
 import { Footer } from "../layout/Footer.jsx";
+import { SolicitudesProvider } from "../../services/SolicitudesProvider.jsx";
 
 const Layout = ({ children }) => {
   return (
     <>
       <div className="min-h-screen flex flex-col bg-gray-100 overflow-hidden">
-        <Header color="bg-white shadow-sm" />
+        <SolicitudesProvider>
+          <Header color="bg-white shadow-sm" />
+        </SolicitudesProvider>
         <main className="flex flex-grow overflow-hidden">
           <aside className="hidden lg:block w-64">
             <Nav /> 
