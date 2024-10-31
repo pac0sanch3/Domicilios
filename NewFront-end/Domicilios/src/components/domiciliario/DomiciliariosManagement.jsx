@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { domiciliariosService } from '../../services/domiciliarioServer';
 import { DomiciliariosList } from './DomiciliariosList';
 import { DomiciliarioForm } from './DomiciliarioForm';
@@ -23,8 +23,12 @@ const DomiciliariosManagement = () => {
       const response = await domiciliariosService.getDomiciliarios();
       setDomiciliarios(response.data);
     } catch (error) {
+      console.error('Error al cargar domiciliarios', error);
       setError('Error al cargar los domiciliarios');
-      showAlert('Error al cargar domiciliarios', 'error');
+      showAlert(
+        error.response?.data?.message || 'Error al cargar los domiciliarios', 
+        'error'
+      );
     } finally {
       setLoading(false);
     }
@@ -45,8 +49,9 @@ const DomiciliariosManagement = () => {
       await loadDomiciliarios();
       handleCloseModal();
     } catch (error) {
+      console.error('Error al procesar domiciliario', error);
       showAlert(
-        error.response?.data?.error || 'Error al procesar la operación', 
+        error.response?.data?.message || 'Error al procesar la operación', 
         'error'
       );
     }
@@ -59,7 +64,11 @@ const DomiciliariosManagement = () => {
         showAlert('Domiciliario eliminado exitosamente', 'success');
         await loadDomiciliarios();
       } catch (error) {
-        showAlert('Error al eliminar el domiciliario', 'error');
+        console.error('Error al eliminar domiciliario', error);
+        showAlert(
+          error.response?.data?.message || 'Error al eliminar el domiciliario', 
+          'error'
+        );
       }
     }
   };
@@ -70,7 +79,11 @@ const DomiciliariosManagement = () => {
       showAlert('Disponibilidad actualizada exitosamente', 'success');
       await loadDomiciliarios();
     } catch (error) {
-      showAlert('Error al actualizar la disponibilidad', 'error');
+      console.error('Error al actualizar disponibilidad', error);
+      showAlert(
+        error.response?.data?.message || 'Error al actualizar la disponibilidad', 
+        'error'
+      );
     }
   };
 
@@ -101,46 +114,45 @@ const DomiciliariosManagement = () => {
   }
 
   return (
-    <div className="container mx-auto p-4 max-w-4xl">
-      <div className="bg-white rounded-lg shadow-sm p-6">
-        <div className="flex justify-between items-center mb-6">
-          <h1 className="text-2xl font-bold text-gray-900">
-            Gestión de Domiciliarios
-          </h1>
-          <button
-            onClick={() => setModalOpen(true)}
-            className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
-          >
-            Nuevo Domiciliario
-          </button>
+    <div className="p-4">
+      <h3 className="text-xl font-bold mb-4">Gestión de Domiciliarios</h3>
+
+      {alert.show && (
+        <div className="mb-4">
+          <Alert {...alert} />
         </div>
+      )}
+      
+      <button
+        onClick={() => {
+          setSelectedDomiciliario(null);
+          setModalOpen(true);
+        }}
+        className="w-full bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700"
+      >
+        Nuevo Domiciliario
+      </button>
 
-        {alert.show && (
-          <div className="mb-4">
-            <Alert {...alert} />
-          </div>
-        )}
+      <DomiciliariosList
+        domiciliarios={domiciliarios}
+        onEdit={(domiciliario) => {
+          setSelectedDomiciliario(domiciliario);
+          setModalOpen(true);
+        }}
+        onDelete={handleDeleteDomiciliario}
+        onUpdateDisponibilidad={handleUpdateDisponibilidad}
+      />
 
-        <DomiciliariosList
-          domiciliarios={domiciliarios}
-          onEdit={(domiciliario) => {
-            setSelectedDomiciliario(domiciliario);
-            setModalOpen(true);
-          }}
-          onDelete={handleDeleteDomiciliario}
-          onUpdateDisponibilidad={handleUpdateDisponibilidad}
+      {modalOpen && (
+        <DomiciliarioForm
+          domiciliario={selectedDomiciliario}
+          onSubmit={handleCreateOrUpdateDomiciliario}
+          onClose={handleCloseModal}
         />
-
-        {modalOpen && (
-          <DomiciliarioForm
-            domiciliario={selectedDomiciliario}
-            onSubmit={handleCreateOrUpdateDomiciliario}
-            onClose={handleCloseModal}
-          />
-        )}
-      </div>
+      )}
     </div>
   );
 };
 
 export default DomiciliariosManagement;
+
