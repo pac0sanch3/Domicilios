@@ -31,22 +31,35 @@ export const listarNovedad = async (req, res) => {
   };
   
   // Actualizar una novedad
-export const actualizarNovedad = async (req, res) => {
+  export const actualizarNovedad = async (req, res) => {
     try {
-      const { id_novedad } = req.params;
-      const { id_domiciliario, id_solicitud, descripcion, estado, fecha_reporte } = req.body;
+        const { id_novedad } = req.params;
+        const { id_domiciliario, id_solicitud, descripcion, estado, fecha_reporte } = req.body;
   
-      const sql = `UPDATE novedades SET id_domiciliario = ?, id_solicitud = ?, descripcion = ?, estado = ?, fecha_reporte = ?, 
-                   fecha_actualizacion = CURRENT_TIMESTAMP WHERE id_novedad = ?`;
+        // Validar que los campos requeridos estén presentes
+        if (!id_domiciliario || !id_solicitud || !descripcion || !estado || !fecha_reporte) {
+            return res.status(400).json({ error: 'Todos los campos son obligatorios' });
+        }
   
-      const [results] = await conexion.query(sql, [id_domiciliario, id_solicitud, descripcion, estado, fecha_reporte, id_novedad]);
+        // Verificar si la novedad existe
+        const checkSql = `SELECT * FROM novedades WHERE id_novedad = ?`;
+        const [checkResult] = await conexion.query(checkSql, [id_novedad]);
   
-      if (results.affectedRows === 0) {
-        return res.status(404).json({ message: 'Novedad no encontrada' });
-      }
-      res.status(200).json({ message: 'Novedad actualizada exitosamente' });
+        if (checkResult.length === 0) {
+            return res.status(404).json({ message: 'Novedad no encontrada' });
+        }
+  
+        const sql = `UPDATE novedades SET id_domiciliario = ?, id_solicitud = ?, descripcion = ?, estado = ?, fecha_reporte = ? WHERE id_novedad = ?`;
+        const [results] = await conexion.query(sql, [id_domiciliario, id_solicitud, descripcion, estado, fecha_reporte, id_novedad]);
+  
+        if (results.affectedRows === 0) {
+            return res.status(404).json({ message: 'Novedad no encontrada' });
+        }
+  
+        res.status(200).json({ message: 'Novedad actualizada exitosamente' });
     } catch (err) {
-      res.status(500).json({ error: 'Error al actualizar la novedad', details: err });
+        console.error('Error al actualizar la novedad:', err);
+        res.status(500).json({ error: 'Error al actualizar la novedad', details: err });
     }
   };
   
