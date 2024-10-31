@@ -40,7 +40,7 @@ const Nav = () => {
         {userType === 'domiciliario' && (
           <div className="p-4">
             <li className="p-2 hover:bg-gray-700 cursor-pointer">
-              <Link to="/NotificacionesDom">Notificaciones</Link>
+              <Link to="/NotificacionesDom">Domicilios</Link>
             </li>
           </div>
         )}
