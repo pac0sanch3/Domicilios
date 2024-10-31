@@ -3,11 +3,14 @@ import { conexion } from "../databases/conexion.js";
   // Registrar una novedad
 export const registrarNovedad = async (req, res) => {
     try {
-      const { id_domiciliario, id_solicitud, descripcion  } = req.body;
-      const sql = `INSERT INTO novedades (id_domiciliario, id_solicitud, descripcion, estado, fecha_reporte)
-                   VALUES (?, ?, ?, ?, ?)`;
+      const { id_domiciliario, id_solicitud, descripcion, ubicacionActual } = req.body;
+      const sql = `INSERT INTO novedades (id_domiciliario, id_solicitud, descripcion, estado, fecha_reporte, ubicacionActual)
+                   VALUES (?, ?, ?, ?, ?, ?)`;
 
-      const [results] = await conexion.query(sql, [id_domiciliario, id_solicitud, descripcion, 'pendiente', new Date()]);
+      const [results] = await conexion.query(sql, [id_domiciliario, id_solicitud, descripcion, 'pendiente', new Date(), ubicacionActual]);
+      
+      console.log(results)
+
       res.status(201).json({ message: 'Novedad registrada exitosamente', id: results.insertId });
     } catch (err) {
       res.status(500).json({ error: 'Error al registrar la novedad', details: err });
