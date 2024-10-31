@@ -4,11 +4,11 @@ const API_URL = 'http://localhost:3000/domiciliario';
 
 export const domiciliariosService = {
   getDomiciliarios: () => {
-    return axios.get(`${API_URL}/`);
+    return axios.get(`${API_URL}`);
   },
 
   createDomiciliario: (data) => {
-    return axios.post(`${API_URL}/`, data);
+    return axios.post(`${API_URL}`, data);
   },
 
   updateDomiciliario: (id, data) => {
@@ -19,7 +19,7 @@ export const domiciliariosService = {
     return axios.delete(`${API_URL}/${id}`);
   },
 
-  updateDisponibilidad: (id, data) => {
-    return axios.put(`${API_URL}/disponibilidad/${id}`, { disponibilidad: data });
+  updateDisponibilidad: (id, disponibilidad) => {
+    return axios.put(`${API_URL}/disponibilidad/${id}`, { disponibilidad });
   }
 };
