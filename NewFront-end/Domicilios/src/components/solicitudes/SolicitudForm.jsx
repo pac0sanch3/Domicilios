@@ -56,7 +56,10 @@ export const SolicitudForm = ({ role, onSubmit, onClose }) => {
   const loadDomiciliarios = async () => {
     try {
       setLoading(true);
-      const response = await domiciliariosService.getDomiciliarios();
+      const token = localStorage.getItem('token'); // Asegúrate de obtener el token de tu almacenamiento
+      const response = await domiciliariosService.getDomiciliarios({
+        headers: { Authorization: `Bearer ${token}` }
+      });
       setDomiciliarios(response.data);
     } catch (err) {
       setError('Error al cargar domiciliarios');
@@ -65,6 +68,7 @@ export const SolicitudForm = ({ role, onSubmit, onClose }) => {
       setLoading(false);
     }
   };
+  
 
   const handleChange = (e) => {
     const { name, value } = e.target;
