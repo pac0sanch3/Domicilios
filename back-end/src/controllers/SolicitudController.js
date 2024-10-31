@@ -235,10 +235,41 @@ export const listSolicitudesDomi = async (req, res)=>{
     }
 }
 
+/* listrar las solicitudes de un cliente o empresa */
+export const listSolicitudesCliente = async(req, res)=>{
+    try{
 
+        const {idCliente} = req.params
+
+        let sql = `
+        SELECT
+            s.id_solicitud,
+            s.direccion_recogida,
+            s.direccion_entrega,
+            s.instruccionesAdc,
+            s.fecha_creacion,
+            u.correo,
+            u.telefono,
+            u.nombre,
+            s.estado,
+            u.tipo_usuario,
+            d.licencia_vehiculo
+        FROM solicitudes AS s
+        INNER JOIN domiciliarios as d ON s.id_domiciliario = d.id_domiciliario
+        INNER JOIN usuarios as u ON d.id_usuario = u.id_usuario
+        WHERE s.id_cliente = ${idCliente}
+        `
+
+        const [response] = await conexion.query(sql)
+
+        return res.status(200).json({response})
+
+    }catch(error){
+        return res.status(500).json({"mensaje":"error en el servidor", error})
+    }
+}
 
 /* consultar a que domiciliario le pertenece un id */
-
 export const buscarDomi = async(req, res)=>{
     try{
 
