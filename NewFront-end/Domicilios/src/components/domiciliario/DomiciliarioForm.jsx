@@ -1,17 +1,32 @@
-import { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { userService } from '../../services/userService';
 
 export const DomiciliarioForm = ({ domiciliario, onSubmit, onClose }) => {
+  const [users, setUsers] = useState([]);
   const [formData, setFormData] = useState({
     id_usuario: domiciliario?.id_usuario || '',
     licencia_vehiculo: domiciliario?.licencia_vehiculo || '',
-    disponibilidad: domiciliario?.disponibilidad || 'disponible'
+    disponibilidad: domiciliario?.disponibilidad || 'disponible',
   });
+
+  useEffect(() => {
+    loadUsers();
+  }, []);
+
+  const loadUsers = async () => {
+    try {
+      const response = await userService.getUsers();
+      setUsers(response.data);
+    } catch (error) {
+      console.error('Error al cargar usuarios:', error);
+    }
+  };
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setFormData(prevState => ({
+    setFormData((prevState) => ({
       ...prevState,
-      [name]: value
+      [name]: value,
     }));
   };
 
@@ -19,7 +34,7 @@ export const DomiciliarioForm = ({ domiciliario, onSubmit, onClose }) => {
     e.preventDefault();
     onSubmit({
       ...formData,
-      id_usuario: parseInt(formData.id_usuario)
+      id_usuario: parseInt(formData.id_usuario, 10),
     });
   };
 
@@ -33,17 +48,23 @@ export const DomiciliarioForm = ({ domiciliario, onSubmit, onClose }) => {
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
             <label htmlFor="id_usuario" className="block text-sm font-medium text-gray-700 mb-1">
-              ID Usuario
+              Usuario
             </label>
-            <input
+            <select
               id="id_usuario"
-              type="number"
               name="id_usuario"
               value={formData.id_usuario}
               onChange={handleChange}
               className="w-full p-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
               required
-            />
+            >
+              <option value="">Seleccione un usuario</option>
+              {users.map((user) => (
+                <option key={user.id_usuario} value={user.id_usuario}>
+                  {user.nombre} ({user.id_usuario})
+                </option>
+              ))}
+            </select>
           </div>
 
           <div>
@@ -59,22 +80,6 @@ export const DomiciliarioForm = ({ domiciliario, onSubmit, onClose }) => {
               className="w-full p-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
               required
             />
-          </div>
-
-          <div>
-            <label htmlFor="disponibilidad" className="block text-sm font-medium text-gray-700 mb-1">
-              Disponibilidad
-            </label>
-            <select
-              id="disponibilidad"
-              name="disponibilidad"
-              value={formData.disponibilidad}
-              onChange={handleChange}
-              className="w-full p-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-            >
-              <option value="disponible">Disponible</option>
-              <option value="no disponible">No Disponible</option>
-            </select>
           </div>
 
           <div className="flex justify-end space-x-2 pt-4">

@@ -4,7 +4,8 @@ export const registrarReporte = async (req, res) => {
     const { id_usuario, id_solicitud, tipo_incidencia, descripcion, estado } = req.body;
     const fecha_reporte = new Date();
     const fecha_creacion = new Date();
-  
+
+    
     try {
       const query = `
         INSERT INTO reporte_incidencias 

@@ -65,7 +65,7 @@ const Inicio = () => {
   };
 
   return (
-    <div className="min-h-screen w-full flex items-center justify-center bg-slate-400 py-8 px-4">
+    <div className="min-h-screen w-full flex items-center justify-center py-8 px-4">
       <Card className="w-full max-w-xs md:max-w-sm lg:max-w-md bg-white rounded-2xl shadow-lg my-2">
         <CardHeader className="flex flex-col gap-6 items-center justify-center pt-10 pb-6">
           <div className="w-32 h-32">

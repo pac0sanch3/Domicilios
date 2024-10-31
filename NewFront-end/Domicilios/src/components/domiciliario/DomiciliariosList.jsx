@@ -1,9 +1,31 @@
+import React, { useState, useEffect } from 'react';
+import { userService } from '../../services/userService';
+
 export const DomiciliariosList = ({ 
   domiciliarios, 
   onEdit, 
   onDelete,
   onUpdateDisponibilidad 
 }) => {
+  const [users, setUsers] = useState({});
+
+  useEffect(() => {
+    loadUsers();
+  }, []);
+
+  const loadUsers = async () => {
+    try {
+      const response = await userService.getUsers();
+      const usersMap = {};
+      response.data.forEach(user => {
+        usersMap[user.id_usuario] = user.nombre;
+      });
+      setUsers(usersMap);
+    } catch (error) {
+      console.error('Error al cargar usuarios:', error);
+    }
+  };
+
   return (
     <div className="space-y-4 mt-4">
       {domiciliarios.map(domiciliario => (
@@ -14,7 +36,7 @@ export const DomiciliariosList = ({
           <div className="flex justify-between items-center">
             <div className="space-y-1">
               <h3 className="font-medium text-gray-900">
-                Usuario ID: {domiciliario.id_usuario}
+                Usuario: {users[domiciliario.id_usuario] || domiciliario.id_usuario}
               </h3>
               <p className="text-sm text-gray-600">
                 Licencia: {domiciliario.licencia_vehiculo}
@@ -47,12 +69,6 @@ export const DomiciliariosList = ({
                 className="inline-flex items-center px-3 py-1.5 border border-blue-600 text-blue-600 rounded-md hover:bg-blue-50 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
               >
                 Editar
-              </button>
-              <button
-                onClick={() => onDelete(domiciliario.id_domiciliario)}
-                className="inline-flex items-center px-3 py-1.5 border border-red-600 text-red-600 rounded-md hover:bg-red-50 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2"
-              >
-                Eliminar
               </button>
             </div>
           </div>
