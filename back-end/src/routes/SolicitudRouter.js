@@ -1,6 +1,6 @@
 import { Router } from "express"
 
-import {buscarDomi, registrarSolicitud, actualizarSolicitud, actEstadoSolicitud, listarSolicitudes, reasignarSoli, listSolicitudesDomi} from '../controllers/SolicitudController.js'
+import {buscarDomi,listSolicitudesCliente, registrarSolicitud, actualizarSolicitud, actEstadoSolicitud, listarSolicitudes, reasignarSoli, listSolicitudesDomi} from '../controllers/SolicitudController.js'
 
 
 
@@ -17,6 +17,8 @@ RutaSolicitud.put('/reasignarSoli', reasignarSoli)
 
 /* listar las solicitudes de un domiciliario */
 RutaSolicitud.get('/listSolicitudesDom/:idDomiciliario', listSolicitudesDomi)
+RutaSolicitud.get('/listarSoliClientes/:idCliente', listSolicitudesCliente)
+
 RutaSolicitud.get('/buscarDomic/:idUser', buscarDomi)
 
 
