@@ -6,23 +6,42 @@ import Registro from "./pages/Registrar_usuario";
 import ProtectedRoute from "./components/proteccion/ProtectedRoute"; // Importa el componente de protección de rutas
 import ProtectedAdminRoute from "./components/proteccion/ProtectedAdminRoute";
 
+
+import { NotificacionesDom } from "./pages/NotificacionesDom";
 import UserProfile from './components/usuario/usuario_administrar';
 import RecuperarPassword from './components/usuario/recuperar_contra';
 
 import RegistroNegocio from './pages/Registrar_negocio';
-
+import Solicitud from './pages/Solicitud'
+import Novedades from "./pages/Novedades";
 function App() {
   return (
     <Routes>
       {/* Ruta pública: Inicio de sesión */}
       <Route path="/" element={<Inicio />} />
-
+      <Route path="/NotificacionesDom" element={<NotificacionesDom />} />
       {/* Rutas protegidas */}
       <Route
         path="/home"
         element={
           <ProtectedRoute>
             <Home />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/solicitud"
+        element={
+          <ProtectedRoute>
+            <Solicitud />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/novedades"
+        element={
+          <ProtectedRoute>
+            <Novedades />
           </ProtectedRoute>
         }
       />

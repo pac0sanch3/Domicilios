@@ -13,8 +13,8 @@ const Nav = () => {
       >
         {/* Sección superior del menú */}
         <div>
-          <div className="p-6 text-lg font-semibold border-b border-gray-700">
-            Menú de Navegación
+          <div className="p-6 text-lg font-semibold ">
+           
           </div>
           <ul className="p-4 space-y-2">
             
@@ -25,11 +25,25 @@ const Nav = () => {
             <Link to="/solicitud">
               <li className="p-2 hover:bg-gray-700 cursor-pointer">Domicilio</li>
             </Link>
+
+
+            {userType === 'domiciliario' && (
+            <Link to="/novedades">
+              <li className="p-2 hover:bg-gray-700 cursor-pointer">Registrar novedad</li>
+            </Link>
+            )}
             
           </ul>
         </div>
 
         {/* Enlace de Panel de Control en la parte inferior */}
+        {userType === 'domiciliario' && (
+          <div className="p-4">
+            <li className="p-2 hover:bg-gray-700 cursor-pointer">
+              <Link to="/NotificacionesDom">Notificaciones</Link>
+            </li>
+          </div>
+        )}
         {userType === 'administrador' && (
           <div className="p-4">
             <li className="p-2 hover:bg-gray-700 cursor-pointer">

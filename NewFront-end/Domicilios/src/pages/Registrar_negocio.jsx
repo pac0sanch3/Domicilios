@@ -68,19 +68,19 @@ const RegistroNegocio = () => {
   };
 
   return (
-    <div className="min-h-screen w-full flex items-center justify-center bg-gradient-to-b from-blue-200 to-blue-600 p-4">
+    <div className="min-h-screen w-full flex items-center justify-center bg-gradient-to-b bg-slate-400 p-4">
       <Card className="w-full max-w-sm bg-white/90 backdrop-blur-md rounded-xl shadow-2xl">
         <CardHeader className="flex flex-col gap-4 items-center justify-center pt-6 pb-4">
-          <div className="w-48 h-36 border-2 border-blue-300 rounded-lg overflow-hidden bg-blue-100 shadow-inner">
+          <div className="w-48 h-46 border-2 border-blue-300 rounded-lg overflow-hidden bg-blue-100 shadow-inner">
             <Image
-              src="/logotrabajo.jpeg"
+              src="/nuevo_logo.jpeg"
               alt="Logo"
               className="w-full h-full object-cover"
             />
           </div>
           <h1 className="text-2xl font-bold text-gray-800">Registro de Negocio</h1>
         </CardHeader>
-
+      
         <CardBody className="px-6 py-4">
           <form onSubmit={handleSubmit} className="flex flex-col gap-4">
             <div className="space-y-4">
@@ -103,7 +103,7 @@ const RegistroNegocio = () => {
                   ))}
                 </select>
               </div>
-
+                
               <div className="space-y-2">
                 <label className="block text-gray-600 text-base font-medium">
                   Nombre del Negocio
@@ -132,7 +132,7 @@ const RegistroNegocio = () => {
                   }}
                 />
               </div>
-
+                
               <div className="space-y-2">
                 <label className="block text-gray-600 text-base font-medium">
                   Dirección
@@ -161,10 +161,10 @@ const RegistroNegocio = () => {
                   }}
                 />
               </div>
-
+                
               <div className="space-y-2">
                 <label className="block text-gray-600 text-base font-medium">
-                  Imagen Banner
+                  Imagen del negocio
                 </label>
                 <Input
                   type="file"
@@ -190,13 +190,13 @@ const RegistroNegocio = () => {
                 />
               </div>
             </div>
-
+                
             {error && (
               <div className="text-red-500 text-sm text-center bg-red-100/10 rounded-lg p-2 animate-pulse">
                 {error}
               </div>
             )}
-
+    
             <Button
               type="submit"
               color="primary"
@@ -207,7 +207,7 @@ const RegistroNegocio = () => {
             </Button>
           </form>
         </CardBody>
-
+          
         <CardFooter className="flex justify-center pb-6 pt-2">
           <p className="text-gray-500 text-sm">
             ¿Ya tienes un negocio registrado?{" "}
@@ -221,6 +221,7 @@ const RegistroNegocio = () => {
         </CardFooter>
       </Card>
     </div>
+
   );
 };
 
