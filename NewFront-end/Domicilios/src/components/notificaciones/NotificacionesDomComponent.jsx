@@ -98,8 +98,8 @@ export const NotificacionesDomComponent = () => {
                                 Estado: <span className="text-gray-500">{solicitud.estado}</span>
                             </p>
 
-                            {/* Solo mostrar el botón si estamos en "Pedidos pendientes" */}
-                            {activeTab === 'pendiente' && (
+                            {/* Solo mostrar el botón si estamos en "Pedidos en curso" */}
+                            {activeTab === 'en_curso' && (
                                 <button 
                                     onClick={() => setSelectedSolicitud(solicitud.id_solicitud)} 
                                     className="mt-4 bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 transition"
