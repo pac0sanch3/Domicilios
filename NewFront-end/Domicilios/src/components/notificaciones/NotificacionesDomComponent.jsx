@@ -10,8 +10,13 @@ export const NotificacionesDomComponent = () => {
         listarSolicitudes(); // Llama a la función al cargar el componente
     }, []);
 
+    useEffect(() => {
+        console.log("Solicitudes:", solicitudes); // Verifica las solicitudes recibidas
+        console.log("Estado activo:", activeTab); // Verifica el estado activo
+    }, [solicitudes, activeTab]);
     // Filtrar las solicitudes según el estado de la pestaña activa
     const filteredSolicitudes = solicitudes.filter(solicitud => solicitud.estado === activeTab);
+
 
     // Función para actualizar el estado de la solicitud a "completado"
     const handleFinalizarSolicitud = async () => {
@@ -64,6 +69,12 @@ export const NotificacionesDomComponent = () => {
                 >
                     Pedidos cancelados
                 </button>
+                <button 
+                    onClick={() => setActiveTab('reprogramado')} 
+                    className={`px-4 py-2 rounded ${activeTab === 'reprogramado' ? 'bg-blue-500 text-white' : 'bg-gray-300'}`}
+                >
+                    Pedidos reprogramados
+                </button>
             </div>
 
             {loading && (
@@ -94,12 +105,22 @@ export const NotificacionesDomComponent = () => {
                             <p className="text-gray-700">
                                 Dirección de Entrega: <span className="text-gray-500">{solicitud.direccion_entrega}</span>
                             </p>
+                            
+                            {activeTab === 'reprogramado'  && (
+                                <p className="text-gray-700">
+                                    Ubicación Actual: <span className="text-gray-500">{solicitud.ubicacionActual}</span>
+                                </p>
+                            )}
+
+
                             <p className="text-gray-700">
                                 Estado: <span className="text-gray-500">{solicitud.estado}</span>
                             </p>
 
+
+
                             {/* Solo mostrar el botón si estamos en "Pedidos en curso" */}
-                            {activeTab === 'en_curso' && (
+                            {(activeTab === 'en_curso' || activeTab === 'reprogramado') && (
                                 <button 
                                     onClick={() => setSelectedSolicitud(solicitud.id_solicitud)} 
                                     className="mt-4 bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 transition"
