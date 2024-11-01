@@ -22,7 +22,7 @@ const IncidenciasForm = () => {
     e.preventDefault();
 
     try {
-      await axios.post('http://localhost:3000/insidencias/registrar', {
+      await axios.post('http://192.168.1.100:3000/insidencias/registrar', {
         ...formData,
         id_usuario,
       });

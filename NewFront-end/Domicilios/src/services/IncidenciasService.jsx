@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const API_URL = 'http://localhost:3000/insidencias';
+const API_URL = 'http://192.168.1.100:3000/insidencias';
 
 export const IncidenciasService = {
   // Obtener todos los usuarios

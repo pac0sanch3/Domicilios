@@ -26,7 +26,7 @@ const Inicio = () => {
     setError('');
 
     try {
-      const response = await axios.post('http://localhost:3000/usuario/login', formData);
+      const response = await axios.post('http://192.168.1.100:3000/usuario/login', formData);
       
       // Verificar el estado del usuario
       if (response.data.usuario.estado === 'inactivo') {

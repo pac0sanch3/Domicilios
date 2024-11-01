@@ -1,7 +1,6 @@
 import Header from "../layout/Header.jsx";
 import { Suspense } from "react";
 
-import { Footer } from "../layout/Footer.jsx";
 import { SolicitudesProvider } from "../../services/SolicitudesProvider.jsx";
 
 const Layout = ({ children }) => {
@@ -26,7 +25,6 @@ const Layout = ({ children }) => {
             </Suspense>
           </section>
         </main>
-        <Footer className="shadow-md mt-auto p-4 sm:p-6" /> 
       </div>
     </>
   );

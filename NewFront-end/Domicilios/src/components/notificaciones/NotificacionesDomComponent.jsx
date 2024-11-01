@@ -16,7 +16,7 @@ export const NotificacionesDomComponent = () => {
     // Función para actualizar el estado de la solicitud a "completado"
     const handleFinalizarSolicitud = async () => {
         try {
-            const response = await fetch('http://localhost:3000/solicitudes/actualizarEstado', {
+            const response = await fetch('http://192.168.1.100:3000/solicitudes/actualizarEstado', {
                 method: 'PUT',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ estado: 'completado', idSolicitud: selectedSolicitud }),
@@ -39,7 +39,7 @@ export const NotificacionesDomComponent = () => {
             </h1>
 
             {/* Tabs para navegar entre los estados de pedidos */}
-            <div className="flex space-x-4 mb-6">
+            <div className="flex flex-col sm:flex-row gap-3 space-x-4 mb-6">
                 <button 
                     onClick={() => setActiveTab('pendiente')} 
                     className={`px-4 py-2 rounded ${activeTab === 'pendiente' ? 'bg-blue-500 text-white' : 'bg-gray-300'}`}

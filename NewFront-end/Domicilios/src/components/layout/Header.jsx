@@ -1,23 +1,29 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { Link } from "react-router-dom";
 import LogoutButton from '../navegacion/LogoutButton';
-import { FaBell } from "react-icons/fa";
+import { FaBell, FaBars, FaTimes } from "react-icons/fa";
 import NotificacionesBell from '../notificaciones/NotificacionesBell';
 import { useSolicitudes } from '../../services/SolicitudesProvider';
 
 const Header = () => {
   const [showNotifications, setShowNotifications] = useState(false);
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
   const userType = localStorage.getItem('userType');
-  const { listarSolicitudes, solicitudes } = useSolicitudes();
+  const { listarSolicitudes, solicitudes = [] } = useSolicitudes() || {};
   const [notificacionesPendientes, setNotificacionesPendientes] = useState(0);
 
   useEffect(() => {
-    listarSolicitudes();
-    const interval = setInterval(() => {
+    if (listarSolicitudes) {
       listarSolicitudes();
+    }
+    const interval = setInterval(() => {
+      if (listarSolicitudes) {
+        listarSolicitudes();
+      }
     }, 10000);
+
     return () => clearInterval(interval);
-  }, []);
+  }, [listarSolicitudes]);
 
   useEffect(() => {
     const pendientes = solicitudes.filter(solicitud => solicitud.estado === 'en_curso');
@@ -28,11 +34,14 @@ const Header = () => {
     setShowNotifications(!showNotifications);
   };
 
+  const toggleMenu = () => {
+    setIsMenuOpen(!isMenuOpen);
+  };
+
   return (
     <header className="inset-x-0 top-0 h-16 bg-white md:px-8 sm:px-8 max-sm:px-8 z-50">
       <nav className="flex items-center justify-between lg:px-8 h-full" aria-label="Global">
         <div className="flex lg:flex-1 items-center">
-          <figure className="h-full w-24 "></figure>
           <div className="flex justify-center items-center ml-3 font-bold text-2xl text-green-600 tracking-wide">
             Domicilios
           </div>
@@ -40,21 +49,36 @@ const Header = () => {
 
         <div className="flex gap-6 items-center">
           {/* Menú de navegación */}
-          <ul className="flex space-x-4">
+          <ul className="hidden sm:flex space-x-4">
             <Link to="/Home" className="text-gray-800 hover:text-green-600">Home</Link>
-            <Link to="/solicitud" className="text-gray-800 hover:text-green-600">Domicilio</Link>
             {userType === 'domiciliario' && (
-              <Link to="/novedades" className="text-gray-800 hover:text-green-600">Registrar novedad</Link>
-            )}
-            {userType === 'domiciliario' && (
-              <Link to="/NotificacionesDom" className="text-gray-800 hover:text-green-600">Domicilios</Link>
+              <>
+                <Link to="/solicitud" className="text-gray-800 hover:text-green-600">Domicilio</Link>
+                <Link to="/novedades" className="text-gray-800 hover:text-green-600">Registrar novedad</Link>
+                <Link to="/NotificacionesDom" className="text-gray-800 hover:text-green-600">Domicilios</Link>
+              </>
             )}
             {userType === 'administrador' && (
               <Link to="/PanelDeControl" className="text-gray-800 hover:text-green-600">Panel De Control</Link>
             )}
           </ul>
 
-          {/* Icono de notificaciones */}
+          {userType === 'domiciliario' && (
+            <div className="sm:hidden">
+              <button onClick={toggleMenu} className="text-3xl">
+                {isMenuOpen ? <FaTimes /> : <FaBars />}
+              </button>
+              {isMenuOpen && (
+                <div className="absolute top-16 right-0 bg-white shadow-lg rounded-lg p-4">
+                  <Link to="/Home" className="block text-gray-800 hover:text-green-600 mb-2">Home</Link>
+                  <Link to="/solicitud" className="block text-gray-800 hover:text-green-600 mb-2">Domicilio</Link>
+                  <Link to="/novedades" className="block text-gray-800 hover:text-green-600 mb-2">Registrar novedad</Link>
+                  <Link to="/NotificacionesDom" className="block text-gray-800 hover:text-green-600 mb-2">Domicilios</Link>
+                </div>
+              )}
+            </div>
+          )}
+
           {userType === 'domiciliario' && (
             <>
               <button className="relative" onClick={toggleNotifications}>
@@ -73,7 +97,6 @@ const Header = () => {
             </>
           )}
 
-          {/* Botón de logout */}
           <LogoutButton />
         </div>
       </nav>
