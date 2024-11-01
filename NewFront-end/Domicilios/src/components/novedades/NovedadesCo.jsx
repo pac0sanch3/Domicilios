@@ -17,7 +17,7 @@ const NovedadesCo = ()=> {
 
       console.log(data)
 
-      const response = await axios.post('http://localhost:3000/novedad/', data)
+      const response = await axios.post('http://192.168.1.100:3000/novedad/', data)
   
   
       console.log(response)
@@ -40,7 +40,7 @@ const NovedadesCo = ()=> {
 
           /* primeros consultamos el id del domiciliario que pertenece a ese usuario */
 
-          const respuesta = await axios.get(`http://localhost:3000/solicitudes/buscarDomic/${idUser}`)
+          const respuesta = await axios.get(`http://192.168.1.100:3000/solicitudes/buscarDomic/${idUser}`)
 
           let idDomiciliario = respuesta.data.response[0].id_domiciliario
 
@@ -48,7 +48,7 @@ const NovedadesCo = ()=> {
 
           /* consulta de las solicitudes que tiene ese domiciliario */
           
-          const soli = await axios.get(`http://localhost:3000/solicitudes/listSolicitudesDom/${idDomiciliario}`)
+          const soli = await axios.get(`http://192.168.1.100:3000/solicitudes/listSolicitudesDom/${idDomiciliario}`)
 
           setSoli(soli.data.response)
         } catch (error) {
