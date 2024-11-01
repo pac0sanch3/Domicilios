@@ -137,22 +137,28 @@ export const actualizarSolicitud = async(req, res)=>{
 
 /* listar todas las solicitudes */
 
-export const listarSolicitudes = async (req, res) =>{
+export const listarSolicitudes = async (req, res) => {
+    try {
+        let sql = `
+            SELECT 
+                s.*, 
+                u.nombre AS nombre_cliente, 
+                GROUP_CONCAT(n.ubicacionActual) AS ubicaciones
+            FROM solicitudes s 
+            LEFT JOIN usuarios u ON s.id_cliente = u.id_usuario 
+            LEFT JOIN novedades n ON s.id_solicitud = n.id_solicitud
+            GROUP BY s.id_solicitud
+        `;
 
-    try{
-        let sql = `select s.*, u.nombre as nombre_cliente from solicitudes s INNER JOIN usuarios u ON s.id_cliente = u.id_usuario`
+        const [response] = await conexion.query(sql);
 
-        const [response] = await conexion.query(sql)
-
-
-
-        return res.status(200).json(response)
-
-    }catch(error){
-        return res.status(500).json({"mensaje":"Error en el servidor",error})
+        return res.status(200).json(response);
+    } catch (error) {
+        return res.status(500).json({ "mensaje": "Error en el servidor", error });
     }
+};
 
-}
+
 
 /* actualizar solo el estado */
 export const actEstadoSolicitud = async(req, res)=>{
@@ -184,6 +190,7 @@ export const reasignarSoli = async(req, res)=>{
 
 
         let sql = `update solicitudes set  estado ='reprogramado', id_domiciliario=${idDomiciliario} where id_solicitud = ${idSolicitud}`
+
 
         const [response] = await conexion.query(sql)
 
