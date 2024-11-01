@@ -38,7 +38,7 @@ const HomeCliente = () =>{
     try{
       const idUser = localStorage.getItem('userId')
 
-      const respuesta = await axios.get(`http://192.168.1.100:3000/solicitudes/listarSoliClientes/${idUser}`)
+      const respuesta = await axios.get(`${import.meta.env.VITE_API_URL}solicitudes/listarSoliClientes/${idUser}`)
 
       let contenidoGen = respuesta?.data?.response
       

@@ -25,8 +25,11 @@ const Inicio = () => {
     setIsLoading(true);
     setError('');
 
+
     try {
-      const response = await axios.post('http://192.168.1.100:3000/usuario/login', formData);
+      const response = await axios.post(`${import.meta.env.VITE_API_URL}usuario/login`, formData);
+
+
       
       // Verificar el estado del usuario
       if (response.data.usuario.estado === 'inactivo') {
@@ -52,6 +55,7 @@ const Inicio = () => {
         navigate('/home');
       }
     } catch (error) {
+      console.error("Error during login:", error); // Log completo del error
       if (error.response?.data?.mensaje) {
         setError(error.response.data.mensaje);
       } else if (error.response?.status === 401) {

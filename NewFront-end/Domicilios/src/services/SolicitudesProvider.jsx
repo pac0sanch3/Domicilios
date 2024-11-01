@@ -15,7 +15,7 @@ export const SolicitudesProvider = ({ children }) => {
             setLoading(true);
             setError(null);
 
-            const response = await axios.post('http://192.168.1.100:3000/solicitudes/registrar', solicitudData);
+            const response = await axios.post(`${import.meta.env.VITE_API_URL}solicitudes/registrar`, solicitudData);
             setInfoSolicitud(response.data.infoSolicitudCo); // Guardamos la información de la solicitud en el estado
         } catch (error) {
             setError(error.response ? error.response.data : { mensaje: "Error en el servidor" });
@@ -41,7 +41,7 @@ export const SolicitudesProvider = ({ children }) => {
             setLoading(true);
             setError(null);
     
-            const response = await axios.get('http://192.168.1.100:3000/solicitudes/listar', {
+            const response = await axios.get(`${import.meta.env.VITE_API_URL}solicitudes/listar`, {
                 timeout: 10000,
                 withCredentials: false,
                 headers: {
