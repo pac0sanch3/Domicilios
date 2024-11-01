@@ -5,6 +5,7 @@ import NotificacionesBell from '../notificaciones/NotificacionesBell';
 
 const Header = () => {
   const [showNotifications, setShowNotifications] = useState(false);
+  const userType = localStorage.getItem('userType');
 
   const toggleNotifications = () => {
     setShowNotifications(!showNotifications);
@@ -19,13 +20,20 @@ const Header = () => {
             Domicilios
           </div>
         </div>
+
         <div className="relative flex items-center gap-6">
-          <FaBell className="text-3xl cursor-pointer" onClick={toggleNotifications} />
+        {(userType === 'domiciliario') && (
+          <>
+                    <FaBell className="text-3xl cursor-pointer" onClick={toggleNotifications} />
           {showNotifications && (
             <div className="absolute top-12 right-0 w-80 bg-white shadow-lg rounded-lg">
               <NotificacionesBell />
             </div>
           )}
+          </>
+
+        )}
+
           <LogoutButton />
         </div>
       </nav>
