@@ -16,7 +16,7 @@ export const NotificacionesDomComponent = () => {
     // Función para actualizar el estado de la solicitud a "completado"
     const handleFinalizarSolicitud = async () => {
         try {
-            const response = await fetch('http://192.168.1.100:3000/solicitudes/actualizarEstado', {
+            const response = await fetch(`${import.meta.env.VITE_API_URL}solicitudes/actualizarEstado`, {
                 method: 'PUT',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ estado: 'completado', idSolicitud: selectedSolicitud }),
