@@ -1,10 +1,15 @@
 import axios from "axios";
+import { Button } from '@nextui-org/react';
 import Header from "../../components/layout/Header"
 import ModalSolicitud from "../solicitudes/ModalSolicitud";
+
 import { useState , useEffect} from 'react'
+import ModalIncidencias from "../Incidencias/ModalIncidencias";
 
 
 const HomeCliente = () =>{
+  const [isModalIncidenciasOpen, setIsModalIncidenciasOpen] = useState(false);
+
 
   const [isModalOpen, setIsModalOpen] = useState(false)
 
@@ -19,6 +24,14 @@ const HomeCliente = () =>{
   const closeModal = () => {
     buscarSolicitudes()
     setIsModalOpen(false);
+  };
+  const openModalIncidencias = () => {
+
+    setIsModalIncidenciasOpen(true);
+  };
+  const closeModalIncidencias = () => {
+
+    setIsModalIncidenciasOpen(false);
   };
 
   const buscarSolicitudes = async ()=>{
@@ -47,6 +60,7 @@ const HomeCliente = () =>{
   useEffect(()=>{
     buscarSolicitudes()
   }, [])
+
 
 
 
@@ -151,6 +165,12 @@ const HomeCliente = () =>{
               Detalles del pedido
             </h3>
             <p className="flex items-center mb-1 text-sm sm:text-base">
+              <span className="font-medium mr-2">ID del pedido:</span>
+            </p>
+            <p className="text-xs sm:text-sm text-gray-600 mb-2">
+              {solicitud.id_solicitud}
+            </p>
+            <p className="flex items-center mb-1 text-sm sm:text-base">
               <span className="font-medium mr-2">Dirección Recogida:</span>
             </p>
             <p className="text-xs sm:text-sm text-gray-600 mb-2">
@@ -183,9 +203,8 @@ const HomeCliente = () =>{
         {/* Footer de la Tarjeta */}
         <div className="mt-4 pt-4 border-t border-gray-200 flex flex-col sm:flex-row justify-between items-center space-y-2 sm:space-y-0">
           <div className="text-sm text-gray-500"> 
-            <button className="bg-gray-800 text-white py-2 px-4 rounded-md text-xs sm:text-sm">
-              Reportar incidencia
-            </button>
+            {/* Botón para crear nueva incidencia */}
+
           </div>
           <div className="text-xs sm:text-sm text-gray-500">
             <span className="font-medium">Fecha:</span> {new Date(solicitud.fecha_creacion).toLocaleString()}
@@ -261,6 +280,12 @@ const HomeCliente = () =>{
               Detalles del pedido
             </h3>
             <p className="flex items-center mb-1 text-sm sm:text-base">
+              <span className="font-medium mr-2">ID del pedido:</span>
+            </p>
+            <p className="text-xs sm:text-sm text-gray-600 mb-2">
+              {solicitud.id_solicitud}
+            </p>
+            <p className="flex items-center mb-1 text-sm sm:text-base">
               <span className="font-medium mr-2">Dirección Recogida:</span>
             </p>
             <p className="text-xs sm:text-sm text-gray-600 mb-2">
@@ -293,10 +318,22 @@ const HomeCliente = () =>{
         {/* Footer de la Tarjeta */}
         <div className="mt-4 pt-4 border-t border-gray-200 flex flex-col sm:flex-row justify-between items-center space-y-2 sm:space-y-0">
           <div className="text-sm text-gray-500"> 
-            <button className="bg-gray-800 text-white py-2 px-4 rounded-md text-xs sm:text-sm">
-              Reportar incidencia
-            </button>
+          <Button
+                        className="mt-6 w-full bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700"
+                        onClick={openModalIncidencias} 
+                      >
+                        Registrar Nueva Incidencia
+                      </Button>
+                      
+                      {/* Modal para Incidencias */}
+                      <ModalIncidencias 
+                        isOpen={isModalIncidenciasOpen} 
+                        onClose={closeModalIncidencias}
+                      />
+
+
           </div>
+
           <div className="text-xs sm:text-sm text-gray-500">
             <span className="font-medium">Fecha:</span> {new Date(solicitud.fecha_creacion).toLocaleString()}
           </div>
@@ -318,3 +355,4 @@ const HomeCliente = () =>{
 
 
 export default HomeCliente
+
