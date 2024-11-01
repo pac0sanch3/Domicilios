@@ -140,7 +140,7 @@ export const actualizarSolicitud = async(req, res)=>{
 export const listarSolicitudes = async (req, res) =>{
 
     try{
-        let sql = `select * from solicitudes`
+        let sql = `select s.*, u.nombre as nombre_cliente from solicitudes s INNER JOIN usuarios u ON s.id_cliente = u.id_usuario`
 
         const [response] = await conexion.query(sql)
 

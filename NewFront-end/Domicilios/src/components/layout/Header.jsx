@@ -1,11 +1,33 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import LogoutButton from '../navegacion/LogoutButton';
 import { FaBell } from "react-icons/fa";
 import NotificacionesBell from '../notificaciones/NotificacionesBell';
+import { useSolicitudes } from '../../services/SolicitudesProvider';
 
 const Header = () => {
   const [showNotifications, setShowNotifications] = useState(false);
   const userType = localStorage.getItem('userType');
+  const { listarSolicitudes, solicitudes } = useSolicitudes();
+  const [notificacionesPendientes, setNotificacionesPendientes] = useState(0);
+
+  useEffect(() => {
+    // Llama a listarSolicitudes inicialmente
+    listarSolicitudes();
+
+    // Configura un intervalo para actualizar solicitudes cada 10 segundos (ajusta el tiempo según tus necesidades)
+    const interval = setInterval(() => {
+      listarSolicitudes();
+    }, 10000);
+
+    // Limpia el intervalo cuando el componente se desmonte
+    return () => clearInterval(interval);
+  }, []);
+
+  useEffect(() => {
+    // Filtra las solicitudes con estado "en_curso"
+    const pendientes = solicitudes.filter(solicitud => solicitud.estado === 'en_curso');
+    setNotificacionesPendientes(pendientes.length); // Actualiza el contador de notificaciones pendientes
+  }, [solicitudes]);
 
   const toggleNotifications = () => {
     setShowNotifications(!showNotifications);
@@ -22,9 +44,20 @@ const Header = () => {
         </div>
 
         <div className="relative flex items-center gap-6">
+<<<<<<< HEAD
         {(userType === 'domiciliario') && (
           <>
                     <FaBell className="text-3xl cursor-pointer" onClick={toggleNotifications} />
+=======
+          <button className="relative" onClick={toggleNotifications}>
+            <FaBell className="text-3xl cursor-pointer" />
+            {notificacionesPendientes > 0 && (
+              <span className="absolute top-0 right-0 transform translate-x-1/2 -translate-y-1/2 bg-red-500 text-white text-xs font-semibold rounded-full w-5 h-5 flex items-center justify-center">
+                {notificacionesPendientes}
+              </span>
+            )}
+          </button>
+>>>>>>> ed4416486442ab525f857f171f00bb2ee520ccc6
           {showNotifications && (
             <div className="absolute top-12 right-0 w-80 bg-white shadow-lg rounded-lg">
               <NotificacionesBell />
