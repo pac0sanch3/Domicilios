@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const API_URL = 'http://localhost:3000/negocio';
+const API_URL = 'http://192.168.1.100:3000/negocio';
 
 export const NegocioService = {
   // Obtener todos los Negocio

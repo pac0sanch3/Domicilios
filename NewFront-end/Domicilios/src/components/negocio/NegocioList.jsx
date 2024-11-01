@@ -12,7 +12,7 @@ export const NegociosList = ({ negocios, onEdit, onDelete }) => {
             <p className="text-sm text-gray-500">Imagen: {negocio.imagen_banner}</p>
           </div>
 
-          <div className="flex items-center space-x-2">
+          <div className="flex flex-col sm:flex-row items-center space-x-2">
             <button
               onClick={() => onEdit(negocio)}
               className="px-3 py-1 text-blue-600 hover:bg-blue-50 rounded-lg"

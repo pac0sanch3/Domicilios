@@ -1,7 +1,6 @@
 import Header from "../layout/Header.jsx";
 import { Suspense } from "react";
-import Nav from "../navegacion/Nav.jsx";
-import { Footer } from "../layout/Footer.jsx";
+
 import { SolicitudesProvider } from "../../services/SolicitudesProvider.jsx";
 
 const Layout = ({ children }) => {
@@ -12,9 +11,6 @@ const Layout = ({ children }) => {
           <Header color="bg-white shadow-sm" />
         </SolicitudesProvider>
         <main className="flex flex-grow overflow-hidden">
-          <aside className="hidden lg:block w-64">
-            <Nav /> 
-          </aside>
           <section className="flex-grow p-4 sm:p-6 lg:p-8 overflow-auto">
             <Suspense
               fallback={
@@ -29,7 +25,6 @@ const Layout = ({ children }) => {
             </Suspense>
           </section>
         </main>
-        <Footer className="shadow-md mt-auto p-4 sm:p-6" /> 
       </div>
     </>
   );

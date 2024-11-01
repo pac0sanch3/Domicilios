@@ -15,7 +15,7 @@ const Solicitud = () =>{
 
       data["fk_cliente"]=localStorage.getItem('userId')
 
-      await axios.post('http://localhost:3000/solicitudes/registrar', data);
+      await axios.post('http://192.168.1.100:3000/solicitudes/registrar', data);
       
       alert("Se registró correctamente")
       reset()
