@@ -10,6 +10,7 @@ import RolesManagement from './RolesManagement';
 import {NegocioManagement} from '../negocio/NegocioManagement.jsx';
 import SolicitudesManagement from '../solicitudes/SolicitudesManagement.jsx';
 import DomiciliariosManagement from '../domiciliario/DomiciliariosManagement.jsx';
+import NovedadesManagement from '../novedades/NovedadesManagement.jsx'
 
 
 
@@ -130,6 +131,15 @@ const UserManagement = () => {
           Solicitudes
         </Button>
         <Button 
+          onClick={() => setCurrentView('Novedades')} 
+          color={currentView === 'Novedades' ? 'primary' : 'default'}
+          bordered={currentView !== 'Novedades'}
+          auto
+          className={currentView === 'Novedades' ? "text-white bg-blue-600 hover:bg-blue-700" : "text-gray-800 bg-white border-blue-200 hover:border-blue-300"}
+        >
+          Novedades
+        </Button>
+        <Button 
           onClick={() => setCurrentView('Domicilio')} 
           color={currentView === 'Domicilio' ? 'primary' : 'default'}
           bordered={currentView !== 'Domicilio'}
@@ -199,6 +209,7 @@ const UserManagement = () => {
       )}
     
       {currentView === 'actividades' && <ActividadesManagement />}
+      {currentView === 'Novedades' && <NovedadesManagement />}
       {currentView === 'solicitudes' && <SolicitudesManagement />}
       {currentView === 'Domicilio' && <DomiciliariosManagement />}
       {currentView === 'roles' && <RolesManagement />}
