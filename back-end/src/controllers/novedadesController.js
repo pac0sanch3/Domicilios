@@ -79,3 +79,27 @@ export const eliminarNovedad = async (req, res) => {
       res.status(500).json({ error: 'Error al eliminar la novedad', details: err });
     }
   };
+
+
+  /* actualizar estado de la novedad */
+
+export const actEstadoNovedad = async (req, res) =>{
+  
+  try{
+    const {idNovedad} = req.params
+
+    const {estado} = req.body
+
+    let sql = `update novedades set estado  = '${estado}'  where id_novedad = ${idNovedad}`
+
+    const [response] = await conexion.query(sql)
+
+    console.log(response)
+
+    return res.status(200).json({"mensaje":"Se actualizo con exito"})
+
+
+  }catch(error){
+    return res.status(500).json({"mensaje":"Error en el servidor", error})
+  }
+}

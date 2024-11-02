@@ -7,7 +7,6 @@ import { Button } from '@nextui-org/react';
 import ActividadesManagement from '../actividades/ActividadesManagement';
 import Graficas from "../graficas/Graficas";
 import RolesManagement from './RolesManagement';
-import { NegocioManagement } from '../negocio/NegocioManagement.jsx';
 import SolicitudesManagement from '../solicitudes/SolicitudesManagement.jsx';
 import DomiciliariosManagement from '../domiciliario/DomiciliariosManagement.jsx';
 import NovedadesManagement from '../novedades/NovedadesManagement.jsx';
@@ -108,9 +107,6 @@ const UserManagement = () => {
         <Button onClick={() => setCurrentView('usuarios')} color={currentView === 'usuarios' ? 'primary' : 'default'} auto>
           Usuarios
         </Button>
-        <Button onClick={() => setCurrentView('negocio')} color={currentView === 'negocio' ? 'primary' : 'default'} auto>
-          Negocio
-        </Button>
         <Button onClick={() => setCurrentView('roles')} color={currentView === 'roles' ? 'primary' : 'default'} auto>
           Incidentes
         </Button>
@@ -176,7 +172,7 @@ const UserManagement = () => {
       {currentView === 'solicitudes' && <SolicitudesManagement />}
       {currentView === 'Domicilio' && <DomiciliariosManagement />}
       {currentView === 'roles' && <RolesManagement />}
-      {currentView === 'negocio' && <NegocioManagement />}
+
       {currentView === 'Graficas' && (
         <div className="w-full">
           <Graficas />
