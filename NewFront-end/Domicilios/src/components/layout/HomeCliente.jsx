@@ -1,10 +1,15 @@
 import axios from "axios";
+import { Button } from '@nextui-org/react';
 import Header from "../../components/layout/Header"
 import ModalSolicitud from "../solicitudes/ModalSolicitud";
+
 import { useState , useEffect} from 'react'
+import ModalIncidencias from "../Incidencias/ModalIncidencias";
 
 
 const HomeCliente = () =>{
+  const [isModalIncidenciasOpen, setIsModalIncidenciasOpen] = useState(false);
+
 
   const [isModalOpen, setIsModalOpen] = useState(false)
 
@@ -20,12 +25,20 @@ const HomeCliente = () =>{
     buscarSolicitudes()
     setIsModalOpen(false);
   };
+  const openModalIncidencias = () => {
+
+    setIsModalIncidenciasOpen(true);
+  };
+  const closeModalIncidencias = () => {
+
+    setIsModalIncidenciasOpen(false);
+  };
 
   const buscarSolicitudes = async ()=>{
     try{
       const idUser = localStorage.getItem('userId')
 
-      const respuesta = await axios.get(`http://localhost:3000/solicitudes/listarSoliClientes/${idUser}`)
+      const respuesta = await axios.get(`${import.meta.env.VITE_API_URL}solicitudes/listarSoliClientes/${idUser}`)
 
       let contenidoGen = respuesta?.data?.response
       
@@ -51,20 +64,23 @@ const HomeCliente = () =>{
 
 
 
+
   return (
     <>
       <Header color="bg-white shadow-sm" />
       <div className="min-h-screen">
         {/* Panel principal con imagen y contenido */}
-        <div className="flex flex-col md:flex-row w-full min-h-screen">
+        <div className="flex pt-28 flex-col md:flex-row w-full min-h-screen">
           {/* Sección de imagen (2/3 del ancho) */}
-          <div className="w-full md:w-2/3 h-screen relative p-20">
-            <img 
-              src="/imagen2AL.jpg"
-              alt="Imagen principal" 
-              className="w-full h-full object-cover"
-            />
-          </div>
+          <div className="w-full md:w-2/3 h-64 md:h-screen relative p-5 md:p-20">
+
+  <img 
+    src="/imagen2AL.jpg"
+    alt="Imagen principal" 
+    className="w-full h-full object-cover object-center md:object-top"
+  />
+</div>
+
           
           {/* Sección de información (1/3 del ancho) */}
           <div className="w-full md:w-1/3 p-8 flex flex-col justify-center bg-white">
@@ -151,6 +167,12 @@ const HomeCliente = () =>{
               Detalles del pedido
             </h3>
             <p className="flex items-center mb-1 text-sm sm:text-base">
+              <span className="font-medium mr-2">ID del pedido:</span>
+            </p>
+            <p className="text-xs sm:text-sm text-gray-600 mb-2">
+              {solicitud.id_solicitud}
+            </p>
+            <p className="flex items-center mb-1 text-sm sm:text-base">
               <span className="font-medium mr-2">Dirección Recogida:</span>
             </p>
             <p className="text-xs sm:text-sm text-gray-600 mb-2">
@@ -183,9 +205,8 @@ const HomeCliente = () =>{
         {/* Footer de la Tarjeta */}
         <div className="mt-4 pt-4 border-t border-gray-200 flex flex-col sm:flex-row justify-between items-center space-y-2 sm:space-y-0">
           <div className="text-sm text-gray-500"> 
-            <button className="bg-gray-800 text-white py-2 px-4 rounded-md text-xs sm:text-sm">
-              Reportar incidencia
-            </button>
+            {/* Botón para crear nueva incidencia */}
+
           </div>
           <div className="text-xs sm:text-sm text-gray-500">
             <span className="font-medium">Fecha:</span> {new Date(solicitud.fecha_creacion).toLocaleString()}
@@ -261,6 +282,12 @@ const HomeCliente = () =>{
               Detalles del pedido
             </h3>
             <p className="flex items-center mb-1 text-sm sm:text-base">
+              <span className="font-medium mr-2">ID del pedido:</span>
+            </p>
+            <p className="text-xs sm:text-sm text-gray-600 mb-2">
+              {solicitud.id_solicitud}
+            </p>
+            <p className="flex items-center mb-1 text-sm sm:text-base">
               <span className="font-medium mr-2">Dirección Recogida:</span>
             </p>
             <p className="text-xs sm:text-sm text-gray-600 mb-2">
@@ -292,25 +319,34 @@ const HomeCliente = () =>{
 
         {/* Footer de la Tarjeta */}
         <div className="mt-4 pt-4 border-t border-gray-200 flex flex-col sm:flex-row justify-between items-center space-y-2 sm:space-y-0">
-          <div className="text-sm text-gray-500"> 
-            <button className="bg-gray-800 text-white py-2 px-4 rounded-md text-xs sm:text-sm">
-              Reportar incidencia
-            </button>
-          </div>
-          <div className="text-xs sm:text-sm text-gray-500">
-            <span className="font-medium">Fecha:</span> {new Date(solicitud.fecha_creacion).toLocaleString()}
-          </div>
-        </div>
-      </div>
-    </div>
-  ))
-}
+                <div className="text-sm text-gray-500"> 
+                <Button
+                  className="mt-6 w-full bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700"
+                  onClick={openModalIncidencias} 
+                >
+                  Registrar Nueva Incidencia
+                </Button>
+
+                <ModalIncidencias 
+                  isOpen={isModalIncidenciasOpen} 
+                  onClose={closeModalIncidencias}
+                />
+
+
+                </div>
+
+                      <div className="text-xs sm:text-sm text-gray-500">
+                        <span className="font-medium">Fecha:</span> {new Date(solicitud.fecha_creacion).toLocaleString()}
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              ))
+            }
             </div>
           </div>
         </div>
-        
       </div>
-    
     </>
   );
 
@@ -318,3 +354,4 @@ const HomeCliente = () =>{
 
 
 export default HomeCliente
+

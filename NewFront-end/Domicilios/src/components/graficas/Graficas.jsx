@@ -46,7 +46,7 @@ const Graficas = () => {
   useEffect(() => {
     const obtenerEstadisticasIncidencias = async () => {
       try {
-        const response = await fetch('http://localhost:3000/usuario/reportes/incidencias');
+        const response = await fetch(`${import.meta.env.VITE_API_URL}usuario/reportes/incidencias`);
         const result = await response.json();
         
         if (!result || result.length === 0) {
@@ -77,7 +77,7 @@ const Graficas = () => {
 
     const obtenerEstadisticasPedidos = async () => {
       try {
-        const response = await fetch('http://localhost:3000/usuario/reportes/cantidad-pedidos');
+        const response = await fetch(`${import.meta.env.VITE_API_URL}usuario/reportes/cantidad-pedidos`);
         const result = await response.json();
         
         if (!result || !result.total_pedidos) {
@@ -105,7 +105,7 @@ const Graficas = () => {
 
     const obtenerEstadisticasRendimiento = async () => {
       try {
-        const response = await fetch('http://localhost:3000/usuario/reportes/rendimiento-domiciliarios');
+        const response = await fetch(`${import.meta.env.VITE_API_URL}usuario/reportes/rendimiento-domiciliarios`);
         const result = await response.json();
         
         if (!result || result.length === 0) {
@@ -136,7 +136,7 @@ const Graficas = () => {
 
     const obtenerEstadisticasTiempoEntrega = async () => {
       try {
-        const response = await fetch('http://localhost:3000/usuario/reportes/tiempo-promedio-entrega');
+        const response = await fetch(`${import.meta.env.VITE_API_URL}usuario/reportes/tiempo-promedio-entrega`);
         const result = await response.json();
         
         if (!result || !result.promedio_entrega) {

@@ -38,7 +38,7 @@ export const ActividadesList = ({ actividades, onEdit, onDelete }) => {
             </span>
           </div>
           
-          <div className="flex items-center space-x-2">
+          <div className="flex flex-col sm:flex-row items-center space-x-2">
             <button
               onClick={() => onEdit(actividad)}
               className="px-3 py-1 text-blue-600 hover:bg-blue-50 rounded-lg"
