@@ -49,11 +49,10 @@ const Header = () => {
 
         <div className="flex gap-6 items-center">
           {/* Menú de navegación */}
-          <ul className="hidden sm:flex space-x-4">
+          <ul className="hidden sm:flex  space-x-4">
             <Link to="/Home" className="text-gray-800 hover:text-green-600">Home</Link>
             {userType === 'domiciliario' && (
               <>
-                <Link to="/solicitud" className="text-gray-800 hover:text-green-600">Domicilio</Link>
                 <Link to="/novedades" className="text-gray-800 hover:text-green-600">Registrar novedad</Link>
                 <Link to="/NotificacionesDom" className="text-gray-800 hover:text-green-600">Domicilios</Link>
               </>
@@ -62,8 +61,7 @@ const Header = () => {
               <Link to="/PanelDeControl" className="text-gray-800 hover:text-green-600">Panel De Control</Link>
             )}
           </ul>
-
-          {userType === 'domiciliario' && (
+          {(userType === 'domiciliario' ||userType === 'administrador' )&& (
             <div className="sm:hidden">
               <button onClick={toggleMenu} className="text-3xl">
                 {isMenuOpen ? <FaTimes /> : <FaBars />}
@@ -71,14 +69,15 @@ const Header = () => {
               {isMenuOpen && (
                 <div className="absolute top-16 right-0 bg-white shadow-lg rounded-lg p-4">
                   <Link to="/Home" className="block text-gray-800 hover:text-green-600 mb-2">Home</Link>
-                  <Link to="/solicitud" className="block text-gray-800 hover:text-green-600 mb-2">Domicilio</Link>
                   <Link to="/novedades" className="block text-gray-800 hover:text-green-600 mb-2">Registrar novedad</Link>
                   <Link to="/NotificacionesDom" className="block text-gray-800 hover:text-green-600 mb-2">Domicilios</Link>
+                  {userType === 'administrador' && (
+                  <Link to="/PanelDeControl" className="text-gray-800 hover:text-green-600">Panel De Control</Link>
+                )}
                 </div>
               )}
             </div>
           )}
-
           {userType === 'domiciliario' && (
             <>
               <button className="relative" onClick={toggleNotifications}>

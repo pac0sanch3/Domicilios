@@ -1,95 +1,68 @@
-import React, { createContext, useContext, useState } from 'react';
-import axios from 'axios';
+    import React, { createContext, useContext, useState } from 'react';
+    import axios from 'axios';
 
-const SolicitudesContext = createContext();
+    const SolicitudesContext = createContext();
 
-export const SolicitudesProvider = ({ children }) => {
-    const [infoSolicitud, setInfoSolicitud] = useState(null);
-    const [solicitudes, setSolicitudes] = useState([]);
-    const [error, setError] = useState(null);
-    const [loading, setLoading] = useState(false);
+    export const SolicitudesProvider = ({ children }) => {
+        const [infoSolicitud, setInfoSolicitud] = useState(null);
+        const [solicitudes, setSolicitudes] = useState([]);
+        const [error, setError] = useState(null);
+        const [loading, setLoading] = useState(false);
+        const [isFetching, setIsFetching] = useState(false);
 
-    // Función para registrar una solicitud
-    const registrarSolicitud = async (solicitudData) => {
-        try {
-            setLoading(true);
-            setError(null);
+        // Función para registrar una solicitud
+        const registrarSolicitud = async (solicitudData) => {
+            try {
+                setLoading(true);
+                setError(null);
 
-            const response = await axios.post(`${import.meta.env.VITE_API_URL}solicitudes/registrar`, solicitudData);
-            setInfoSolicitud(response.data.infoSolicitudCo); // Guardamos la información de la solicitud en el estado
-        } catch (error) {
-            setError(error.response ? error.response.data : { mensaje: "Error en el servidor" });
-        } finally {
-            setLoading(false);
-        }
-    };
+                const response = await axios.post(`${import.meta.env.VITE_API_URL}solicitudes/registrar`, solicitudData);
+                setInfoSolicitud(response.data.infoSolicitudCo); // Guardamos la información de la solicitud en el estado
+            } catch (error) {
+                setError(error.response ? error.response.data : { mensaje: "Error en el servidor" });
+            } finally {
+                setLoading(false);
+            }
+        };
 
-    const checkNetworkConnection = () => {
-        if (!navigator.onLine) {
-            setError({
-                mensaje: 'Sin conexión a internet',
-                status: 'OFFLINE'
-            });
-            return false;
-        }
-        return true;
-    };
-    // Función para listar solicitudes
-    const listarSolicitudes = async () => {
-        if (!checkNetworkConnection()) return [];
-        try {
-            setLoading(true);
-            setError(null);
-    
-            const response = await axios.get(`${import.meta.env.VITE_API_URL}solicitudes/listar`, {
-                timeout: 10000,
-                withCredentials: false,
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Accept': 'application/json'
+        const listarSolicitudes = async (retries = 3) => {
+            if (isFetching) return; // Evitar llamadas duplicadas
+            setIsFetching(true);
+            try {
+                setLoading(true);
+                setError(null);
+        
+                if (!navigator.onLine) {
+                    setError({ mensaje: 'Sin conexión a internet', status: 'OFFLINE' });
+                    return;
                 }
-            });
-            setSolicitudes(response.data);
-            return response.data;
-        } catch (error) {
-            console.error('Error detallado completo:', error);
-            
-            // Manejo de errores similar al anterior
-            const errorConfig = axios.isAxiosError(error) 
-                ? (error.response 
-                    ? { 
-                        mensaje: error.response.data.mensaje || 'Error en el servidor', 
-                        status: error.response.status 
-                    }
-                    : (error.request 
-                        ? { 
-                            mensaje: 'No se pudo conectar con el servidor', 
-                            status: 'NETWORK_ERROR' 
-                        }
-                        : { 
-                            mensaje: 'Error al configurar la solicitud', 
-                            status: 'CONFIG_ERROR' 
-                        }
-                    )
-                )
-                : { 
-                    mensaje: 'Error desconocido', 
-                    status: 'UNKNOWN_ERROR' 
-                };
-    
-            setError(errorConfig);
-            throw error;  // Re-lanzar para que los componentes puedan manejar el error
-        } finally {
-            setLoading(false);
-        }
+        
+                const response = await axios.get(`${import.meta.env.VITE_API_URL}solicitudes/listar`, {
+                    timeout: 10000,
+                });
+                setSolicitudes(response.data);
+            } catch (error) {
+                if (error.code === 'ECONNABORTED' && retries > 0) {
+                    console.warn(`Reintentando... (${3 - retries + 1})`);
+                    setTimeout(() => listarSolicitudes(retries - 1), 1000);
+                } else {
+                    setError({
+                        mensaje: 'La solicitud no pudo completarse. Intenta nuevamente.',
+                        status: error.code || 'UNKNOWN_ERROR',
+                    });
+                }
+            } finally {
+                setLoading(false);
+                setIsFetching(false);
+            }
+        };
+        
+        return (
+            <SolicitudesContext.Provider value={{ infoSolicitud, registrarSolicitud, listarSolicitudes, solicitudes, error, loading }}>
+                {children}
+            </SolicitudesContext.Provider>
+        );
     };
 
-    return (
-        <SolicitudesContext.Provider value={{ infoSolicitud, registrarSolicitud, listarSolicitudes, solicitudes, error, loading }}>
-            {children}
-        </SolicitudesContext.Provider>
-    );
-};
-
-// Hook para usar el contexto
-export const useSolicitudes = () => useContext(SolicitudesContext);
+    // Hook para usar el contexto
+    export const useSolicitudes = () => useContext(SolicitudesContext); 

@@ -50,11 +50,11 @@ const NovedadesCo = ()=> {
           
           const soli = await axios.get(`${import.meta.env.VITE_API_URL}solicitudes/listSolicitudesDom/${idDomiciliario}`)
 
+          console.log(soli)
           setSoli(soli.data.response)
         } catch (error) {
             console.error("Error al obtener las solicitudes:", error);
         }
-
   }
 
   fetchSolicitudes()
