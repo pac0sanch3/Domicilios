@@ -20,7 +20,12 @@ export const userService = {
 
   // Actualizar un usuario existente
   updateUser: (id, userData) => {
-    return axios.put(`${API_URL}/actualizar/${id}`, userData);
+    const config = {
+      headers: {
+        'Content-Type': 'multipart/form-data'
+      }
+    };
+    return axios.put(`${API_URL}/actualizar/${id}`, userData, config);
   },
 
   // Eliminar un usuario
