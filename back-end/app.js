@@ -30,5 +30,5 @@ servidor.get("/", (req, res) => {
 })
 
 servidor.listen(port, '0.0.0.0', () => {
-    console.log(`Servidor corriendo en http://192.168.50.200:${port}`)
+    console.log(`Servidor corriendo en http://192.168.1.100:${port}`)
 })
