@@ -13,7 +13,8 @@ import {
     obtenerTiempoPromedioEntrega,
     obtenerCantidadPedidos,
     obtenerEstadisticasIncidencias,
-    obtenerRendimientoDomiciliarios
+    obtenerRendimientoDomiciliarios,
+    uploadUserImg
 } from "../controllers/UserController.js";
 
 
@@ -28,7 +29,7 @@ RutaUsuario.post("/registrar", registrarUsuario);
 RutaUsuario.post('/login', login);
 RutaUsuario.get("/user/:id", obtenerUsuarioPorId);
 RutaUsuario.get("/user/", listarUsuarios);
-RutaUsuario.put("/actualizar/:id", actualizarUsuario);
+RutaUsuario.put("/actualizar/:id", uploadUserImg, actualizarUsuario);
 RutaUsuario.delete("/eliminar/:id", verificar, isAdmin, eliminarUsuario);
 
 /* recuperar contraseña */

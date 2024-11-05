@@ -38,7 +38,7 @@ const HomeCliente = () =>{
     try{
       const idUser = localStorage.getItem('userId')
 
-      const respuesta = await axios.get(`http://localhost:3000/solicitudes/listarSoliClientes/${idUser}`)
+      const respuesta = await axios.get(`${import.meta.env.VITE_API_URL}solicitudes/listarSoliClientes/${idUser}`)
 
       let contenidoGen = respuesta?.data?.response
       
@@ -70,15 +70,17 @@ const HomeCliente = () =>{
       <Header color="bg-white shadow-sm" />
       <div className="min-h-screen">
         {/* Panel principal con imagen y contenido */}
-        <div className="flex flex-col md:flex-row w-full min-h-screen">
+        <div className="flex pt-28 flex-col md:flex-row w-full min-h-screen">
           {/* Sección de imagen (2/3 del ancho) */}
-          <div className="w-full md:w-2/3 h-screen relative p-20">
-            <img 
-              src="/imagen2AL.jpg"
-              alt="Imagen principal" 
-              className="w-full h-full object-cover"
-            />
-          </div>
+          <div className="w-full md:w-2/3 h-64 md:h-screen relative p-5 md:p-20">
+
+  <img 
+    src="/imagen2AL.jpg"
+    alt="Imagen principal" 
+    className="w-full h-full object-cover object-center md:object-top"
+  />
+</div>
+
           
           {/* Sección de información (1/3 del ancho) */}
           <div className="w-full md:w-1/3 p-8 flex flex-col justify-center bg-white">
@@ -317,37 +319,34 @@ const HomeCliente = () =>{
 
         {/* Footer de la Tarjeta */}
         <div className="mt-4 pt-4 border-t border-gray-200 flex flex-col sm:flex-row justify-between items-center space-y-2 sm:space-y-0">
-          <div className="text-sm text-gray-500"> 
-          <Button
-                        className="mt-6 w-full bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700"
-                        onClick={openModalIncidencias} 
-                      >
-                        Registrar Nueva Incidencia
-                      </Button>
-                      
-                      {/* Modal para Incidencias */}
-                      <ModalIncidencias 
-                        isOpen={isModalIncidenciasOpen} 
-                        onClose={closeModalIncidencias}
-                      />
+                <div className="text-sm text-gray-500"> 
+                <Button
+                  className="mt-6 w-full bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700"
+                  onClick={openModalIncidencias} 
+                >
+                  Registrar Nueva Incidencia
+                </Button>
+
+                <ModalIncidencias 
+                  isOpen={isModalIncidenciasOpen} 
+                  onClose={closeModalIncidencias}
+                />
 
 
-          </div>
+                </div>
 
-          <div className="text-xs sm:text-sm text-gray-500">
-            <span className="font-medium">Fecha:</span> {new Date(solicitud.fecha_creacion).toLocaleString()}
-          </div>
-        </div>
-      </div>
-    </div>
-  ))
-}
+                      <div className="text-xs sm:text-sm text-gray-500">
+                        <span className="font-medium">Fecha:</span> {new Date(solicitud.fecha_creacion).toLocaleString()}
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              ))
+            }
             </div>
           </div>
         </div>
-        
       </div>
-    
     </>
   );
 

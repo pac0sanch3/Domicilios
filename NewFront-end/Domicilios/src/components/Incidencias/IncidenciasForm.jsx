@@ -22,7 +22,7 @@ const IncidenciasForm = () => {
     e.preventDefault();
 
     try {
-      await axios.post('http://localhost:3000/insidencias/registrar', {
+      await axios.post(`${import.meta.env.VITE_API_URL}insidencias/registrar`, {
         ...formData,
         id_usuario,
       });

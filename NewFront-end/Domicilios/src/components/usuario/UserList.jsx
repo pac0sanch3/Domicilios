@@ -29,7 +29,7 @@ export const UserList = ({ users, onEdit, onDelete, onToggleActive }) => {
             </span>
           </div>
           
-          <div className="flex items-center space-x-2">
+          <div className="flex flex-col sm:flex-row items-center space-y-2 sm:space-y-0 sm:space-x-2">
             <button
               onClick={() => onEdit(user)}
               className="px-3 py-1 text-blue-600 hover:bg-blue-100 rounded-lg"
@@ -64,6 +64,5 @@ export const UserList = ({ users, onEdit, onDelete, onToggleActive }) => {
         </div>
       )}
     </div>
-
   );
 };

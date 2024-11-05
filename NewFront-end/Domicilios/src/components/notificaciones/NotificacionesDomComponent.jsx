@@ -10,13 +10,18 @@ export const NotificacionesDomComponent = () => {
         listarSolicitudes(); // Llama a la función al cargar el componente
     }, []);
 
+    useEffect(() => {
+        console.log("Solicitudes:", solicitudes); // Verifica las solicitudes recibidas
+        console.log("Estado activo:", activeTab); // Verifica el estado activo
+    }, [solicitudes, activeTab]);
     // Filtrar las solicitudes según el estado de la pestaña activa
     const filteredSolicitudes = solicitudes.filter(solicitud => solicitud.estado === activeTab);
+
 
     // Función para actualizar el estado de la solicitud a "completado"
     const handleFinalizarSolicitud = async () => {
         try {
-            const response = await fetch('http://localhost:3000/solicitudes/actualizarEstado', {
+            const response = await fetch(`${import.meta.env.VITE_API_URL}solicitudes/actualizarEstado`, {
                 method: 'PUT',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ estado: 'completado', idSolicitud: selectedSolicitud }),
@@ -39,7 +44,7 @@ export const NotificacionesDomComponent = () => {
             </h1>
 
             {/* Tabs para navegar entre los estados de pedidos */}
-            <div className="flex space-x-4 mb-6">
+            <div className="flex flex-col sm:flex-row gap-3 space-x-4 mb-6">
                 <button 
                     onClick={() => setActiveTab('pendiente')} 
                     className={`px-4 py-2 rounded ${activeTab === 'pendiente' ? 'bg-blue-500 text-white' : 'bg-gray-300'}`}
@@ -63,6 +68,12 @@ export const NotificacionesDomComponent = () => {
                     className={`px-4 py-2 rounded ${activeTab === 'cancelado' ? 'bg-blue-500 text-white' : 'bg-gray-300'}`}
                 >
                     Pedidos cancelados
+                </button>
+                <button 
+                    onClick={() => setActiveTab('reprogramado')} 
+                    className={`px-4 py-2 rounded ${activeTab === 'reprogramado' ? 'bg-blue-500 text-white' : 'bg-gray-300'}`}
+                >
+                    Pedidos reprogramados
                 </button>
             </div>
 
@@ -94,12 +105,22 @@ export const NotificacionesDomComponent = () => {
                             <p className="text-gray-700">
                                 Dirección de Entrega: <span className="text-gray-500">{solicitud.direccion_entrega}</span>
                             </p>
+                            
+                            {activeTab === 'reprogramado'  && (
+                                <p className="text-gray-700">
+                                    Ubicación Actual: <span className="text-gray-500">{solicitud.ubicacionActual}</span>
+                                </p>
+                            )}
+
+
                             <p className="text-gray-700">
                                 Estado: <span className="text-gray-500">{solicitud.estado}</span>
                             </p>
 
+
+
                             {/* Solo mostrar el botón si estamos en "Pedidos en curso" */}
-                            {activeTab === 'en_curso' && (
+                            {(activeTab === 'en_curso' || activeTab === 'reprogramado') && (
                                 <button 
                                     onClick={() => setSelectedSolicitud(solicitud.id_solicitud)} 
                                     className="mt-4 bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 transition"

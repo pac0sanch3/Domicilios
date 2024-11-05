@@ -15,7 +15,7 @@ const Solicitud = () =>{
 
       data["fk_cliente"]=localStorage.getItem('userId')
 
-      await axios.post('http://localhost:3000/solicitudes/registrar', data);
+      await axios.post(`${import.meta.env.VITE_API_URL}solicitudes/registrar`, data);
       
       alert("Se registró correctamente")
       reset()

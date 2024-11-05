@@ -30,8 +30,9 @@ const Registro = () => {
 
     try {
       // Si el tipo de usuario es negocio, registrar antes de redirigir
+      console.log(formData) 
       if (formData.tipo_usuario === 'negocio') {
-        const response = await axios.post('http://localhost:3000/usuario/registrar', { ...formData, tipo_usuario: 'negocio' });
+        const response = await axios.post(`${import.meta.env.VITE_API_URL}usuario/registrar`, { ...formData, tipo_usuario: 'negocio' });
         if (response.status === 201) {
           navigate('/negocio');
         }
@@ -39,7 +40,7 @@ const Registro = () => {
       }
 
       // Para otros tipos de usuario, se registra normalmente
-      const response = await axios.post('http://localhost:3000/usuario/registrar', formData);
+      const response = await axios.post(`${import.meta.env.VITE_API_URL}usuario/registrar`, formData);
       if (response.status === 201) {
         navigate('/');
       }

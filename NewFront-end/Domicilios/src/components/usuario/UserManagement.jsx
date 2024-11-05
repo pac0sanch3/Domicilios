@@ -7,12 +7,10 @@ import { Button } from '@nextui-org/react';
 import ActividadesManagement from '../actividades/ActividadesManagement';
 import Graficas from "../graficas/Graficas";
 import RolesManagement from './RolesManagement';
-import {NegocioManagement} from '../negocio/NegocioManagement.jsx';
 import SolicitudesManagement from '../solicitudes/SolicitudesManagement.jsx';
 import DomiciliariosManagement from '../domiciliario/DomiciliariosManagement.jsx';
-import NovedadesManagement from '../novedades/NovedadesManagement.jsx'
-
-
+import NovedadesManagement from '../novedades/NovedadesManagement.jsx';
+import { IoMenu } from 'react-icons/io5';
 
 const UserManagement = () => {
   const [users, setUsers] = useState([]);
@@ -20,7 +18,8 @@ const UserManagement = () => {
   const [modalOpen, setModalOpen] = useState(false);
   const [userTypeFilter, setUserTypeFilter] = useState('');
   const [alert, setAlert] = useState({ show: false, message: '', type: '' });
-  const [currentView, setCurrentView] = useState('usuarios'); // Controlador de vistas
+  const [currentView, setCurrentView] = useState('usuarios');
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   useEffect(() => {
     loadUsers();
@@ -66,8 +65,8 @@ const UserManagement = () => {
 
   const handleToggleActive = async (userId, currentStatus) => {
     try {
-      await userService.updateUser(userId, { 
-        estado: currentStatus === 'activo' ? 'inactivo' : 'activo' 
+      await userService.updateUser(userId, {
+        estado: currentStatus === 'activo' ? 'inactivo' : 'activo'
       });
       showAlert(`Usuario ${currentStatus === 'activo' ? 'desactivado' : 'activado'} exitosamente`, 'success');
       loadUsers();
@@ -89,85 +88,45 @@ const UserManagement = () => {
   return (
     <div className="bg-white/90 backdrop-blur-md p-6 rounded-lg shadow-2xl">
       <h2 className="text-2xl font-bold text-gray-800 mb-6">Gestión de Usuarios</h2>
-      
+
       <Alert {...alert} />
-      
-      {/* Barra de navegación de apartados */}
-      <div className="flex space-x-4 mb-6">
-        <Button 
-          onClick={() => setCurrentView('usuarios')} 
-          color={currentView === 'usuarios' ? 'primary' : 'default'}
-          bordered={currentView !== 'usuarios'}
+
+      {/* Botón de menú hamburguesa para pantallas pequeñas */}
+      <div className="block sm:hidden mb-4">
+        <Button
+          onClick={() => setIsMenuOpen(!isMenuOpen)}
+          color="primary"
           auto
-          className={currentView === 'usuarios' ? "text-white bg-blue-600 hover:bg-blue-700" : "text-gray-800 bg-white border-blue-200 hover:border-blue-300"}
         >
-          Usuarios
-        </Button>
-        <Button 
-          onClick={() => setCurrentView('negocio')} 
-          color={currentView === 'negocio' ? 'primary' : 'default'}
-          bordered={currentView !== 'negocio'}
-          auto
-          className={currentView === 'negocio' ? "text-white bg-blue-600 hover:bg-blue-700" : "text-gray-800 bg-white border-blue-200 hover:border-blue-300"}
-        >
-          Negocio
-        </Button>
-        <Button 
-          onClick={() => setCurrentView('roles')} 
-          color={currentView === 'roles' ? 'primary' : 'default'}
-          bordered={currentView !== 'roles'}
-          auto
-          className={currentView === 'roles' ? "text-white bg-blue-600 hover:bg-blue-700" : "text-gray-800 bg-white border-blue-200 hover:border-blue-300"}
-        >
-          Incidentes
-        </Button>
-        <Button 
-          onClick={() => setCurrentView('solicitudes')} 
-          color={currentView === 'solicitudes' ? 'primary' : 'default'}
-          bordered={currentView !== 'solicitudes'}
-          auto
-          className={currentView === 'solicitudes' ? "text-white bg-blue-600 hover:bg-blue-700" : "text-gray-800 bg-white border-blue-200 hover:border-blue-300"}
-        >
-          Solicitudes
-        </Button>
-        <Button 
-          onClick={() => setCurrentView('Novedades')} 
-          color={currentView === 'Novedades' ? 'primary' : 'default'}
-          bordered={currentView !== 'Novedades'}
-          auto
-          className={currentView === 'Novedades' ? "text-white bg-blue-600 hover:bg-blue-700" : "text-gray-800 bg-white border-blue-200 hover:border-blue-300"}
-        >
-          Novedades
-        </Button>
-        <Button 
-          onClick={() => setCurrentView('Domicilio')} 
-          color={currentView === 'Domicilio' ? 'primary' : 'default'}
-          bordered={currentView !== 'Domicilio'}
-          auto
-          className={currentView === 'Domicilio' ? "text-white bg-blue-600 hover:bg-blue-700" : "text-gray-800 bg-white border-blue-200 hover:border-blue-300"}
-        >
-          Domicilio
-        </Button>
-        <Button 
-          onClick={() => setCurrentView('actividades')} 
-          color={currentView === 'actividades' ? 'primary' : 'default'}
-          bordered={currentView !== 'actividades'}
-          auto
-          className={currentView === 'actividades' ? "text-white bg-blue-600 hover:bg-blue-700" : "text-gray-800 bg-white border-blue-200 hover:border-blue-300"}
-        >
-          actividades
-        </Button>
-        <Button 
-          onClick={() => setCurrentView('Graficas')} 
-          color={currentView === 'Graficas' ? 'primary' : 'default'}
-          bordered={currentView !== 'Graficas'}
-          auto
-          className={currentView === 'Graficas' ? "text-white bg-blue-600 hover:bg-blue-700" : "text-gray-800 bg-white border-blue-200 hover:border-blue-300"}
-        >
-          Graficas
+          <IoMenu size={24} />
         </Button>
       </div>
-      
+
+      {/* Menú en lista para pantallas pequeñas y en línea para pantallas grandes */}
+      <div className={`${isMenuOpen ? 'block' : 'hidden'} sm:flex flex-col sm:flex-row space-y-2 sm:space-y-0 sm:space-x-4 mb-6`}>
+        <Button onClick={() => setCurrentView('usuarios')} color={currentView === 'usuarios' ? 'primary' : 'default'} auto>
+          Usuarios
+        </Button>
+        <Button onClick={() => setCurrentView('roles')} color={currentView === 'roles' ? 'primary' : 'default'} auto>
+          Incidentes
+        </Button>
+        <Button onClick={() => setCurrentView('solicitudes')} color={currentView === 'solicitudes' ? 'primary' : 'default'} auto>
+          Solicitudes
+        </Button>
+        <Button onClick={() => setCurrentView('Novedades')} color={currentView === 'Novedades' ? 'primary' : 'default'} auto>
+          Novedades
+        </Button>
+        <Button onClick={() => setCurrentView('Domicilio')} color={currentView === 'Domicilio' ? 'primary' : 'default'} auto>
+          Domicilio
+        </Button>
+        <Button onClick={() => setCurrentView('actividades')} color={currentView === 'actividades' ? 'primary' : 'default'} auto>
+          Actividades
+        </Button>
+        <Button onClick={() => setCurrentView('Graficas')} color={currentView === 'Graficas' ? 'primary' : 'default'} auto>
+          Gráficas
+        </Button>
+      </div>
+
       {/* Renderizar el apartado correspondiente */}
       {currentView === 'usuarios' && (
         <>
@@ -185,8 +144,8 @@ const UserManagement = () => {
               <option value="domiciliario">Domiciliario</option>
             </select>
           </div>
-      
-          <UserList 
+
+          <UserList
             users={filteredUsers}
             onEdit={user => {
               setSelectedUser(user);
@@ -195,8 +154,8 @@ const UserManagement = () => {
             onDelete={handleDeleteUser}
             onToggleActive={handleToggleActive}
           />
-    
-          <button 
+
+          <button
             className="mt-6 w-full bg-gradient-to-r from-blue-500 to-blue-600 text-white font-medium py-2 rounded-lg hover:from-blue-600 hover:to-blue-700 transition-all duration-300"
             onClick={() => {
               setSelectedUser(null);
@@ -207,19 +166,19 @@ const UserManagement = () => {
           </button>
         </>
       )}
-    
+
       {currentView === 'actividades' && <ActividadesManagement />}
       {currentView === 'Novedades' && <NovedadesManagement />}
       {currentView === 'solicitudes' && <SolicitudesManagement />}
       {currentView === 'Domicilio' && <DomiciliariosManagement />}
       {currentView === 'roles' && <RolesManagement />}
-      {currentView === 'negocio' && <NegocioManagement />}
+
       {currentView === 'Graficas' && (
         <div className="w-full">
           <Graficas />
         </div>
       )}
-    
+
       {modalOpen && (
         <UserForm
           user={selectedUser}
@@ -231,7 +190,6 @@ const UserManagement = () => {
         />
       )}
     </div>
-
   );
 };
 

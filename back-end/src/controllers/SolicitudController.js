@@ -6,18 +6,92 @@ export const registrarSolicitud = async (req, res) =>{
         const{fk_cliente, direccionRecogida, direccionEntrega, instruccionesAdcc } = req.body
 
 
+        /* consulta que sigue basicamente 3 condiciones, */
+        //el estado del domiciliario debe ser disponible,  
+        //no debe tener relacionada solicitudes con estados de 'en_curso', 'reprogramado'
+        // todas las novedades del domiciliario deben estar resueltas.
+
+
+        /* SELECT DISTINCT d.*
+FROM usuarios u
+INNER JOIN domiciliarios d ON u.id_usuario = d.id_usuario
+WHERE d.disponibilidad = 'disponible'
+  AND u.tipo_usuario = 'domiciliario'
+  AND EXISTS (
+    SELECT 1
+    FROM solicitudes s
+    WHERE s.id_domiciliario = d.id_domiciliario
+    AND s.estado NOT IN ('en_curso', 'reprogramado')
+    GROUP BY s.id_domiciliario
+    HAVING COUNT(*) = (
+      SELECT COUNT(*)
+      FROM solicitudes
+      WHERE id_domiciliario = d.id_domiciliario
+    )
+  )
+  AND EXISTS (
+    SELECT 1
+    FROM novedades n
+    WHERE n.id_domiciliario = d.id_domiciliario
+    AND n.estado = 'resuelta'
+    GROUP BY n.id_domiciliario
+    HAVING COUNT(*) = (
+      SELECT COUNT(*)
+      FROM novedades
+      WHERE id_domiciliario = d.id_domiciliario
+    )
+  )
+     */
+
         let sqlDomiciliarios = ` 
-            SELECT DISTINCT d.* 
-            FROM domiciliarios d 
-            INNER JOIN usuarios u ON d.id_usuario = u.id_usuario
-            LEFT JOIN novedades n ON d.id_domiciliario = n.id_domiciliario 
-            LEFT JOIN reporte_incidencias ri ON d.id_usuario = ri.id_usuario 
-            WHERE d.disponibilidad = 'disponible' 
-            AND (n.estado IS NULL OR n.estado = 'resuelta') 
-            AND (ri.estado IS NULL OR ri.estado = 'resuelto')
+        SELECT DISTINCT d.*
+            FROM usuarios u
+            INNER JOIN domiciliarios d ON u.id_usuario = d.id_usuario
+            WHERE d.disponibilidad = 'disponible'
             AND u.tipo_usuario = 'domiciliario'
+            AND (
+                NOT EXISTS (
+                    SELECT 1 
+                    FROM solicitudes s 
+                    WHERE s.id_domiciliario = d.id_domiciliario
+                )
+                OR 
+                EXISTS (
+                    SELECT 1
+                    FROM solicitudes s
+                    WHERE s.id_domiciliario = d.id_domiciliario
+                    AND s.estado NOT IN ('en_curso', 'reprogramado')
+                    GROUP BY s.id_domiciliario
+                    HAVING COUNT(*) = (
+                        SELECT COUNT(*)
+                        FROM solicitudes
+                        WHERE id_domiciliario = d.id_domiciliario
+                    )
+                )
+            )
+            AND (
+                NOT EXISTS (
+                    SELECT 1 
+                    FROM novedades n 
+                    WHERE n.id_domiciliario = d.id_domiciliario
+                )
+                OR 
+                EXISTS (
+                    SELECT 1
+                    FROM novedades n
+                    WHERE n.id_domiciliario = d.id_domiciliario
+                    AND n.estado = 'resuelta'
+                    GROUP BY n.id_domiciliario
+                    HAVING COUNT(*) = (
+                        SELECT COUNT(*)
+                        FROM novedades
+                        WHERE id_domiciliario = d.id_domiciliario
+                    )
+                )
+            );
         `
         const [domiciliariosDis] = await conexion.query(sqlDomiciliarios)
+
 
 
         //hacer validacion en caso de que no existan domiciliarios disponibles. 
@@ -94,17 +168,13 @@ export const registrarSolicitud = async (req, res) =>{
 
 
             const [infoCliente]  = await conexion.query(sqlCliente)
-             
-
-
-
-
+        
             const infoSolicitudCo = {
                 domicilInfo,
                 dataSoli,
                 infoCliente,
-
             }    
+        
             return res.status(200).json({infoSolicitudCo})
         }
         else{
@@ -117,8 +187,6 @@ export const registrarSolicitud = async (req, res) =>{
 
 export const actualizarSolicitud = async(req, res)=>{
     try{
-
-
 
         const{fk_cliente, fk_domiciliario, direccionRecogida, direccionEntrega, estado, instruccionesAdcc,  idSolicitud} = req.body
 
@@ -137,22 +205,28 @@ export const actualizarSolicitud = async(req, res)=>{
 
 /* listar todas las solicitudes */
 
-export const listarSolicitudes = async (req, res) =>{
+export const listarSolicitudes = async (req, res) => {
+    try {
+        let sql = `
+            SELECT 
+                s.*, 
+                u.nombre AS nombre_cliente, 
+                GROUP_CONCAT(n.ubicacionActual) AS ubicaciones
+            FROM solicitudes s 
+            LEFT JOIN usuarios u ON s.id_cliente = u.id_usuario 
+            LEFT JOIN novedades n ON s.id_solicitud = n.id_solicitud
+            GROUP BY s.id_solicitud
+        `;
 
-    try{
-        let sql = `select s.*, u.nombre as nombre_cliente from solicitudes s INNER JOIN usuarios u ON s.id_cliente = u.id_usuario`
+        const [response] = await conexion.query(sql);
 
-        const [response] = await conexion.query(sql)
-
-
-
-        return res.status(200).json(response)
-
-    }catch(error){
-        return res.status(500).json({"mensaje":"Error en el servidor",error})
+        return res.status(200).json(response);
+    } catch (error) {
+        return res.status(500).json({ "mensaje": "Error en el servidor", error });
     }
+};
 
-}
+
 
 /* actualizar solo el estado */
 export const actEstadoSolicitud = async(req, res)=>{
@@ -175,30 +249,105 @@ export const actEstadoSolicitud = async(req, res)=>{
 }
 
 
-
 export const reasignarSoli = async(req, res)=>{
     
     try{
 
-        const{idSolicitud, idDomiciliario} = req.body
+        const{idSolicitud, idNovedad} = req.body
 
 
-        let sql = `update solicitudes set  estado ='reprogramado', id_domiciliario=${idDomiciliario} where id_solicitud = ${idSolicitud}`
+        /* buscamos los domiciliarios que esten disponibles */
+        let sqlDomiciliarios = ` 
+SELECT DISTINCT d.*
+FROM usuarios u
+INNER JOIN domiciliarios d ON u.id_usuario = d.id_usuario
+WHERE d.disponibilidad = 'disponible'
+AND u.tipo_usuario = 'domiciliario'
+AND (
+    NOT EXISTS (
+        SELECT 1 
+        FROM solicitudes s 
+        WHERE s.id_domiciliario = d.id_domiciliario
+    )
+    OR 
+    EXISTS (
+        SELECT 1
+        FROM solicitudes s
+        WHERE s.id_domiciliario = d.id_domiciliario
+        AND s.estado NOT IN ('en_curso', 'reprogramado')
+        GROUP BY s.id_domiciliario
+        HAVING COUNT(*) = (
+            SELECT COUNT(*)
+            FROM solicitudes
+            WHERE id_domiciliario = d.id_domiciliario
+        )
+    )
+)
+AND (
+    NOT EXISTS (
+        SELECT 1 
+        FROM novedades n 
+        WHERE n.id_domiciliario = d.id_domiciliario
+    )
+    OR 
+    EXISTS (
+        SELECT 1
+        FROM novedades n
+        WHERE n.id_domiciliario = d.id_domiciliario
+        AND n.estado = 'resuelta'
+        GROUP BY n.id_domiciliario
+        HAVING COUNT(*) = (
+            SELECT COUNT(*)
+            FROM novedades
+            WHERE id_domiciliario = d.id_domiciliario
+        )
+    )   
+);
+        `
 
-        const [response] = await conexion.query(sql)
 
-        if (response.affectedRows>0){
-            return res.status(200).json({"mensaje":"Se reasigno correctamente el pedido"})
-        }else{
-            return res.status(404).json({"mensaje":"Error, no se reasigno correctamente el pedido"})
+        const [domiciliariosDis] = await conexion.query(sqlDomiciliarios)
+
+
+        console.log(domiciliariosDis)
+        //hacer validacion en caso de que no existan domiciliarios disponibles. 
+
+        if (domiciliariosDis.length >0){
+            let pocicionAleatoria = Math.floor(Math.random() * domiciliariosDis.length)
+
+            const domiciliario = domiciliariosDis[pocicionAleatoria]
+
+            const idDomiciliarioSelec= domiciliario.id_domiciliario
+
+            //actualizamos la solicitud
+            let sql = `update solicitudes set  estado ='reprogramado', id_domiciliario=${idDomiciliarioSelec} where id_solicitud = ${idSolicitud}`
+
+            const [response] = await conexion.query(sql)
+    
+            if (response.affectedRows>0){
+                
+                //si si actualiza la solicitud actualizamos la novedad. 
+                let sql = `update novedades set estado  = 'resuelta'  where id_novedad = ${idNovedad}`
+
+                const [response] = await conexion.query(sql)
+
+
+                return res.status(200).json({"mensaje":"Se reasigno correctamente el pedido"})
+                
+
+
+            }else{
+                return res.status(404).json({"mensaje":"Error, no se reasigno correctamente el pedido"})
+            }
         }
-        
+        else{
+            return res.status(404).json({"mensaje":"No se encontraron domiciliarios disponibles, intentar mas tarde"})
+        }
     }
     catch(error){
         return res.status(500).json({"mensaje":"Error en el servidor",error})
     }
 }
-
 
 
 /* consulta que me liste los domicilios de ese un determinado domiciliario*/
@@ -221,10 +370,13 @@ export const listSolicitudesDomi = async (req, res)=>{
         FROM solicitudes AS s
         INNER JOIN usuarios AS u ON s.id_cliente = u.id_usuario
         WHERE s.id_domiciliario = ${idDomiciliario}
-        AND s.estado = 'en_curso'
+        AND s.estado = 'en_curso' OR s.estado = 'reprogramado'
         `
 
         const [response] = await conexion.query(sql)
+
+
+        console.log(response)
 
 
         return res.status(200).json({response})

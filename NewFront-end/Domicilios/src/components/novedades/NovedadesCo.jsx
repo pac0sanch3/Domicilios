@@ -17,7 +17,7 @@ const NovedadesCo = ()=> {
 
       console.log(data)
 
-      const response = await axios.post('http://localhost:3000/novedad/', data)
+      const response = await axios.post(`${import.meta.env.VITE_API_URL}novedad/`, data)
   
   
       console.log(response)
@@ -40,7 +40,7 @@ const NovedadesCo = ()=> {
 
           /* primeros consultamos el id del domiciliario que pertenece a ese usuario */
 
-          const respuesta = await axios.get(`http://localhost:3000/solicitudes/buscarDomic/${idUser}`)
+          const respuesta = await axios.get(`${import.meta.env.VITE_API_URL}solicitudes/buscarDomic/${idUser}`)
 
           let idDomiciliario = respuesta.data.response[0].id_domiciliario
 
@@ -48,13 +48,13 @@ const NovedadesCo = ()=> {
 
           /* consulta de las solicitudes que tiene ese domiciliario */
           
-          const soli = await axios.get(`http://localhost:3000/solicitudes/listSolicitudesDom/${idDomiciliario}`)
+          const soli = await axios.get(`${import.meta.env.VITE_API_URL}solicitudes/listSolicitudesDom/${idDomiciliario}`)
 
+          console.log(soli)
           setSoli(soli.data.response)
         } catch (error) {
             console.error("Error al obtener las solicitudes:", error);
         }
-
   }
 
   fetchSolicitudes()
