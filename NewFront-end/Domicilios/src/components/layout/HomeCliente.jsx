@@ -47,7 +47,7 @@ const HomeCliente = () =>{
       
       setSoliEnCurso(soliEnCurso)
       
-      const soliCompletado = contenidoGen.filter(solicitud => solicitud.estado == "completado")
+      const soliCompletado = contenidoGen.filter(solicitud => solicitud.estado !== "en_curso")
       setSoliCompl(soliCompletado)
 
 
@@ -63,6 +63,22 @@ const HomeCliente = () =>{
 
 
 
+  const cancelarPedido = async (idSolicitud) => {
+    const confirmacion = window.confirm("¿Estás seguro de que deseas cancelar esta solicitud?");
+    
+    if (confirmacion) {
+      try {
+        const estado = 'cancelado';
+        const respuesta = await axios.put(
+          `${import.meta.env.VITE_API_URL}solicitudes/actualizarEstado`,
+          { estado, idSolicitud }
+        );
+        buscarSolicitudes();
+      } catch (error) {
+        console.error(error);
+      }
+    }
+  }
 
 
   return (
@@ -70,29 +86,33 @@ const HomeCliente = () =>{
       <Header color="bg-white shadow-sm" />
       <div className="min-h-screen">
         {/* Panel principal con imagen y contenido */}
-        <div className="flex pt-28 flex-col md:flex-row w-full min-h-screen">
+        <div className="flex flex-col md:flex-row w-full min-h-screen">
           {/* Sección de imagen (2/3 del ancho) */}
-          <div className="w-full md:w-2/3 h-64 md:h-screen relative p-5 md:p-20">
+          <div className="w-full md:w-2/3 h-64 md:h-screen relative px-5 md:p-20">
 
-  <img 
-    src="/imagen2AL.jpg"
-    alt="Imagen principal" 
-    className="w-full h-full object-cover object-center md:object-top"
-  />
-</div>
+          <img 
+            src="/imagen2AL.jpg"
+            alt="Imagen principal" 
+            className="w-full h-full object-cover object-center md:object-top"
+          />
+        </div>
 
           
           {/* Sección de información (1/3 del ancho) */}
-          <div className="w-full md:w-1/3 p-8 flex flex-col justify-center bg-white">
+          <div className="w-full md:w-1/3 p-8 flex flex-col justify-center bg-white border-1 border-l-blue-950">
             <h1 className="text-4xl font-bold mb-4">Bienvenido</h1>
             <p className="text-gray-600 mb-8">
               Tus pedidos, a un toque de distancia
             </p>
+
             <button
-            onClick={openModal} 
-            className="bg-blue-500 text-white px-6 py-3 rounded-lg hover:bg-blue-600 transition-colors w-full md:w-auto">
+              onClick={openModal}
+              className="bg-gradient-to-r from-blue-500 to-blue-600 text-white font-semibold px-10 py-3 rounded-lg shadow-xl hover:shadow-2xl hover:from-blue-600 hover:to-blue-700 hover:scale-105 transition-transform duration-200 ease-in-out w-full md:w-auto"
+            >
               Realizar Pedido
             </button>
+
+
           </div>
         </div>
         <ModalSolicitud 
@@ -103,7 +123,7 @@ const HomeCliente = () =>{
         {/* Componente que aparece al hacer scroll */}
         <div className="min-h-screen bg-gray-100 p-8">
           <div className="max-w-4xl mx-auto">
-            <h2 className="text-3xl font-bold mb-6">Pedidos en proceso</h2>
+            <h2 className="text-3xl font-bold mb-6 border-b-4 border-blue-500 pb-2">Pedidos en proceso</h2>
 
             <div>
             {
@@ -204,9 +224,13 @@ const HomeCliente = () =>{
 
         {/* Footer de la Tarjeta */}
         <div className="mt-4 pt-4 border-t border-gray-200 flex flex-col sm:flex-row justify-between items-center space-y-2 sm:space-y-0">
-          <div className="text-sm text-gray-500"> 
-            {/* Botón para crear nueva incidencia */}
-
+          <div >
+              <Button
+                className="mt-6 w-full bg-red-600 text-white py-2 rounded-lg hover:bg-red-500"
+                onClick={()=>cancelarPedido(solicitud.id_solicitud)} 
+              >
+                Cancelar pedido
+              </Button>
           </div>
           <div className="text-xs sm:text-sm text-gray-500">
             <span className="font-medium">Fecha:</span> {new Date(solicitud.fecha_creacion).toLocaleString()}
@@ -219,7 +243,9 @@ const HomeCliente = () =>{
             </div>
           </div>
           <div className="max-w-4xl mx-auto my-14">
-            <h2 className="text-3xl font-bold mb-6">Historial de pedidos completados</h2>
+          <h2 className="text-3xl font-bold mb-6 border-b-4 border-blue-500 pb-2">
+            Historial de pedidos
+          </h2>
             <div>
             {
   soliCompletadas.map((solicitud) => (

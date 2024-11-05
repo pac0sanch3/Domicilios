@@ -236,9 +236,10 @@ export const actEstadoSolicitud = async(req, res)=>{
 
         const{estado, idSolicitud} = req.body
 
-        let sql = `update solicitudes set  estado ='${estado}' where id_solicitud = ${idSolicitud}`
+        let sql = `update solicitudes set estado ='${estado}' where id_solicitud = ${idSolicitud}`
 
         const [response] = await conexion.query(sql)
+        console.log(response)
     
         return res.status(200).json(response)
 
