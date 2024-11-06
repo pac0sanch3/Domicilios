@@ -52,7 +52,7 @@ const Registro = () => {
   };
 
   return (
-    <div className="min-h-screen w-full flex items-center justify-center bg-gradient-to-b bg-slate-400 py-8 px-4">
+    <div className="min-h-screen w-full flex items-center justify-center bg-gradient-to-b py-8 px-4">
       <Card className="w-full max-w-xs md:max-w-sm lg:max-w-md bg-white rounded-2xl shadow-lg my-2">
         <CardHeader className="flex flex-col gap-6 items-center justify-center pt-10 pb-6">
           <div className="w-32 h-32">
@@ -79,7 +79,7 @@ const Registro = () => {
                   value={formData.nombre}
                   onChange={handleInputChange}
                   classNames={{
-                    input: "text-gray-800 text-lg placeholder:text-gray-400",
+                    input: "text-gray-800 text-lg placeholder:text-gray-400 focus:outline-none",
                     inputWrapper: [
                       "bg-white",
                       "border-2",
@@ -125,7 +125,7 @@ const Registro = () => {
                   value={formData.correo}
                   onChange={handleInputChange}
                   classNames={{
-                    input: "text-gray-800 text-lg placeholder:text-gray-400",
+                    input: "text-gray-800 text-lg placeholder:text-gray-400 focus:outline-none",
                     inputWrapper: [
                       "bg-white",
                       "border-2",
@@ -154,7 +154,7 @@ const Registro = () => {
                   value={formData.telefono}
                   onChange={handleInputChange}
                   classNames={{
-                    input: "text-gray-800 text-lg placeholder:text-gray-400",
+                    input: "text-gray-800 text-lg placeholder:text-gray-400 focus:outline-none",
                     inputWrapper: [
                       "bg-white",
                       "border-2",
@@ -183,7 +183,7 @@ const Registro = () => {
                   onChange={handleInputChange}
                   type="password"
                   classNames={{
-                    input: "text-gray-800 text-lg placeholder:text-gray-400",
+                    input: "text-gray-800 text-lg placeholder:text-gray-400 focus:outline-none",
                     inputWrapper: [
                       "bg-white",
                       "border-2",
