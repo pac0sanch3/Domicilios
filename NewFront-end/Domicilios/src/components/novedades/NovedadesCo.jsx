@@ -26,7 +26,7 @@ const NovedadesCo = ()=> {
     }
     catch(error){
       console.error(error)
-      alert("a currido un error")
+      alert("No se encuentras domiciliarios disponibles para la reasignacion del pedido")
     }
 
   }

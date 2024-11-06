@@ -43,11 +43,11 @@ const HomeCliente = () =>{
       let contenidoGen = respuesta?.data?.response
       
 
-      const soliEnCurso = contenidoGen.filter(solicitud => solicitud.estado == "en_curso" ||solicitud.estado == "pendiente"  )
+      const soliEnCurso = contenidoGen.filter(solicitud => solicitud.estado == "en_curso" ||solicitud.estado == "reprogramado"  )
       
       setSoliEnCurso(soliEnCurso)
       
-      const soliCompletado = contenidoGen.filter(solicitud => solicitud.estado !== "en_curso")
+      const soliCompletado = contenidoGen.filter(solicitud => solicitud.estado !== "en_curso" && solicitud.estado !== "reprogramado")
       setSoliCompl(soliCompletado)
 
 
@@ -236,6 +236,29 @@ const HomeCliente = () =>{
             <span className="font-medium">Fecha:</span> {new Date(solicitud.fecha_creacion).toLocaleString()}
           </div>
         </div>
+        
+
+        {solicitud.novedades.length > 0 && (
+          <div className="mt-6 p-4 bg-gray-100 rounded-lg shadow-md">
+            <h3 className="text-lg font-semibold text-gray-800 mb-4">Novedades:</h3>
+            {solicitud.novedades.map((novedad, index) => (
+              <div key={index} className="p-3 mb-4 border border-gray-200 rounded-lg">
+                <p className="text-sm font-medium text-gray-600">
+                  <span className="font-semibold text-gray-700">Nombre:</span> {novedad.nombre}
+                </p>
+                <p className="text-sm font-medium text-gray-600">
+                  <span className="font-semibold text-gray-700">Teléfono:</span> {novedad.telefono}
+                </p>
+                <p className="text-sm font-medium text-gray-600">
+                  <span className="font-semibold text-gray-700">Licencia vehículo:</span> {novedad.licencia_vehiculo}
+                </p>
+                <p className="text-sm font-medium text-gray-600">
+                  <span className="font-semibold text-gray-700">Descripción del incidente:</span> {novedad.descripcion}
+                </p>
+              </div>
+            ))}
+          </div>
+        )}
       </div>
     </div>
   ))
@@ -357,14 +380,36 @@ const HomeCliente = () =>{
                   isOpen={isModalIncidenciasOpen} 
                   onClose={closeModalIncidencias}
                 />
-
-
                 </div>
-
                       <div className="text-xs sm:text-sm text-gray-500">
                         <span className="font-medium">Fecha:</span> {new Date(solicitud.fecha_creacion).toLocaleString()}
                       </div>
                     </div>
+                    {
+                      solicitud.novedades.length > 0 && (
+                      <div className="mt-6 p-4 bg-gray-100 rounded-lg shadow-md">
+                        <h3 className="text-lg font-semibold text-gray-800 mb-4">Novedades:</h3>
+                        {
+                          solicitud.novedades.map((novedad, index) => (
+                          <div key={index} className="p-3 mb-4 border border-gray-200 rounded-lg">
+                            <p className="text-sm font-medium text-gray-600">
+                              <span className="font-semibold text-gray-700">Nombre:</span> {novedad.nombre}
+                            </p>
+                            <p className="text-sm font-medium text-gray-600">
+                              <span className="font-semibold text-gray-700">Teléfono:</span> {novedad.telefono}
+                            </p>
+                            <p className="text-sm font-medium text-gray-600">
+                              <span className="font-semibold text-gray-700">Licencia vehículo:</span> {novedad.licencia_vehiculo}
+                            </p>
+                            <p className="text-sm font-medium text-gray-600">
+                              <span className="font-semibold text-gray-700">Descripción del incidente:</span> {novedad.descripcion}
+                            </p>
+                          </div>
+                          ))
+                        }
+                      </div>
+                      )
+                      }
                   </div>
                 </div>
               ))
