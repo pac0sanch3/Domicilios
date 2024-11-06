@@ -414,6 +414,32 @@ export const listSolicitudesCliente = async(req, res)=>{
 
         const [response] = await conexion.query(sql)
 
+        for (let i = 0; i < response.length; i++) {
+
+            let sql = `
+           SELECT
+                u.nombre,
+                u.telefono,
+                d.licencia_vehiculo,
+                n.descripcion,
+                n.ubicacionActual
+            FROM
+                usuarios u
+            INNER JOIN
+                domiciliarios d ON u.id_usuario = d.id_usuario
+            INNER JOIN
+                novedades n ON d.id_domiciliario = n.id_domiciliario
+            WHERE
+                n.id_solicitud = ${response[i].id_solicitud}
+
+            `
+
+            const [responseNov] = await conexion.query(sql)
+            //console.log(responseNov)
+
+            response[i].novedades = responseNov
+        }
+
         return res.status(200).json({response})
 
     }catch(error){
