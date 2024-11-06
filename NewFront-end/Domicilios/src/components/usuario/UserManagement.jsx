@@ -104,25 +104,47 @@ const UserManagement = () => {
 
       {/* Menú en lista para pantallas pequeñas y en línea para pantallas grandes */}
       <div className={`${isMenuOpen ? 'block' : 'hidden'} sm:flex flex-col sm:flex-row space-y-2 sm:space-y-0 sm:space-x-4 mb-6`}>
-        <Button onClick={() => setCurrentView('usuarios')} color={currentView === 'usuarios' ? 'primary' : 'default'} auto>
+        <Button   
+                  className="px-4 py-2 bg-blue-500 hover:bg-blue-600  text-white rounded-lg transition-all duration-300" 
+                  onClick={() => setCurrentView('usuarios')} 
+                  color={currentView === 'usuarios' ? 'primary' : 'default'} auto>
           Usuarios
         </Button>
-        <Button onClick={() => setCurrentView('roles')} color={currentView === 'roles' ? 'primary' : 'default'} auto>
+        <Button 
+                className="px-4 py-2 bg-blue-500 hover:bg-blue-600 text-white rounded-lg transition-all duration-300"
+                onClick={() => setCurrentView('roles')} 
+                color={currentView === 'roles' ? 'primary' : 'default'} auto>
+
           Incidentes
         </Button>
-        <Button onClick={() => setCurrentView('solicitudes')} color={currentView === 'solicitudes' ? 'primary' : 'default'} auto>
+        <Button 
+                onClick={() => setCurrentView('solicitudes')} 
+                className="px-4 py-2 bg-blue-500 hover:bg-blue-600 m-2 text-white rounded-lg transition-all duration-300"
+                color={currentView === 'solicitudes' ? 'primary' : 'default'} auto>
           Solicitudes
         </Button>
-        <Button onClick={() => setCurrentView('Novedades')} color={currentView === 'Novedades' ? 'primary' : 'default'} auto>
+        <Button 
+                onClick={() => setCurrentView('Novedades')}
+                className="px-4 py-2 bg-blue-500 hover:bg-blue-600 text-white rounded-lg transition-all duration-300"
+                color={currentView === 'Novedades' ? 'primary' : 'default'} auto>
           Novedades
         </Button>
-        <Button onClick={() => setCurrentView('Domicilio')} color={currentView === 'Domicilio' ? 'primary' : 'default'} auto>
+        <Button 
+                onClick={() => setCurrentView('Domicilio')}
+                className="px-4 py-2 bg-blue-500 hover:bg-blue-600 m-2 text-white rounded-lg transition-all duration-300"
+                color={currentView === 'Domicilio' ? 'primary' : 'default'} auto>
           Domicilio
         </Button>
-        <Button onClick={() => setCurrentView('actividades')} color={currentView === 'actividades' ? 'primary' : 'default'} auto>
+        <Button 
+                onClick={() => setCurrentView('actividades')} 
+                className="px-4 py-2 bg-blue-500 hover:bg-blue-600 text-white rounded-lg transition-all duration-300"
+                color={currentView === 'actividades' ? 'primary' : 'default'} auto>
           Actividades
         </Button>
-        <Button onClick={() => setCurrentView('Graficas')} color={currentView === 'Graficas' ? 'primary' : 'default'} auto>
+        <Button 
+                onClick={() => setCurrentView('Graficas')} 
+                className="px-4 py-2 bg-blue-500 hover:bg-blue-600 m-2 text-white rounded-lg transition-all duration-300"
+                color={currentView === 'Graficas' ? 'primary' : 'default'} auto>
           Gráficas
         </Button>
       </div>

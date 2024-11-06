@@ -11,7 +11,10 @@ const UserProfileContent = () => {
     correo: '',
     telefono: '',
     tipo_usuario: '',
-    user_img: null
+    user_img: null,
+    imagen_banner: null,
+    nombre_negocio: '',
+    direccion: '',
   });
   const [passwordData, setPasswordData] = useState({
     contrasenaActual: '',
@@ -20,6 +23,7 @@ const UserProfileContent = () => {
   const [alert, setAlert] = useState({ show: false, message: '', type: '' });
   const [loading, setLoading] = useState(true);
   const [previewImage, setPreviewImage] = useState(null);
+  const [previewBanner, setPreviewBanner] = useState(null);
   const userType = localStorage.getItem('userType');
 
   useEffect(() => {
@@ -33,6 +37,9 @@ const UserProfileContent = () => {
       setUserData(response.data);
       if (response.data.user_img) {
         setPreviewImage(`${import.meta.env.VITE_API_URL}${response.data.user_img}`);
+      }
+      if (response.data.imagen_banner) {
+        setPreviewBanner(`${import.meta.env.VITE_API_URL}${response.data.imagen_banner}`);
       }
       setLoading(false);
     } catch (error) {
@@ -202,6 +209,49 @@ const UserProfileContent = () => {
           Actualizar Perfil
         </button>
       </form>
+
+      {/* Nueva sección de información del negocio */}
+      {userType === 'negocio' && (
+        <div className="mt-8 bg-white rounded-lg shadow-md p-6 space-y-6">
+          <h3 className="text-xl font-semibold text-gray-800 flex justify-center items-center">Información del Negocio</h3>
+          
+          <div className="w-full h-48 relative flex items-center justify-center">
+            {previewBanner ? (
+              <img
+                src={previewBanner}
+                alt="Banner del negocio"
+                className="h-full rounded-lg shadow-md"
+              />
+            ) : (
+              <div className="w-full h-full flex items-center justify-center bg-gray-100 rounded-lg border-2 border-dashed border-gray-300">
+                <p className="text-gray-500 text-lg font-medium">No se encontró imagen</p>
+              </div>
+            )}
+          </div>
+          
+          <div className="space-y-4">
+            <div>
+              <label className="block text-sm font-medium text-gray-700">Nombre del Negocio</label>
+              <input
+                type="text"
+                value={userData.nombre_negocio}
+                className="mt-1 block w-full rounded-md border-gray-300 bg-gray-50 cursor-not-allowed sm:text-sm"
+                disabled
+              />
+            </div>
+            
+            <div>
+              <label className="block text-sm font-medium text-gray-700">Dirección</label>
+              <input
+                type="text"
+                value={userData.direccion}
+                className="mt-1 block w-full rounded-md border-gray-300 bg-gray-50 cursor-not-allowed sm:text-sm"
+                disabled
+              />
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* Formulario de cambio de contraseña */}
       <form onSubmit={handlePasswordSubmit} className="space-y-6 mt-8 bg-white rounded-lg shadow-md p-6">

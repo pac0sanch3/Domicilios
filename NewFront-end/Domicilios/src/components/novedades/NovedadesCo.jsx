@@ -26,7 +26,7 @@ const NovedadesCo = ()=> {
     }
     catch(error){
       console.error(error)
-      alert("a currido un error")
+      alert("No se encuentras domiciliarios disponibles para la reasignacion del pedido")
     }
 
   }
@@ -89,7 +89,7 @@ const NovedadesCo = ()=> {
         {/* ubicacion del domiciliario */}
 
         <div className="space-y-2">
-          <label className="block text-sm font-medium">Ubicacion actual:</label>
+          <label className="block text-sm  font-medium">Ubicacion actual:</label>
           <input
             {...register('ubicacionActual')}
             className="w-full p-2 border rounded-lg"
@@ -124,7 +124,7 @@ const NovedadesCo = ()=> {
         </div>
 
         {/* Botón de Enviar */}
-        <button type="submit" className="w-full bg-black text-white py-2 rounded-lg hover:bg-black/80">
+        <button type="submit" className="w-full bg-blue-500 hover:bg-blue-600 text-white py-2 rounded-lg">
           Registrar novedad
         </button>
       </form>

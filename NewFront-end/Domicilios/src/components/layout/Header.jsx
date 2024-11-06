@@ -42,7 +42,7 @@ const Header = () => {
     <header className="inset-x-0 top-0 h-16 bg-white md:px-8 sm:px-8 max-sm:px-8 z-50">
       <nav className="flex items-center justify-between lg:px-8 h-full" aria-label="Global">
         <div className="flex lg:flex-1 items-center">
-          <div className="flex justify-center items-center ml-3 font-bold text-2xl text-green-600 tracking-wide">
+          <div className="flex justify-center items-center ml-3 font-bold text-2xl text-blue-600 tracking-wide">
             Domicilios
           </div>
         </div>
