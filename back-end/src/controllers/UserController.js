@@ -119,9 +119,12 @@ export const obtenerUsuarioPorId = async (req, res) => {
         const { id } = req.params;
 
         const [usuario] = await conexion.query(
-            `SELECT id_usuario, nombre, tipo_usuario, correo, telefono, estado, 
-             fecha_creacion, fecha_actualizacion, user_img 
-             FROM usuarios WHERE id_usuario = ?`,
+            `SELECT s.id_usuario, s.nombre, s.tipo_usuario, s.correo, s.telefono, s.estado, 
+             s.fecha_creacion, s.fecha_actualizacion, s.user_img, 
+             n.imagen_banner, n.nombre_negocio, n.direccion 
+             FROM usuarios s 
+             LEFT JOIN negocios n ON n.id_usuario = s.id_usuario 
+             WHERE s.id_usuario = ?`,
             [id]
         );
 
