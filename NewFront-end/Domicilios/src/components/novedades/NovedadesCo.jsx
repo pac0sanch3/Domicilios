@@ -1,112 +1,115 @@
 import axios from 'axios';
-import { useState,  useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { useForm } from 'react-hook-form';
+import { Alert, AlertDescription, AlertTitle } from '../ui/alert';
+import { CheckCircle2, XCircle } from "lucide-react";
 
-const NovedadesCo = ()=> {
+const NovedadesCo = () => {
+  const { register, handleSubmit, formState: { errors }, reset } = useForm();
+  const [soli, setSoli] = useState([]);
+  const [idDomici, setDomic] = useState();
+  const [notification, setNotification] = useState({
+    show: false,
+    type: '',
+    message: '' 
+  });
 
-  const { register, handleSubmit, formState: { errors }, reset } = useForm()
+  const showNotification = (type, message) => {
+    setNotification({
+      show: true,
+      type,
+      message
+    });
 
-  const [soli , setSoli] = useState([])
-  const [idDomici , setDomic] = useState()
+    setTimeout(() => {
+      setNotification({
+        show: false,
+        type: '',
+        message: ''
+      });
+    }, 5000);
+  };
 
-  const onSubmit = async(data) => {
-
-    try{
-      data['id_domiciliario'] = idDomici
-
-
-      console.log(data)
-
-      const response = await axios.post(`${import.meta.env.VITE_API_URL}novedad/`, data)
-  
-  
-      console.log(response)
-      alert("se registro con exito")
-      reset()
+  const onSubmit = async (data) => {
+    try {
+      data['id_domiciliario'] = idDomici;
+      const response = await axios.post(`${import.meta.env.VITE_API_URL}novedad/`, data);
+      showNotification('success', 'Novedad registrada con éxito');
+      reset();
+    } catch (error) {
+      console.error(error);
+      showNotification('error', 'No se encuentran domiciliarios disponibles para la reasignación del pedido');
     }
-    catch(error){
-      console.error(error)
-      alert("No se encuentras domiciliarios disponibles para la reasignacion del pedido")
-    }
-
-  }
+  };
 
   useEffect(() => {
     const fetchSolicitudes = async () => {
-        try {
-          /* traer el id del localhost.*/
-
-          const idUser = localStorage.getItem('userId')
-
-          /* primeros consultamos el id del domiciliario que pertenece a ese usuario */
-
-          const respuesta = await axios.get(`${import.meta.env.VITE_API_URL}solicitudes/buscarDomic/${idUser}`)
-
-          let idDomiciliario = respuesta.data.response[0].id_domiciliario
-
-          setDomic(idDomiciliario)
-
-          /* consulta de las solicitudes que tiene ese domiciliario */
-          
-          const soli = await axios.get(`${import.meta.env.VITE_API_URL}solicitudes/listSolicitudesDom/${idDomiciliario}`)
-
-          console.log(soli)
-          setSoli(soli.data.response)
-        } catch (error) {
-            console.error("Error al obtener las solicitudes:", error);
-        }
-  }
-
-  fetchSolicitudes()
-}, [])
-
-//ubicacionActual
-
-  
-
+      try {
+        const idUser = localStorage.getItem('userId');
+        const respuesta = await axios.get(`${import.meta.env.VITE_API_URL}solicitudes/buscarDomic/${idUser}`);
+        let idDomiciliario = respuesta.data.response[0].id_domiciliario;
+        setDomic(idDomiciliario);
+        const soli = await axios.get(`${import.meta.env.VITE_API_URL}solicitudes/listSolicitudesDom/${idDomiciliario}`);
+        setSoli(soli.data.response);
+      } catch (error) {
+        console.error("Error al obtener las solicitudes:", error);
+      }
+    };
+    fetchSolicitudes();
+  }, []);
 
   return (
-    <>
-    <div className="bg-white/80 p-6 rounded-lg shadow-lg">
+    <div className="bg-white/80 p-6 rounded-lg shadow-lg space-y-4">
+      {notification.show && (
+        <Alert
+          variant={notification.type === 'success' ? 'default' : 'destructive'}
+          className={`transition-all duration-300 ease-in-out ${
+            notification.show ? 'opacity-100' : 'opacity-0'
+          }`}
+        >
+          {notification.type === 'success' ? (
+            <CheckCircle2 className="h-4 w-4" />
+          ) : (
+            <XCircle className="h-4 w-4" />
+          )}
+          <AlertTitle>
+            {notification.type === 'success' ? 'Éxito' : 'Error'}
+          </AlertTitle>
+          <AlertDescription>
+            {notification.message}
+          </AlertDescription>
+        </Alert>
+      )}
 
-    <h2 className="text-2xl font-bold mb-6">Registrar una novedad </h2>
+      <h2 className="text-2xl font-bold mb-6">Registrar una novedad</h2>
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
-
-        {/* Descripción */}
         <div className="space-y-2">
-          <label className="block text-sm font-medium">Descripcion de la novedad:</label>
+          <label className="block text-sm font-medium">Descripción de la novedad:</label>
           <textarea
             {...register('descripcion')}
             className="w-full p-2 border rounded-lg"
             rows="3"
-            placeholder="Ingrese la descripcion de la novedad"
+            placeholder="Ingrese la descripción de la novedad"
           />
           {errors.descripcion && (
             <span className="text-sm text-red-500">{errors.descripcion.message}</span>
           )}
         </div>
 
-        {/* ubicacion del domiciliario */}
-
         <div className="space-y-2">
-          <label className="block text-sm  font-medium">Ubicacion actual:</label>
+          <label className="block text-sm font-medium">Ubicación actual:</label>
           <input
             {...register('ubicacionActual')}
             className="w-full p-2 border rounded-lg"
-            rows="3"
-            placeholder="Ingrese su ubicacion"
+            placeholder="Ingrese su ubicación"
           />
           {errors.ubicacionActual && (
             <span className="text-sm text-red-500">{errors.ubicacionActual.message}</span>
           )}
         </div>
 
-
-        {/* para seleccionar una solicitud */}
         <div className="space-y-2">
-          <label className="block text-sm font-medium text-gray-700">
-            Seleccione una solicitud
-          </label>
+          <label className="block text-sm font-medium">Seleccione una solicitud</label>
           <select 
             {...register('id_solicitud')} 
             className="w-full p-2 border border-gray-300 rounded-md"
@@ -117,20 +120,18 @@ const NovedadesCo = ()=> {
                 key={item.id_solicitud} 
                 value={item.id_solicitud}
               >
-              Recogida: {item.direccion_recogida} - Entrega: {item.direccion_entrega}
+                Recogida: {item.direccion_recogida} - Entrega: {item.direccion_entrega}
               </option>
             ))}
           </select>
         </div>
 
-        {/* Botón de Enviar */}
         <button type="submit" className="w-full bg-blue-500 hover:bg-blue-600 text-white py-2 rounded-lg">
           Registrar novedad
         </button>
       </form>
     </div>
-    </>
-  )
-}
+  );
+};
 
-export default NovedadesCo
+export default NovedadesCo;
