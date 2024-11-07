@@ -1,5 +1,7 @@
-import { useState } from 'react';
+import React,{ useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
+import { FaEye } from "react-icons/fa";
+import { FaEyeSlash } from "react-icons/fa";
 import { Card, CardHeader, CardBody, CardFooter, Input, Button, Image } from "@nextui-org/react";
 import axios from 'axios';
 
@@ -11,6 +13,10 @@ const Inicio = () => {
   });
   const [error, setError] = useState('');
   const [isLoading, setIsLoading] = useState(false);
+  const [isVisible, setIsVisible] = React.useState(false);
+
+  const toggleVisibility = () => setIsVisible(!isVisible);
+  
 
   const handleInputChange = (e) => {
     setFormData({
@@ -123,7 +129,16 @@ const Inicio = () => {
                 <Input
                   placeholder="Ingresa tu contraseña"
                   name="contrasena"
-                  type="password"
+                  endContent={
+                    <button className="focus:outline-none" type="button" onClick={toggleVisibility} aria-label="toggle password visibility">
+                      {isVisible ? (
+                        <FaEye className="text-2xl text-default-400 pointer-events-none" />
+                      ) : (
+                        <FaEyeSlash className="text-2xl text-default-400 pointer-events-none" />
+                      )}
+                    </button>
+                  }
+                  type={isVisible ? "text" : "password"}
                   value={formData.contrasena}
                   onChange={handleInputChange}
                   classNames={{
