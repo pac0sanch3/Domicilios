@@ -16,7 +16,9 @@ export const DomiciliarioForm = ({ domiciliario, onSubmit, onClose }) => {
   const loadUsers = async () => {
     try {
       const response = await userService.getUsers();
-      setUsers(response.data);
+      // Filtrar usuarios con tipo_usuario = 'domiciliario'
+      const filteredUsers = response.data.filter(user => user.tipo_usuario === 'domiciliario');
+      setUsers(filteredUsers);
     } catch (error) {
       console.error('Error al cargar usuarios:', error);
     }
@@ -61,7 +63,7 @@ export const DomiciliarioForm = ({ domiciliario, onSubmit, onClose }) => {
               <option value="">Seleccione un usuario</option>
               {users.map((user) => (
                 <option key={user.id_usuario} value={user.id_usuario}>
-                  {user.nombre}  
+                  {user.nombre}
                 </option>
               ))}
             </select>

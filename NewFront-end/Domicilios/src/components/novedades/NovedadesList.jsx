@@ -208,12 +208,12 @@ export const NovedadesList = ({ novedades, onEdit }) => {
             >
               Actualizar Estado
             </button>
-            <button
+{/*             <button
               onClick={() => reasignarPedido(novedad.id_solicitud, novedad.id_novedad)}
               className="px-3 py-1 text-green-600 hover:bg-green-50 rounded-lg"
             >
               Reasignar Pedido
-            </button>
+            </button> */}
           </div>
         </div>
       ))}

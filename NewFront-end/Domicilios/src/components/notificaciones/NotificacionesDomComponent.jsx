@@ -1,15 +1,18 @@
 import React, { useEffect, useState } from 'react';
 import { useSolicitudes } from '../../services/SolicitudesProvider';
+import axios from 'axios';
 
 export const NotificacionesDomComponent = () => {
     const { listarSolicitudes, solicitudes, error, loading } = useSolicitudes();
     const [selectedSolicitud, setSelectedSolicitud] = useState(null);
     const [activeTab, setActiveTab] = useState('pendiente');
-    const [disponibilidadActual, setDisponibilidadActual] = useState(solicitudes[0]?.disponibilidad || 'disponible');
+    const [disponibilidadActual, setDisponibilidadActual] = useState('disponible');
+    const [disponibilidad, setDisponibilidad] = useState('disponible');
 
 
     useEffect(() => {
         listarSolicitudes();
+        getDisponibilidad();
     }, []);
 
     useEffect(() => {
@@ -17,27 +20,27 @@ export const NotificacionesDomComponent = () => {
 
     const filteredSolicitudes = solicitudes.filter(solicitud => solicitud.estado === activeTab);
 
+    const getDisponibilidad = async () => {
+        const id_usuario = localStorage.getItem('userId')
+        const respuesta = await axios.get(`${import.meta.env.VITE_API_URL}domiciliario/consultar/${id_usuario}`)
+        console.log(respuesta.data[0].disponibilidad)
+        setDisponibilidad(respuesta.data[0].disponibilidad)
+        setDisponibilidadActual(respuesta.data[0].disponibilidad)
+    }
+
     const handleFinalizarSolicitud = async () => {
         try {
-            const response = await fetch(`${import.meta.env.VITE_API_URL}solicitudes/actualizarEstado/${selectedSolicitud}`, {
-                method: 'PUT',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ 
-                    estado: 'completado'
-                }),
-                credentials: 'include' // Agrega esto si estás usando cookies para autenticación
-            });
-            
-            if (!response.ok) {
-                throw new Error('Error en la respuesta del servidor');
-            }
+            console.log(selectedSolicitud)
+            const response = await axios.put(`${import.meta.env.VITE_API_URL}solicitudes/actualizarEstado`,{ 
+                estado: 'completado',
+                idSolicitud: selectedSolicitud
+            } )
             
             await listarSolicitudes(); // Espera a que la lista se actualice
             setSelectedSolicitud(null);
             setActiveTab('completado'); // Cambia automáticamente a la pestaña de completados
         } catch (error) {
             console.error('Error al actualizar el estado:', error);
-            // Aquí podrías agregar una notificación de error para el usuario
         }
     };
 
@@ -66,17 +69,15 @@ export const NotificacionesDomComponent = () => {
     return (
         <div className="min-h-screen bg-gray-100">
             {/* Header con título y estado de disponibilidad */}
-            <div className={`shadow transition-colors duration-50 border-2 border-black ${
-            disponibilidadActual === 'disponible' ? 'bg-blue-300' 
-            : disponibilidadActual === 'inactivo' ? 'bg-red-400'
-            : disponibilidadActual === 'no_disponible' ? 'bg-red-500'
+            <div className={`shadow transition-colors duration-50  ${
+            disponibilidadActual === 'disponible' ? 'bg-blue-300/20' 
+            : disponibilidadActual === 'no_disponible' ? 'bg-red-300/20'
             : 'bg-gray-300'
         }`}>
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
         <div className="flex justify-between items-center">
             <h1 className={`text-2xl font-bold ${
                 disponibilidadActual === 'disponible' ? 'text-blue-900'
-                : disponibilidadActual === 'inactivo' ? 'text-red-900'
                 : disponibilidadActual === 'no_disponible' ? 'text-red-900'
                 : 'text-gray-900'
             }`}>
@@ -89,8 +90,6 @@ export const NotificacionesDomComponent = () => {
                     className={`px-4 py-2 rounded-full transition-colors duration-50 
                         ${disponibilidadActual === 'disponible'
                             ? 'bg-blue-300 text-blue-900 hover:bg-blue-400'
-                        : disponibilidadActual === 'inactivo'
-                            ? 'bg-red-300 text-red-900 hover:bg-red-400'
                         : disponibilidadActual === 'no_disponible'
                             ? 'bg-red-300 text-red-900 hover:bg-red-400'
                             : 'bg-gray-300 text-gray-900 hover:bg-gray-400'
@@ -100,7 +99,6 @@ export const NotificacionesDomComponent = () => {
                     <div className="flex items-center space-x-2">
                         <div className={`w-2 h-2 rounded-full ${
                             disponibilidadActual === 'disponible' ? 'bg-blue-600'
-                            : disponibilidadActual === 'inactivo' ? 'bg-red-600'
                             : disponibilidadActual === 'no_disponible' ? 'bg-red-600'
                             : 'bg-gray-600'
                         }`}></div>
@@ -180,7 +178,7 @@ export const NotificacionesDomComponent = () => {
                                 
                                 {activeTab === 'reprogramado' && (
                                     <p className="text-gray-700">
-                                        Ubicación Actual: <span className="text-gray-500">{solicitud.ubicacionActual}</span>
+                                        Lugar del Incidente: <span className="text-gray-500">{solicitud.ubicaciones}</span>
                                     </p>
                                 )}
 

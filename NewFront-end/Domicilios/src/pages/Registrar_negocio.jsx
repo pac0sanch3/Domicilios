@@ -23,10 +23,9 @@ const RegistroNegocio = () => {
 
   const loadUsers = async () => {
     try {
-      const response = await userService.getUsers(); // Carga la lista de usuarios
-
-
-      setUsers(response.data);
+      const response = await userService.getUsers();
+      const filteredUsers = response.data.filter(user => user.tipo_usuario === 'negocio');
+      setUsers(filteredUsers);
     } catch (error) {
       console.error('Error al cargar usuarios:', error);
     }

@@ -215,7 +215,7 @@ export const listarSolicitudes = async (req, res) => {
             FROM solicitudes s 
             LEFT JOIN usuarios u ON s.id_cliente = u.id_usuario 
             LEFT JOIN novedades n ON s.id_solicitud = n.id_solicitud
-            GROUP BY s.id_solicitud
+            GROUP BY s.id_solicitud  
         `;
 
         const [response] = await conexion.query(sql);
@@ -237,6 +237,7 @@ export const actEstadoSolicitud = async(req, res)=>{
         const{estado, idSolicitud} = req.body
 
         let sql = `update solicitudes set estado ='${estado}' where id_solicitud = ${idSolicitud}`
+        console.log(sql)
 
         const [response] = await conexion.query(sql)
         console.log(response)
