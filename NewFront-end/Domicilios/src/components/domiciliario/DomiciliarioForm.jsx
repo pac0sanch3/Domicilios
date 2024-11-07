@@ -61,7 +61,7 @@ export const DomiciliarioForm = ({ domiciliario, onSubmit, onClose }) => {
               <option value="">Seleccione un usuario</option>
               {users.map((user) => (
                 <option key={user.id_usuario} value={user.id_usuario}>
-                  {user.nombre} ({user.id_usuario})
+                  {user.nombre}  
                 </option>
               ))}
             </select>
