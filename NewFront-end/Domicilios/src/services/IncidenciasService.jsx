@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const API_URL = 'http://localhost:3000/insidencias';
+const API_URL = `${import.meta.env.VITE_API_URL}insidencias`;
 
 export const IncidenciasService = {
   // Obtener todos los usuarios

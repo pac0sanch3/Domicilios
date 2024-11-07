@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const API_URL = 'http://localhost:3000/usuario';
+const API_URL = `${import.meta.env.VITE_API_URL}usuario`;
 
 export const userService = {
   // Obtener todos los usuarios
@@ -20,7 +20,12 @@ export const userService = {
 
   // Actualizar un usuario existente
   updateUser: (id, userData) => {
-    return axios.put(`${API_URL}/actualizar/${id}`, userData);
+    const config = {
+      headers: {
+        'Content-Type': 'multipart/form-data'
+      }
+    };
+    return axios.put(`${API_URL}/actualizar/${id}`, userData, config);
   },
 
   // Eliminar un usuario

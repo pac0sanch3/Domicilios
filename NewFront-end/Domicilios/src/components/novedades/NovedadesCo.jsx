@@ -17,7 +17,7 @@ const NovedadesCo = ()=> {
 
       console.log(data)
 
-      const response = await axios.post('http://localhost:3000/novedad/', data)
+      const response = await axios.post(`${import.meta.env.VITE_API_URL}novedad/`, data)
   
   
       console.log(response)
@@ -26,7 +26,7 @@ const NovedadesCo = ()=> {
     }
     catch(error){
       console.error(error)
-      alert("a currido un error")
+      alert("No se encuentras domiciliarios disponibles para la reasignacion del pedido")
     }
 
   }
@@ -40,7 +40,7 @@ const NovedadesCo = ()=> {
 
           /* primeros consultamos el id del domiciliario que pertenece a ese usuario */
 
-          const respuesta = await axios.get(`http://localhost:3000/solicitudes/buscarDomic/${idUser}`)
+          const respuesta = await axios.get(`${import.meta.env.VITE_API_URL}solicitudes/buscarDomic/${idUser}`)
 
           let idDomiciliario = respuesta.data.response[0].id_domiciliario
 
@@ -48,13 +48,13 @@ const NovedadesCo = ()=> {
 
           /* consulta de las solicitudes que tiene ese domiciliario */
           
-          const soli = await axios.get(`http://localhost:3000/solicitudes/listSolicitudesDom/${idDomiciliario}`)
+          const soli = await axios.get(`${import.meta.env.VITE_API_URL}solicitudes/listSolicitudesDom/${idDomiciliario}`)
 
+          console.log(soli)
           setSoli(soli.data.response)
         } catch (error) {
             console.error("Error al obtener las solicitudes:", error);
         }
-
   }
 
   fetchSolicitudes()
@@ -89,7 +89,7 @@ const NovedadesCo = ()=> {
         {/* ubicacion del domiciliario */}
 
         <div className="space-y-2">
-          <label className="block text-sm font-medium">Ubicacion actual:</label>
+          <label className="block text-sm  font-medium">Ubicacion actual:</label>
           <input
             {...register('ubicacionActual')}
             className="w-full p-2 border rounded-lg"
@@ -124,7 +124,7 @@ const NovedadesCo = ()=> {
         </div>
 
         {/* Botón de Enviar */}
-        <button type="submit" className="w-full bg-black text-white py-2 rounded-lg hover:bg-black/80">
+        <button type="submit" className="w-full bg-blue-500 hover:bg-blue-600 text-white py-2 rounded-lg">
           Registrar novedad
         </button>
       </form>

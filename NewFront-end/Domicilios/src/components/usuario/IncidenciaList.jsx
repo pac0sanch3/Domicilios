@@ -1,16 +1,17 @@
 import React from 'react';
 
-export const IncidenciaList = ({ incidencias , onEdit, onDelete, onToggleActive }) => {
+export const IncidenciaList = ({ incidencias, onEdit, onDelete, onToggleActive }) => {
   const listaIncidencias = incidencias.reportes || [];
   const handleToggleActive = (id_reporte, currentStatus) => {
     const message = currentStatus === 'pendiente' 
-      ? '¿Estás seguro que quieres dejar en pendiente este insidente'
-      : '¿Estás seguro que quieres resolver este inisidente?';
+      ? '¿Estás seguro que quieres dejar en pendiente este incidente?'
+      : '¿Estás seguro que quieres resolver este incidente?';
       
     if (window.confirm(message)) {
       onToggleActive(id_reporte, currentStatus);
     }
   };
+
   return (
     <div className="space-y-4">
       {listaIncidencias.map(incidencia => (
@@ -24,7 +25,7 @@ export const IncidenciaList = ({ incidencias , onEdit, onDelete, onToggleActive 
             <span className="text-sm text-gray-500">Última actualización: {incidencia.fecha_actualizacion}</span>
           </div>
           
-          <div className="flex items-center space-x-2">
+          <div className="flex flex-col sm:flex-row items-center space-y-2 sm:space-y-0 sm:space-x-2">
             <button
               onClick={() => onEdit(incidencia)}
               className="px-3 py-1 text-blue-600 hover:bg-blue-50 rounded-lg"
@@ -38,6 +39,7 @@ export const IncidenciaList = ({ incidencias , onEdit, onDelete, onToggleActive 
             >
               Eliminar
             </button>
+            
             <button
               onClick={() => handleToggleActive(incidencia.id_reporte, incidencia.estado)}
               className={`px-3 py-1 rounded-lg ${
@@ -46,13 +48,11 @@ export const IncidenciaList = ({ incidencias , onEdit, onDelete, onToggleActive 
                   : 'text-green-600 hover:bg-green-100'
               }`}
             >
-              {incidencia.estado === 'pendiente' ? 'Resuelto' : 'Rendiente'}
+              {incidencia.estado === 'pendiente' ? 'Resuelto' : 'Pendiente'}
             </button> 
           </div>
         </div>
-        
       ))}
-      
       
       {incidencias.length === 0 && (
         <div className="text-center py-8 text-gray-500">

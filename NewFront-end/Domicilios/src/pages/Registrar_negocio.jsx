@@ -52,7 +52,7 @@ const RegistroNegocio = () => {
     }
 
     try {
-      const response = await axios.post('http://localhost:3000/negocio/registrar-negocio', formDataToSend, {
+      const response = await axios.post(`${import.meta.env.VITE_API_URL}negocio/registrar-negocio`, formDataToSend, {
         headers: {
           'Content-Type': 'multipart/form-data', // Necesario para subir archivos
         },
@@ -68,7 +68,7 @@ const RegistroNegocio = () => {
   };
 
   return (
-    <div className="min-h-screen w-full flex items-center justify-center bg-gradient-to-b bg-slate-400 p-4">
+    <div className="min-h-screen w-full flex items-center justify-center bg-gradient-to-b p-4">
       <Card className="w-full max-w-sm bg-white/90 backdrop-blur-md rounded-xl shadow-2xl">
         <CardHeader className="flex flex-col gap-4 items-center justify-center pt-6 pb-4">
           <div className="w-48 h-46 border-2 border-blue-300 rounded-lg overflow-hidden bg-blue-100 shadow-inner">
@@ -115,7 +115,7 @@ const RegistroNegocio = () => {
                   value={formData.nombre_negocio}
                   onChange={handleInputChange}
                   classNames={{
-                    input: "text-gray-900 text-base placeholder:text-gray-400",
+                    input: "text-gray-900 text-base placeholder:text-gray-400 focus:outline-none",
                     inputWrapper: [
                       "bg-white",
                       "border-2",
@@ -144,7 +144,7 @@ const RegistroNegocio = () => {
                   value={formData.direccion}
                   onChange={handleInputChange}
                   classNames={{
-                    input: "text-gray-900 text-base placeholder:text-gray-400",
+                    input: "text-gray-900 text-base placeholder:text-gray-400 focus:outline-none",
                     inputWrapper: [
                       "bg-white",
                       "border-2",

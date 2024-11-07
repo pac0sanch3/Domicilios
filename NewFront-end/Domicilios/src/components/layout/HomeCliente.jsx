@@ -1,10 +1,15 @@
 import axios from "axios";
+import { Button } from '@nextui-org/react';
 import Header from "../../components/layout/Header"
 import ModalSolicitud from "../solicitudes/ModalSolicitud";
+
 import { useState , useEffect} from 'react'
+import ModalIncidencias from "../Incidencias/ModalIncidencias";
 
 
 const HomeCliente = () =>{
+  const [isModalIncidenciasOpen, setIsModalIncidenciasOpen] = useState(false);
+
 
   const [isModalOpen, setIsModalOpen] = useState(false)
 
@@ -20,21 +25,29 @@ const HomeCliente = () =>{
     buscarSolicitudes()
     setIsModalOpen(false);
   };
+  const openModalIncidencias = () => {
+
+    setIsModalIncidenciasOpen(true);
+  };
+  const closeModalIncidencias = () => {
+
+    setIsModalIncidenciasOpen(false);
+  };
 
   const buscarSolicitudes = async ()=>{
     try{
       const idUser = localStorage.getItem('userId')
 
-      const respuesta = await axios.get(`http://localhost:3000/solicitudes/listarSoliClientes/${idUser}`)
+      const respuesta = await axios.get(`${import.meta.env.VITE_API_URL}solicitudes/listarSoliClientes/${idUser}`)
 
       let contenidoGen = respuesta?.data?.response
       
 
-      const soliEnCurso = contenidoGen.filter(solicitud => solicitud.estado == "en_curso" ||solicitud.estado == "pendiente"  )
+      const soliEnCurso = contenidoGen.filter(solicitud => solicitud.estado == "en_curso" ||solicitud.estado == "reprogramado"  )
       
       setSoliEnCurso(soliEnCurso)
       
-      const soliCompletado = contenidoGen.filter(solicitud => solicitud.estado == "completado")
+      const soliCompletado = contenidoGen.filter(solicitud => solicitud.estado !== "en_curso" && solicitud.estado !== "reprogramado")
       setSoliCompl(soliCompletado)
 
 
@@ -50,6 +63,23 @@ const HomeCliente = () =>{
 
 
 
+  const cancelarPedido = async (idSolicitud) => {
+    const confirmacion = window.confirm("¿Estás seguro de que deseas cancelar esta solicitud?");
+    
+    if (confirmacion) {
+      try {
+        const estado = 'cancelado';
+        const respuesta = await axios.put(
+          `${import.meta.env.VITE_API_URL}solicitudes/actualizarEstado`,
+          { estado, idSolicitud }
+        );
+        buscarSolicitudes();
+      } catch (error) {
+        console.error(error);
+      }
+    }
+  }
+
 
   return (
     <>
@@ -58,25 +88,31 @@ const HomeCliente = () =>{
         {/* Panel principal con imagen y contenido */}
         <div className="flex flex-col md:flex-row w-full min-h-screen">
           {/* Sección de imagen (2/3 del ancho) */}
-          <div className="w-full md:w-2/3 h-screen relative p-20">
-            <img 
-              src="/imagen2AL.jpg"
-              alt="Imagen principal" 
-              className="w-full h-full object-cover"
-            />
-          </div>
+          <div className="w-full md:w-2/3 h-64 md:h-screen relative px-5 md:p-20">
+
+          <img 
+            src="/imagen2AL.jpg"
+            alt="Imagen principal" 
+            className="w-full h-full object-cover object-center md:object-top"
+          />
+        </div>
+
           
           {/* Sección de información (1/3 del ancho) */}
-          <div className="w-full md:w-1/3 p-8 flex flex-col justify-center bg-white">
+          <div className="w-full md:w-1/3 p-8 flex flex-col justify-center bg-white border-1 border-l-blue-950">
             <h1 className="text-4xl font-bold mb-4">Bienvenido</h1>
             <p className="text-gray-600 mb-8">
               Tus pedidos, a un toque de distancia
             </p>
+
             <button
-            onClick={openModal} 
-            className="bg-blue-500 text-white px-6 py-3 rounded-lg hover:bg-blue-600 transition-colors w-full md:w-auto">
+              onClick={openModal}
+              className="bg-gradient-to-r from-blue-500 to-blue-600 text-white font-semibold px-10 py-3 rounded-lg shadow-xl hover:shadow-2xl hover:from-blue-600 hover:to-blue-700 hover:scale-105 transition-transform duration-200 ease-in-out w-full md:w-auto"
+            >
               Realizar Pedido
             </button>
+
+
           </div>
         </div>
         <ModalSolicitud 
@@ -87,7 +123,7 @@ const HomeCliente = () =>{
         {/* Componente que aparece al hacer scroll */}
         <div className="min-h-screen bg-gray-100 p-8">
           <div className="max-w-4xl mx-auto">
-            <h2 className="text-3xl font-bold mb-6">Pedidos en proceso</h2>
+            <h2 className="text-3xl font-bold mb-6 border-b-4 border-blue-500 pb-2">Pedidos en proceso</h2>
 
             <div>
             {
@@ -151,6 +187,12 @@ const HomeCliente = () =>{
               Detalles del pedido
             </h3>
             <p className="flex items-center mb-1 text-sm sm:text-base">
+              <span className="font-medium mr-2">ID del pedido:</span>
+            </p>
+            <p className="text-xs sm:text-sm text-gray-600 mb-2">
+              {solicitud.id_solicitud}
+            </p>
+            <p className="flex items-center mb-1 text-sm sm:text-base">
               <span className="font-medium mr-2">Dirección Recogida:</span>
             </p>
             <p className="text-xs sm:text-sm text-gray-600 mb-2">
@@ -182,15 +224,41 @@ const HomeCliente = () =>{
 
         {/* Footer de la Tarjeta */}
         <div className="mt-4 pt-4 border-t border-gray-200 flex flex-col sm:flex-row justify-between items-center space-y-2 sm:space-y-0">
-          <div className="text-sm text-gray-500"> 
-            <button className="bg-gray-800 text-white py-2 px-4 rounded-md text-xs sm:text-sm">
-              Reportar incidencia
-            </button>
+          <div >
+              <Button
+                className="mt-6 w-full bg-red-600 text-white py-2 rounded-lg hover:bg-red-500"
+                onClick={()=>cancelarPedido(solicitud.id_solicitud)} 
+              >
+                Cancelar pedido
+              </Button>
           </div>
           <div className="text-xs sm:text-sm text-gray-500">
             <span className="font-medium">Fecha:</span> {new Date(solicitud.fecha_creacion).toLocaleString()}
           </div>
         </div>
+        
+
+        {solicitud.novedades.length > 0 && (
+          <div className="mt-6 p-4 bg-gray-100 rounded-lg shadow-md">
+            <h3 className="text-lg font-semibold text-gray-800 mb-4">Novedades:</h3>
+            {solicitud.novedades.map((novedad, index) => (
+              <div key={index} className="p-3 mb-4 border border-gray-200 rounded-lg">
+                <p className="text-sm font-medium text-gray-600">
+                  <span className="font-semibold text-gray-700">Nombre:</span> {novedad.nombre}
+                </p>
+                <p className="text-sm font-medium text-gray-600">
+                  <span className="font-semibold text-gray-700">Teléfono:</span> {novedad.telefono}
+                </p>
+                <p className="text-sm font-medium text-gray-600">
+                  <span className="font-semibold text-gray-700">Licencia vehículo:</span> {novedad.licencia_vehiculo}
+                </p>
+                <p className="text-sm font-medium text-gray-600">
+                  <span className="font-semibold text-gray-700">Descripción del incidente:</span> {novedad.descripcion}
+                </p>
+              </div>
+            ))}
+          </div>
+        )}
       </div>
     </div>
   ))
@@ -198,7 +266,9 @@ const HomeCliente = () =>{
             </div>
           </div>
           <div className="max-w-4xl mx-auto my-14">
-            <h2 className="text-3xl font-bold mb-6">Historial de pedidos completados</h2>
+          <h2 className="text-3xl font-bold mb-6 border-b-4 border-blue-500 pb-2">
+            Historial de pedidos
+          </h2>
             <div>
             {
   soliCompletadas.map((solicitud) => (
@@ -261,6 +331,12 @@ const HomeCliente = () =>{
               Detalles del pedido
             </h3>
             <p className="flex items-center mb-1 text-sm sm:text-base">
+              <span className="font-medium mr-2">ID del pedido:</span>
+            </p>
+            <p className="text-xs sm:text-sm text-gray-600 mb-2">
+              {solicitud.id_solicitud}
+            </p>
+            <p className="flex items-center mb-1 text-sm sm:text-base">
               <span className="font-medium mr-2">Dirección Recogida:</span>
             </p>
             <p className="text-xs sm:text-sm text-gray-600 mb-2">
@@ -292,25 +368,56 @@ const HomeCliente = () =>{
 
         {/* Footer de la Tarjeta */}
         <div className="mt-4 pt-4 border-t border-gray-200 flex flex-col sm:flex-row justify-between items-center space-y-2 sm:space-y-0">
-          <div className="text-sm text-gray-500"> 
-            <button className="bg-gray-800 text-white py-2 px-4 rounded-md text-xs sm:text-sm">
-              Reportar incidencia
-            </button>
-          </div>
-          <div className="text-xs sm:text-sm text-gray-500">
-            <span className="font-medium">Fecha:</span> {new Date(solicitud.fecha_creacion).toLocaleString()}
-          </div>
-        </div>
-      </div>
-    </div>
-  ))
-}
+                <div className="text-sm text-gray-500"> 
+                <Button
+                  className="mt-6 w-full bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700"
+                  onClick={openModalIncidencias} 
+                >
+                  Registrar Nueva Incidencia
+                </Button>
+
+                <ModalIncidencias 
+                  isOpen={isModalIncidenciasOpen} 
+                  onClose={closeModalIncidencias}
+                />
+                </div>
+                      <div className="text-xs sm:text-sm text-gray-500">
+                        <span className="font-medium">Fecha:</span> {new Date(solicitud.fecha_creacion).toLocaleString()}
+                      </div>
+                    </div>
+                    {
+                      solicitud.novedades.length > 0 && (
+                      <div className="mt-6 p-4 bg-gray-100 rounded-lg shadow-md">
+                        <h3 className="text-lg font-semibold text-gray-800 mb-4">Novedades:</h3>
+                        {
+                          solicitud.novedades.map((novedad, index) => (
+                          <div key={index} className="p-3 mb-4 border border-gray-200 rounded-lg">
+                            <p className="text-sm font-medium text-gray-600">
+                              <span className="font-semibold text-gray-700">Nombre:</span> {novedad.nombre}
+                            </p>
+                            <p className="text-sm font-medium text-gray-600">
+                              <span className="font-semibold text-gray-700">Teléfono:</span> {novedad.telefono}
+                            </p>
+                            <p className="text-sm font-medium text-gray-600">
+                              <span className="font-semibold text-gray-700">Licencia vehículo:</span> {novedad.licencia_vehiculo}
+                            </p>
+                            <p className="text-sm font-medium text-gray-600">
+                              <span className="font-semibold text-gray-700">Descripción del incidente:</span> {novedad.descripcion}
+                            </p>
+                          </div>
+                          ))
+                        }
+                      </div>
+                      )
+                      }
+                  </div>
+                </div>
+              ))
+            }
             </div>
           </div>
         </div>
-        
       </div>
-    
     </>
   );
 
@@ -318,3 +425,4 @@ const HomeCliente = () =>{
 
 
 export default HomeCliente
+

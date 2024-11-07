@@ -1,7 +1,20 @@
 import { conexion } from "../databases/conexion.js";
 import jwt from "jsonwebtoken";
 import bcrypt from "bcryptjs";
+import multer from "multer";
+import path from "path";
 
+// Configuración de multer para cargar imágenes
+const storage = multer.diskStorage({
+    destination: (req, file, cb) => {
+      cb(null, "public/"); 
+    },
+    filename: (req, file, cb) => {
+      cb(null, Date.now() + path.extname(file.originalname)); // Nombre único para cada archivo
+    }
+  });
+  
+  const upload = multer({ storage });
 
 // Función auxiliar para validar email
 const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -15,6 +28,7 @@ const validatePhone = (phone) => phoneRegex.test(phone);
 export const registrarUsuario = async (req, res) => {
     try { 
         const { nombre, tipo_usuario, correo, telefono, contrasena } = req.body;
+        const user_img = req.file ? req.file.filename : null;
 
         // Validaciones básicas
         if (!nombre || !tipo_usuario || !correo || !telefono || !contrasena) {
@@ -63,9 +77,9 @@ export const registrarUsuario = async (req, res) => {
 
         // Insertar usuario
         const [resultado] = await conexion.query(
-            `INSERT INTO usuarios (nombre, tipo_usuario, correo, telefono, contrasena, estado) 
-             VALUES (?, ?, ?, ?, ?, 'activo')`,
-            [nombre, tipo_usuario, correo, telefono, hashPassword]
+            `INSERT INTO usuarios (nombre, tipo_usuario, correo, telefono, contrasena, estado, user_img) 
+             VALUES (?, ?, ?, ?, ?, 'activo', ?)`,
+            [nombre, tipo_usuario, correo, telefono, hashPassword, user_img]
         );
 
         return res.status(201).json({
@@ -86,7 +100,7 @@ export const registrarUsuario = async (req, res) => {
 export const listarUsuarios = async (req, res) => {
     try {
         const [usuarios] = await conexion.query(
-            "SELECT id_usuario, nombre, tipo_usuario, correo, telefono, estado, fecha_creacion, fecha_actualizacion FROM usuarios"
+            "SELECT id_usuario, nombre, tipo_usuario, correo, telefono, estado, fecha_creacion, fecha_actualizacion, user_img FROM usuarios"
         );
 
         return res.status(200).json(usuarios);
@@ -105,9 +119,12 @@ export const obtenerUsuarioPorId = async (req, res) => {
         const { id } = req.params;
 
         const [usuario] = await conexion.query(
-            `SELECT id_usuario, nombre, tipo_usuario, correo, telefono, estado, 
-             fecha_creacion, fecha_actualizacion 
-             FROM usuarios WHERE id_usuario = ?`,
+            `SELECT s.id_usuario, s.nombre, s.tipo_usuario, s.correo, s.telefono, s.estado, 
+             s.fecha_creacion, s.fecha_actualizacion, s.user_img, 
+             n.imagen_banner, n.nombre_negocio, n.direccion 
+             FROM usuarios s 
+             LEFT JOIN negocios n ON n.id_usuario = s.id_usuario 
+             WHERE s.id_usuario = ?`,
             [id]
         );
 
@@ -132,6 +149,7 @@ export const actualizarUsuario = async (req, res) => {
     try {
         const { id } = req.params;
         const { nombre, tipo_usuario, correo, telefono, estado } = req.body;
+        const user_img = req.file ? req.file.filename : null;
 
         // Verificar si el usuario existe
         const [usuarioExiste] = await conexion.query(
@@ -195,9 +213,10 @@ export const actualizarUsuario = async (req, res) => {
                  correo = COALESCE(?, correo),
                  telefono = COALESCE(?, telefono),
                  estado = COALESCE(?, estado),
+                 user_img = COALESCE(?, user_img),
                  fecha_actualizacion = CURRENT_TIMESTAMP
              WHERE id_usuario = ?`,
-            [nombre, tipo_usuario, correo, telefono, estado, id]
+            [nombre, tipo_usuario, correo, telefono, estado, user_img, id]
         );
 
         return res.status(200).json({
@@ -370,7 +389,7 @@ export const obtenerEstadisticasIncidencias = async (req, res) => {
             GROUP BY tipo_incidencia
         `);
         
-        console.log(result); 
+
         
         if (result.length === 0) {
             return res.status(404).json({
@@ -528,3 +547,4 @@ export const cambiarContrasena = async (req, res) => {
     }
 };
 
+export const uploadUserImg = upload.single("user_img");
