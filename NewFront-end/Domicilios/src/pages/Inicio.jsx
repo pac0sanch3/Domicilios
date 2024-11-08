@@ -79,8 +79,8 @@ const Inicio = () => {
       <Card className="w-full max-w-xs md:max-w-sm lg:max-w-md bg-white rounded-2xl shadow-lg my-2">
         <CardHeader className="flex flex-col gap-6 items-center justify-center pt-10 pb-6">
           <div className="w-32 h-32">
-            <Image
-              src="/nuevo_logo.jpeg"
+            <img
+              src="/loguito.jpeg"
               alt="Logo"
               className="w-full h-full object-cover"
             />

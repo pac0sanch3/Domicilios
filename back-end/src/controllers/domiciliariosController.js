@@ -44,6 +44,20 @@ export const listarDomiciliarios = async (req, res) => {
       });
     }
 };
+
+export const listarDomiciliariosPorUsuario = async (req,res) => {
+  try {
+    const {id_usuario} = req.params;
+    const sql = `SELECT disponibilidad FROM domiciliarios WHERE id_usuario = ${id_usuario}`
+
+    console.log(sql)
+
+    const [response] = await conexion.query(sql)
+    res.status(200).json(response)
+  } catch (error) {
+    res.status(500).json({'Error': 'Error en servidor', error})
+  }
+}
   
 export const actualizarDomiciliario = async (req, res) => {
     try {
@@ -131,7 +145,7 @@ export const actualizarDisponibilidad = async (req, res) => {
       }
 
       // Obtener el valor actual y definir el siguiente estado
-      const opcionesDisponibilidad = ['disponible', 'no_disponible', 'inactivo'];
+      const opcionesDisponibilidad = ['disponible', 'no_disponible'];
       const currentDisponibilidad = domiciliario[0].disponibilidad;
       const nextIndex = (opcionesDisponibilidad.indexOf(currentDisponibilidad) + 1) % opcionesDisponibilidad.length;
       const nextDisponibilidad = opcionesDisponibilidad[nextIndex];
