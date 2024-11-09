@@ -21,5 +21,13 @@ export const domiciliariosService = {
 
   updateDisponibilidad: (id, disponibilidad) => {
     return axios.put(`${API_URL}/disponibilidad/${id}`, { disponibilidad });
-  }
+  },
+
+    /* reportes */
+    DomiciliarioReporte: (data) => {
+      return axios.post(`${API_URL}/reportes_domiciliario`, data);
+    },
+    VentasaReporte: (data) => {
+      return axios.post(`${API_URL}/reportes_ventas`, data);
+    },
 };
