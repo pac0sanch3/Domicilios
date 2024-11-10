@@ -2,7 +2,7 @@ import axios from "axios";
 import { Button } from '@nextui-org/react';
 import Header from "../../components/layout/Header"
 import ModalSolicitud from "../solicitudes/ModalSolicitud";
-
+import { Alert, AlertDescription, AlertTitle } from '../ui/alert';
 import { useState , useEffect} from 'react'
 import ModalIncidencias from "../Incidencias/ModalIncidencias";
 
@@ -12,7 +12,11 @@ const HomeCliente = () =>{
 
 
   const [isModalOpen, setIsModalOpen] = useState(false)
-
+  const [notification, setNotification] = useState({
+    show: false,
+    type: '',
+    message: '' 
+  });
 
   const [soliCompletadas, setSoliCompl] = useState([])
   const [soliEnCurso, setSoliEnCurso] = useState([])
@@ -32,6 +36,22 @@ const HomeCliente = () =>{
   const closeModalIncidencias = () => {
 
     setIsModalIncidenciasOpen(false);
+  };
+
+  const showNotification = (type, message) => {
+    setNotification({
+      show: true,
+      type,
+      message
+    });
+
+    setTimeout(() => {
+      setNotification({
+        show: false,
+        type: '',
+        message: ''
+      });
+    }, 5000);
   };
 
   const buscarSolicitudes = async ()=>{
@@ -73,6 +93,7 @@ const HomeCliente = () =>{
           `${import.meta.env.VITE_API_URL}solicitudes/actualizarEstado`,
           { estado, idSolicitud }
         );
+        showNotification('success', 'Se canceló con éxito');
         buscarSolicitudes();
       } catch (error) {
         console.error(error);
@@ -88,7 +109,7 @@ const HomeCliente = () =>{
         {/* Panel principal con imagen y contenido */}
         <div className="flex flex-col md:flex-row w-full min-h-screen">
           {/* Sección de imagen (2/3 del ancho) */}
-          <div className="w-full md:w-2/3 h-64 md:h-screen relative px-5 md:p-20">
+          <div className="w-full md:w-2/3 mt-20 h-64 md:h-screen relative px-5 md:p-20">
 
           <img 
             src="/imagen2AL.jpg"

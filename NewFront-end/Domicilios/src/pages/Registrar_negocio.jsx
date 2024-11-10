@@ -16,14 +16,16 @@ const RegistroNegocio = () => {
   const [error, setError] = useState('');
   const [isLoading, setIsLoading] = useState(false);
 
+
   useEffect(() => {
     loadUsers();
   }, []);
 
   const loadUsers = async () => {
     try {
-      const response = await userService.getUsers(); // Carga la lista de usuarios
-      setUsers(response.data);
+      const response = await userService.getUsers();
+      const filteredUsers = response.data.filter(user => user.tipo_usuario === 'negocio');
+      setUsers(filteredUsers);
     } catch (error) {
       console.error('Error al cargar usuarios:', error);
     }
@@ -98,7 +100,7 @@ const RegistroNegocio = () => {
                   <option value="">Seleccione un usuario</option>
                   {users.map(user => (
                     <option key={user.id_usuario} value={user.id_usuario}>
-                      {user.nombre} ({user.id_usuario})
+                      {user.nombre} 
                     </option>
                   ))}
                 </select>
