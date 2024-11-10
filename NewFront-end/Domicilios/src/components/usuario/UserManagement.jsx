@@ -11,6 +11,8 @@ import SolicitudesManagement from '../solicitudes/SolicitudesManagement.jsx';
 import DomiciliariosManagement from '../domiciliario/DomiciliariosManagement.jsx';
 import NovedadesManagement from '../novedades/NovedadesManagement.jsx';
 import { IoMenu } from 'react-icons/io5';
+/* reportes */
+import ReportesManage from '../reportes/ReportesManage.jsx'
 
 const UserManagement = () => {
   const [users, setUsers] = useState([]);
@@ -147,6 +149,12 @@ const UserManagement = () => {
                 color={currentView === 'Graficas' ? 'primary' : 'default'} auto>
           Gráficas
         </Button>
+        <Button 
+                onClick={() => setCurrentView('Reportes')} 
+                className="px-4 py-2 bg-blue-500 hover:bg-blue-600 m-2 text-white rounded-lg transition-all duration-300"
+                color={currentView === 'Reportes' ? 'primary' : 'default'} auto>
+          Reportes
+        </Button>
       </div>
 
       {/* Renderizar el apartado correspondiente */}
@@ -194,6 +202,9 @@ const UserManagement = () => {
       {currentView === 'solicitudes' && <SolicitudesManagement />}
       {currentView === 'Domicilio' && <DomiciliariosManagement />}
       {currentView === 'roles' && <RolesManagement />}
+
+      {/* reportes */}
+      {currentView === 'Reportes' && <ReportesManage />}
 
       {currentView === 'Graficas' && (
         <div className="w-full">
