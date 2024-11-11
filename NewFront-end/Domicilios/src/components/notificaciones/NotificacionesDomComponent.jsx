@@ -8,12 +8,31 @@ export const NotificacionesDomComponent = () => {
     const [activeTab, setActiveTab] = useState('pendiente');
     const [disponibilidadActual, setDisponibilidadActual] = useState('disponible');
     const [disponibilidad, setDisponibilidad] = useState('disponible');
+    const [searchTerm, setSearchTerm] = useState('');
+    const [isSearching, setIsSearching] = useState(false);
 
 
     useEffect(() => {
         listarSolicitudes();
         getDisponibilidad();
     }, []);
+
+    const filteredBySearch = searchTerm
+    ? solicitudes.filter(solicitud => {
+        const searchLower = searchTerm.toLowerCase();
+        return (
+            solicitud.id_solicitud.toString().includes(searchLower) ||
+            (solicitud.nombre_cliente || '').toLowerCase().includes(searchLower) ||
+            solicitud.direccion_recogida.toLowerCase().includes(searchLower) ||
+            solicitud.direccion_entrega.toLowerCase().includes(searchLower) ||
+            solicitud.estado.toLowerCase().includes(searchLower)
+        );
+    })
+    : [];
+
+    const filteredByTab = solicitudes.filter(solicitud => solicitud.estado === activeTab);
+
+    const displayedSolicitudes = isSearching ? filteredBySearch : filteredByTab;
 
     useEffect(() => {
     }, [solicitudes, activeTab]);
@@ -66,6 +85,12 @@ export const NotificacionesDomComponent = () => {
         }
     };
 
+    const handleSearchChange = (e) => {
+        const value = e.target.value;
+        setSearchTerm(value);
+        setIsSearching(value.length > 0);
+    };
+
     return (
         <div className="min-h-screen bg-gray-100">
             {/* Header con título y estado de disponibilidad */}
@@ -111,41 +136,65 @@ export const NotificacionesDomComponent = () => {
     </div>
             </div>
 
-            {/* Contenido principal */}
-            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-                {/* Tabs de navegación */}
-                <div className="flex flex-wrap gap-2 mb-6">
-                    <button 
-                        onClick={() => setActiveTab('pendiente')} 
-                        className={`px-4 py-2 rounded-md ${activeTab === 'pendiente' ? 'bg-blue-500 text-white' : 'bg-gray-200 text-gray-700'}`}
-                    >
-                        Pedidos pendientes
-                    </button>
-                    <button 
-                        onClick={() => setActiveTab('en_curso')} 
-                        className={`px-4 py-2 rounded-md ${activeTab === 'en_curso' ? 'bg-blue-500 text-white' : 'bg-gray-200 text-gray-700'}`}
-                    >
-                        Pedidos en curso
-                    </button>
-                    <button 
-                        onClick={() => setActiveTab('completado')} 
-                        className={`px-4 py-2 rounded-md ${activeTab === 'completado' ? 'bg-blue-500 text-white' : 'bg-gray-200 text-gray-700'}`}
-                    >
-                        Pedidos completados
-                    </button>
-                    <button 
-                        onClick={() => setActiveTab('cancelado')} 
-                        className={`px-4 py-2 rounded-md ${activeTab === 'cancelado' ? 'bg-blue-500 text-white' : 'bg-gray-200 text-gray-700'}`}
-                    >
-                        Pedidos cancelados
-                    </button>
-                    <button 
-                        onClick={() => setActiveTab('reprogramado')} 
-                        className={`px-4 py-2 rounded-md ${activeTab === 'reprogramado' ? 'bg-blue-500 text-white' : 'bg-gray-200 text-gray-700'}`}
-                    >
-                        Pedidos reprogramados
-                    </button>
+            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
+                <div className="relative">
+                    <input
+                        type="text"
+                        placeholder="Buscar domicilios por ID, cliente, dirección o estado..."
+                        value={searchTerm}
+                        onChange={handleSearchChange}
+                        className="w-full px-4 py-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    />
+                    {searchTerm && (
+                        <button
+                            onClick={() => {
+                                setSearchTerm('');
+                                setIsSearching(false);
+                            }}
+                            className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500 hover:text-gray-700"
+                        >
+                            ✕
+                        </button>
+                    )}
                 </div>
+            </div>
+
+            
+            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+                {!isSearching && (
+                <div className="flex flex-wrap gap-2 mb-6">
+                <button 
+                    onClick={() => setActiveTab('pendiente')} 
+                    className={`px-4 py-2 rounded-md ${activeTab === 'pendiente' ? 'bg-blue-500 text-white' : 'bg-gray-200 text-gray-700'}`}
+                >
+                    Pedidos pendientes
+                </button>
+                <button 
+                    onClick={() => setActiveTab('en_curso')} 
+                    className={`px-4 py-2 rounded-md ${activeTab === 'en_curso' ? 'bg-blue-500 text-white' : 'bg-gray-200 text-gray-700'}`}
+                >
+                    Pedidos en curso
+                </button>
+                <button 
+                    onClick={() => setActiveTab('completado')} 
+                    className={`px-4 py-2 rounded-md ${activeTab === 'completado' ? 'bg-blue-500 text-white' : 'bg-gray-200 text-gray-700'}`}
+                >
+                    Pedidos completados
+                </button>
+                <button 
+                    onClick={() => setActiveTab('cancelado')} 
+                    className={`px-4 py-2 rounded-md ${activeTab === 'cancelado' ? 'bg-blue-500 text-white' : 'bg-gray-200 text-gray-700'}`}
+                >
+                    Pedidos cancelados
+                </button>
+                <button 
+                    onClick={() => setActiveTab('reprogramado')} 
+                    className={`px-4 py-2 rounded-md ${activeTab === 'reprogramado' ? 'bg-blue-500 text-white' : 'bg-gray-200 text-gray-700'}`}
+                >
+                    Pedidos reprogramados
+                </button>
+            </div>
+                )}
 
                 {loading && (
                     <p className="text-lg text-gray-600">Cargando...</p>
@@ -156,9 +205,9 @@ export const NotificacionesDomComponent = () => {
                     </p>
                 )}
 
-                {filteredSolicitudes.length > 0 ? (
+                {displayedSolicitudes.length > 0 ? (
                     <ul className="grid grid-cols-1 gap-4">
-                        {filteredSolicitudes.map((solicitud) => (
+                        {displayedSolicitudes.map((solicitud) => (
                             <li 
                                 key={solicitud.id_solicitud} 
                                 className="bg-white shadow rounded-lg p-6"
@@ -199,7 +248,9 @@ export const NotificacionesDomComponent = () => {
                     </ul>
                 ) : (
                     <p className="text-lg text-gray-600 text-center">
-                        No hay solicitudes en este apartado.
+                        {isSearching 
+                            ? "No se encontraron domicilios que coincidan con tu búsqueda."
+                            : "No hay solicitudes en este apartado."}
                     </p>
                 )}
             </div>
