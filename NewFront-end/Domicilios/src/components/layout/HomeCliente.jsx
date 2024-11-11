@@ -2,17 +2,20 @@ import axios from "axios";
 import { Button } from '@nextui-org/react';
 import Header from "../../components/layout/Header"
 import ModalSolicitud from "../solicitudes/ModalSolicitud";
-
+import { Alert, AlertDescription, AlertTitle } from '../ui/alert';
 import { useState , useEffect} from 'react'
 import ModalIncidencias from "../Incidencias/ModalIncidencias";
 
 
 const HomeCliente = () =>{
   const [isModalIncidenciasOpen, setIsModalIncidenciasOpen] = useState(false);
-
-
   const [isModalOpen, setIsModalOpen] = useState(false)
-
+  const [searchTerm, setSearchTerm] = useState('');
+  const [notification, setNotification] = useState({
+    show: false,
+    type: '',
+    message: '' 
+  });
 
   const [soliCompletadas, setSoliCompl] = useState([])
   const [soliEnCurso, setSoliEnCurso] = useState([])
@@ -32,6 +35,22 @@ const HomeCliente = () =>{
   const closeModalIncidencias = () => {
 
     setIsModalIncidenciasOpen(false);
+  };
+
+  const showNotification = (type, message) => {
+    setNotification({
+      show: true,
+      type,
+      message
+    });
+
+    setTimeout(() => {
+      setNotification({
+        show: false,
+        type: '',
+        message: ''
+      });
+    }, 5000);
   };
 
   const buscarSolicitudes = async ()=>{
@@ -61,6 +80,14 @@ const HomeCliente = () =>{
     buscarSolicitudes()
   }, [])
 
+  const filteredCompletedOrders = soliCompletadas.filter(solicitud => {
+    const searchTermLower = searchTerm.toLowerCase();
+    return (
+      solicitud.direccion_recogida.toLowerCase().includes(searchTermLower) ||
+      solicitud.direccion_entrega.toLowerCase().includes(searchTermLower) ||
+      solicitud.instruccionesAdc.toLowerCase().includes(searchTermLower)
+    );
+  });
 
 
   const cancelarPedido = async (idSolicitud) => {
@@ -73,6 +100,7 @@ const HomeCliente = () =>{
           `${import.meta.env.VITE_API_URL}solicitudes/actualizarEstado`,
           { estado, idSolicitud }
         );
+        showNotification('success', 'Se canceló con éxito');
         buscarSolicitudes();
       } catch (error) {
         console.error(error);
@@ -88,7 +116,7 @@ const HomeCliente = () =>{
         {/* Panel principal con imagen y contenido */}
         <div className="flex flex-col md:flex-row w-full min-h-screen">
           {/* Sección de imagen (2/3 del ancho) */}
-          <div className="w-full md:w-2/3 h-64 md:h-screen relative px-5 md:p-20">
+          <div className="w-full md:w-2/3 mt-20 h-64 md:h-screen relative px-5 md:p-20">
 
           <img 
             src="/imagen2AL.jpg"
@@ -266,12 +294,27 @@ const HomeCliente = () =>{
             </div>
           </div>
           <div className="max-w-4xl mx-auto my-14">
-          <h2 className="text-3xl font-bold mb-6 border-b-4 border-blue-500 pb-2">
+          <div className="flex flex-col md:flex-row justify-between items-center mb-6">
+          <h2 className="text-3xl font-bold border-b-4 border-blue-500 pb-2">
             Historial de pedidos
           </h2>
+          <div className="w-full md:w-1/3 mt-4 md:mt-0">
+            <input
+              type="text"
+              placeholder="Buscar por dirección o instrucciones..."
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+            />
+          </div>
+        </div>
             <div>
-            {
-  soliCompletadas.map((solicitud) => (
+            {filteredCompletedOrders.length === 0 && searchTerm !== '' ? (
+            <div className="text-center py-8 text-gray-500">
+              No se encontraron pedidos que coincidan con tu búsqueda
+            </div>
+          ) : (
+            filteredCompletedOrders.map((solicitud) => (
     <div 
       key={solicitud.id_solicitud}
       className="
@@ -413,7 +456,7 @@ const HomeCliente = () =>{
                   </div>
                 </div>
               ))
-            }
+            )}
             </div>
           </div>
         </div>
@@ -425,4 +468,3 @@ const HomeCliente = () =>{
 
 
 export default HomeCliente
-

@@ -35,12 +35,11 @@ const FormSolicitud = ({ onClose }) => {
 
       showNotification('success', 'Se registró correctamente');
       reset();
-      onClose();
 
     } catch (error) {
+      console.log(error)
       console.error(error);
       showNotification('error', 'Lo sentimos, no se encuentran domiciliarios disponibles, intentar más tarde');
-      onClose();
     }
   };
 
