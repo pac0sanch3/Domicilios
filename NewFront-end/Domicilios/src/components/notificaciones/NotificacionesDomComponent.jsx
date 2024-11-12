@@ -6,15 +6,11 @@ export const NotificacionesDomComponent = () => {
     const { listarSolicitudes, solicitudes, error, loading } = useSolicitudes();
     const [selectedSolicitud, setSelectedSolicitud] = useState(null);
     const [activeTab, setActiveTab] = useState('pendiente');
-    const [disponibilidadActual, setDisponibilidadActual] = useState('disponible');
-    const [disponibilidad, setDisponibilidad] = useState('disponible');
     const [searchTerm, setSearchTerm] = useState('');
     const [isSearching, setIsSearching] = useState(false);
 
-
     useEffect(() => {
         listarSolicitudes();
-        getDisponibilidad();
     }, []);
 
     const filteredBySearch = searchTerm
@@ -39,14 +35,6 @@ export const NotificacionesDomComponent = () => {
 
     const filteredSolicitudes = solicitudes.filter(solicitud => solicitud.estado === activeTab);
 
-    const getDisponibilidad = async () => {
-        const id_usuario = localStorage.getItem('userId')
-        const respuesta = await axios.get(`${import.meta.env.VITE_API_URL}domiciliario/consultar/${id_usuario}`)
-        console.log(respuesta.data[0].disponibilidad)
-        setDisponibilidad(respuesta.data[0].disponibilidad)
-        setDisponibilidadActual(respuesta.data[0].disponibilidad)
-    }
-
     const handleFinalizarSolicitud = async () => {
         try {
             console.log(selectedSolicitud)
@@ -63,28 +51,6 @@ export const NotificacionesDomComponent = () => {
         }
     };
 
-    const handleDisponibilidadChange = async (id_domiciliario) => {
-        try {
-            const response = await fetch(`${import.meta.env.VITE_API_URL}domiciliario/disponibilidad/${id_domiciliario}`, {
-                method: 'PUT',
-                headers: { 'Content-Type': 'application/json' }
-            });
-    
-            if (response.ok) {
-                const data = await response.json();
-                console.log('Nueva disponibilidad:', data.nuevaDisponibilidad);
-                // Actualizar el estado local inmediatamente
-                setDisponibilidadActual(data.nuevaDisponibilidad);
-                // Actualizar la lista de solicitudes
-                await listarSolicitudes();
-            } else {
-                console.error('Error al actualizar la disponibilidad');
-            }
-        } catch (error) {
-            console.error('Error en la solicitud:', error);
-        }
-    };
-
     const handleSearchChange = (e) => {
         const value = e.target.value;
         setSearchTerm(value);
@@ -93,47 +59,15 @@ export const NotificacionesDomComponent = () => {
 
     return (
         <div className="min-h-screen bg-gray-100">
-            {/* Header con título y estado de disponibilidad */}
-            <div className={`shadow transition-colors duration-50  ${
-            disponibilidadActual === 'disponible' ? 'bg-blue-300/20' 
-            : disponibilidadActual === 'no_disponible' ? 'bg-red-300/20'
-            : 'bg-gray-300'
-        }`}>
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
-        <div className="flex justify-between items-center">
-            <h1 className={`text-2xl font-bold ${
-                disponibilidadActual === 'disponible' ? 'text-blue-900'
-                : disponibilidadActual === 'no_disponible' ? 'text-red-900'
-                : 'text-gray-900'
-            }`}>
-                Administrar domicilios
-            </h1>
-            <div className="flex items-center space-x-2">
-            <span className="text-gray-900 text-lg font-semibold ml-2">Cambiar estado</span>
-                <button
-                    onClick={() => handleDisponibilidadChange(solicitudes[0]?.id_domiciliario)}
-                    className={`px-4 py-2 rounded-full transition-colors duration-50 
-                        ${disponibilidadActual === 'disponible'
-                            ? 'bg-blue-300 text-blue-900 hover:bg-blue-400'
-                        : disponibilidadActual === 'no_disponible'
-                            ? 'bg-red-300 text-red-900 hover:bg-red-400'
-                            : 'bg-gray-300 text-gray-900 hover:bg-gray-400'
-                    } border border-black`}
-                >
-                    
-                    <div className="flex items-center space-x-2">
-                        <div className={`w-2 h-2 rounded-full ${
-                            disponibilidadActual === 'disponible' ? 'bg-blue-600'
-                            : disponibilidadActual === 'no_disponible' ? 'bg-red-600'
-                            : 'bg-gray-600'
-                        }`}></div>
-                        <span>{disponibilidadActual}</span>
+            {/* Header con título */}
+            <div className="bg-gray-300 shadow">
+                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
+                    <div className="flex justify-center items-center">
+                        <h1 className="text-2xl font-bold text-gray-900">
+                            Administrar domicilios
+                        </h1>
                     </div>
-                </button>
-                
-            </div>
-        </div>
-    </div>
+                </div>
             </div>
 
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
@@ -159,7 +93,6 @@ export const NotificacionesDomComponent = () => {
                 </div>
             </div>
 
-            
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
                 {!isSearching && (
                 <div className="flex flex-wrap gap-2 mb-6">
